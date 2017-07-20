@@ -17,11 +17,13 @@ using namespace tpc::reader;
 using namespace Lucene;
 
 /*!
- * @brief search the Lucene index for documents matching the provided Lucene query and return a list of results sorted
- * by score
+ * @brief search the Lucene index for documents matching the provided Lucene query and return a list of hit results
+ * sorted by score
+ *
+ * The results returned by this method contain basic information regarding the documents matching the searches
  *
  * note that while the documents are sorted by score, their matched sentences, in case of sentence searches, are not
- * sorted
+ * sorted so as to have better performances
  * @param index_root_dir the root dir of the Lucene indexes
  * @param search_type the type of search to be performed
  * @param query a Lucene query
@@ -29,8 +31,9 @@ using namespace Lucene;
  * @param case_sensitive whether to perform a case sensitive search
  * @return the list of the documents matching the query sorted by their scores and encapsulated in a SearchResutl object
  */
-SearchResult Util::search(const string& index_root_dir, QueryType search_type, const std::string& query,
-                          const vector<string>& literatures, bool case_sensitive) {
+SearchResult SearchIndex::get_search_hits(const string& index_root_dir, QueryType search_type, const std::string& query,
+                                          const vector<string>&literatures, bool case_sensitive, bool sort_by_year)
+{
     string index_type;
     String field;
     if (search_type == QueryType::document) {
@@ -54,13 +57,19 @@ SearchResult Util::search(const string& index_root_dir, QueryType search_type, c
     TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(maxHits, true);
     searcher->search(luceneQuery, collector);
     Collection<ScoreDocPtr> matchesCollection = collector->topDocs()->scoreDocs;
-    SearchResult result;
+    SearchResult result = SearchResult();
     if (search_type == QueryType::document) {
         result = get_results_from_document_hit_collection(matchesCollection, subReaders, searcher);
     } else if (search_type == QueryType::sentence) {
         result = get_results_from_sentence_hit_collection(matchesCollection, subReaders, searcher);
     }
-    sort(result.hit_documents.begin(), result.hit_documents.end(), document_greater_than);
+    if (sort_by_year) {
+        // sort by year (greater first) and by score (greater first)
+        sort(result.hit_documents.begin(), result.hit_documents.end(), document_year_score_gt);
+    } else {
+        // sort by score (greater first)
+        sort(result.hit_documents.begin(), result.hit_documents.end(), document_score_gt);
+    }
     return result;
 }
 
@@ -72,68 +81,87 @@ SearchResult Util::search(const string& index_root_dir, QueryType search_type, c
  * @param index_type the type of index to be read - i.e. the name of the index directory within the literature
  * @return a collection of readers created from the Lucene indexes
  */
-Collection<IndexReaderPtr> Util::get_subreaders(const vector<string>& literatures, const string& index_root_dir,
+Collection<IndexReaderPtr> SearchIndex::get_subreaders(const vector<string>& literatures, const string& index_root_dir,
                                                 const string& index_type) {
     Collection<IndexReaderPtr> subReaders = Collection<IndexReaderPtr>::newInstance(0);
-    for (string literature : literatures) {
-        string index_dir = index_root_dir + "/" + literature + "/" + index_type;
+    for (const string& literature : literatures) {
+        string index_dir;
+        index_dir.append(index_root_dir); index_dir.append("/"); index_dir.append(literature);
+        index_dir.append("/"); index_dir.append(index_type);
         IndexReaderPtr reader = IndexReader::open(FSDirectory::open(String(index_dir.begin(), index_dir.end())), true);
         if (reader) {
             subReaders.add(reader);
         } else {
-            throw new index_exception();
+            throw index_exception();
         }
     }
     return subReaders;
 }
 
 /*!
- * collect and return document information for a collection of matches obtained from a document search
+ * collect and return document basic information for a collection of matches obtained from a document search
  * @param matches_collection the collection of documents matching the search query
  * @param subreaders the readers used during the search
  * @param searcher the searcher used during the search
  * @return the list of Document objects with information related to the matching documents, encapsulated in a
  * SearchResult object
  */
-SearchResult Util::get_results_from_document_hit_collection(Collection<ScoreDocPtr> matches_collection,
-                                                            Collection<IndexReaderPtr> subreaders,
-                                                            SearcherPtr searcher)
+SearchResult SearchIndex::get_results_from_document_hit_collection(const Collection<ScoreDocPtr>& matches_collection,
+                                                                   const Collection<IndexReaderPtr>& subreaders,
+                                                                   SearcherPtr searcher, bool sort_by_year)
 {
     SearchResult result;
     result.query_type = QueryType::document;
+    // for small searches, read the fields with a lazy loader
     if (matches_collection.size() < field_cache_min_hits) {
-        FieldSelectorPtr fsel = newLucene<LazySelector>(L"identifier");
-        for (auto scoredoc : matches_collection) {
+        set<String> fields;
+        if (sort_by_year) {
+            fields = {L"identifier", L"year"};
+        } else {
+            fields = {L"identifier"};
+        }
+        FieldSelectorPtr fsel = newLucene<LazySelector>(fields);
+        for (const auto& scoredoc : matches_collection) {
             Document document;
             DocumentPtr docPtr = searcher->doc(scoredoc->doc, fsel);
             String identifier = docPtr->get(L"identifier");
             document.identifier = StringUtils::toUTF8(identifier);
             document.score = scoredoc->score;
+            if (sort_by_year) {
+                document.year = StringUtils::toUTF8(docPtr->get(L"year"));
+            }
             result.hit_documents.push_back(document);
         }
-    } else {
+    } else { // for big searches, read the fields from the fieldcaches
         vector<int32_t> docids;
         map<int32_t, double> scores;
-        for (auto scoredoc : matches_collection) {
+        for (const auto& scoredoc : matches_collection) {
             docids.push_back(scoredoc->doc);
             scores.insert({scoredoc->doc, scoredoc->score});
         }
         sort(docids.begin(), docids.end());
         int readerIndex = 0;
         Collection<String> fieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"identifier");
+        Collection<String> yearFieldCache;
+        if (sort_by_year) {
+            yearFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"year");
+        }
         int offset = 0;
         for (auto docid : docids) {
             while ((docid - offset) >= fieldCache.size()) {
-                // load one field cache at a time to avoid wasting memory - sorted docids reduces
-                // the number of loadings - the offset value is needed since docids count the docs
-                // altoghether
                 offset += fieldCache.size();
                 fieldCache = FieldCache::DEFAULT()->getStrings(subreaders[++readerIndex], L"identifier");
+                if (sort_by_year) {
+                    yearFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"year");
+                }
             }
             String identifier = fieldCache[docid - offset];
             Document document;
             document.identifier = StringUtils::toUTF8(identifier);
             document.score = scores[docid];
+            if (sort_by_year) {
+                document.year = StringUtils::toUTF8(yearFieldCache[docid - offset]);
+            }
             result.hit_documents.push_back(document);
         }
     }
@@ -148,66 +176,79 @@ SearchResult Util::get_results_from_document_hit_collection(Collection<ScoreDocP
  * @return the list of Document objects with information related to the matching sentences and their respective
  * documents, encapsulated in a SearchResult object
  */
-SearchResult Util::get_results_from_sentence_hit_collection(Collection<ScoreDocPtr> matches_collection,
-                                                            Collection<IndexReaderPtr> subreaders,
-                                                            SearcherPtr searcher)
+SearchResult SearchIndex::get_results_from_sentence_hit_collection(const Collection<ScoreDocPtr>& matches_collection,
+                                                                   const Collection<IndexReaderPtr>& subreaders,
+                                                                   SearcherPtr searcher, bool sort_by_year)
 {
     SearchResult result;
     result.query_type = QueryType::sentence;
     map<string, Document> doc_map;
+    // for small searches, read the fields with a lazy loader
     if (matches_collection.size() < field_cache_min_hits) {
-        set<String> fields = {L"identifier", L"sentence_id"};
+        set<String> fields;
+        if (sort_by_year) {
+            fields = {L"identifier", L"sentence_id", L"year"};
+        } else {
+            fields = {L"identifier", L"sentence_id"};
+        }
         FieldSelectorPtr fsel = newLucene<LazySelector>(fields);
-        for (auto scoredoc : matches_collection) {
+        for (const auto& scoredoc : matches_collection) {
             DocumentPtr docPtr = searcher->doc(scoredoc->doc, fsel);
             String identifier = docPtr->get(L"identifier");
             if (doc_map.find(StringUtils::toUTF8(identifier)) == doc_map.end()) {
                 Document document;
                 document.identifier = StringUtils::toUTF8(identifier);
+                document.year = StringUtils::toUTF8(docPtr->get(L"year"));
                 document.score = 0;
                 doc_map.insert({StringUtils::toUTF8(identifier), document});
             }
             doc_map[StringUtils::toUTF8(identifier)].score += scoredoc->score;
             Sentence sentence;
-            sentence.identifier = StringUtils::toUTF8(docPtr->get(L"sentence_id"));
+            sentence.identifier = StringUtils::toInt(docPtr->get(L"sentence_id"));
             sentence.score = scoredoc->score;
             doc_map[StringUtils::toUTF8(identifier)].matching_sentences.push_back(sentence);
         }
-    } else {
+    } else { // for big searches, read the fields from the fieldcaches
         vector<int32_t> docids;
         map<int32_t, double> scores;
-        for (auto scoredoc : matches_collection) {
+        for (const auto& scoredoc : matches_collection) {
             docids.push_back(scoredoc->doc);
             scores.insert({scoredoc->doc, scoredoc->score});
         }
         sort(docids.begin(), docids.end());
         int readerIndex = 0;
         Collection<String> docIdFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"identifier");
-        Collection<String> sentIdFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex],
-                                                                                L"sentence_id");
+        Collection<int> sentIdFieldCache = FieldCache::DEFAULT()->getInts(subreaders[readerIndex], L"sentence_id");
+        Collection<String> yearFieldCache;
+        if (sort_by_year) {
+            yearFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"year");
+        }
         int offset = 0;
         for (auto docid : docids) {
             while ((docid - offset) >= docIdFieldCache.size()) {
-                // load one field cache at a time to avoid wasting memory - sorted docids reduces
-                // the number of loadings - the offset value is needed since docids count the docs
-                // altoghether
                 offset += docIdFieldCache.size();
                 ++readerIndex;
                 docIdFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"identifier");
-                sentIdFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"sentence_id");
+                sentIdFieldCache = FieldCache::DEFAULT()->getInts(subreaders[readerIndex], L"sentence_id");
+                if (sort_by_year) {
+                    yearFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"year");
+                }
             }
             String docIdentifier = docIdFieldCache[docid - offset];
-            String sentIdentifier = sentIdFieldCache[docid - offset];
+            int sentIdentifier = sentIdFieldCache[docid - offset];
 
             if (doc_map.find(StringUtils::toUTF8(docIdentifier)) == doc_map.end()) {
                 Document document;
                 document.identifier = StringUtils::toUTF8(docIdentifier);
                 document.score = 0;
+                if (sort_by_year) {
+                    document.year = StringUtils::toUTF8(yearFieldCache[docid - offset]);
+                }
                 doc_map.insert({StringUtils::toUTF8(docIdentifier), document});
             }
             doc_map[StringUtils::toUTF8(docIdentifier)].score += scores[docid];
             Sentence sentence;
-            sentence.identifier = StringUtils::toLong(sentIdentifier);
+            sentence.identifier = sentIdentifier;
             sentence.score = scores[docid];
             doc_map[StringUtils::toUTF8(docIdentifier)].matching_sentences.push_back(sentence);
         }

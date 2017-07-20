@@ -21,8 +21,7 @@ namespace tpc::reader {
     static const std::string sentence_indexname_cs = "sentence_cs";
 
     static const int maxHits = 1000000;
-
-    static const int field_cache_min_hits = 10000;
+    static const int field_cache_min_hits = 100000;
 
     /*!
      * @enum ResultType
@@ -39,7 +38,7 @@ namespace tpc::reader {
      * @var <b>score</b> the score of the sentence returned by the search
      */
     struct Sentence {
-        std::string identifier;
+        int identifier;
         double score;
     };
 
@@ -57,6 +56,7 @@ namespace tpc::reader {
     struct Document {
         std::string identifier;
         double score;
+        std::string year;
         std::vector<Sentence> matching_sentences;
     };
 
@@ -73,33 +73,35 @@ namespace tpc::reader {
     };
 
     class index_exception: public std::exception {
-        virtual const char* what() const throw() {
+        const char* what() const throw() override {
             return "index not found";
         }
     };
 
-    class Util {
+    class SearchIndex {
     public:
-        static SearchResult search(const std::string& index_root_dir, QueryType search_type, const std::string& query,
-                                   const std::vector<std::string>& literatures, bool case_sensitive);
+        static SearchResult get_search_hits(const std::string &index_root_dir, QueryType search_type,
+                                            const std::string &query, const std::vector<std::string> &literatures,
+                                            bool case_sensitive = false, bool sort_by_year = false);
     private:
         static Lucene::Collection<Lucene::IndexReaderPtr> get_subreaders(const std::vector<std::string>& literatures,
                                                                          const std::string& index_root_dir,
                                                                          const std::string& index_type);
         static SearchResult get_results_from_document_hit_collection(
-                Lucene::Collection<Lucene::ScoreDocPtr> matches_collection,
-                Lucene::Collection<Lucene::IndexReaderPtr> subreaders,
-                Lucene::SearcherPtr searcher);
+                const Lucene::Collection<Lucene::ScoreDocPtr>& matches_collection,
+                const Lucene::Collection<Lucene::IndexReaderPtr>& subreaders,
+                Lucene::SearcherPtr searcher, bool sort_by_year = false);
 
         static SearchResult get_results_from_sentence_hit_collection(
-                Lucene::Collection<Lucene::ScoreDocPtr> matches_collection,
-                Lucene::Collection<Lucene::IndexReaderPtr> subreaders,
-                Lucene::SearcherPtr searcher);
+                const Lucene::Collection<Lucene::ScoreDocPtr>& matches_collection,
+                const Lucene::Collection<Lucene::IndexReaderPtr>& subreaders,
+                Lucene::SearcherPtr searcher, bool sort_by_year = false);
 
         // comparators for reverse sorting of documents and sentence objects
-        static bool document_greater_than(const Document& a, const Document& b) { return a.score > b.score; }
+        static bool document_score_gt(const Document& a, const Document& b) { return a.score > b.score; }
+        static bool document_year_score_gt(const Document& a, const Document& b) {
+            if (a.year != b.year) return a.year > b.year; return a.score > b.score; }
         static bool sentence_greater_than(const Sentence& a, const Sentence& b) { return a.score > b.score; }
-
     };
 }
 

@@ -38,14 +38,38 @@ namespace {
         std::vector<std::string> literatures;
     };
 
+    TEST_F(ReaderTest, SearchReturnsCorrectTypeForDoc) {
+        ASSERT_TRUE(SearchIndex::get_search_hits(index_root_dir, QueryType::document, "fulltext:al", literatures)
+                            .query_type == QueryType::document);
+    }
+
+    TEST_F(ReaderTest, SearchReturnsCorrectTypeForSent) {
+        ASSERT_TRUE(SearchIndex::get_search_hits(index_root_dir, QueryType::sentence, "sentence:al", literatures)
+                            .query_type == QueryType::sentence);
+    }
+
     TEST_F(ReaderTest, SearchReturnsExpectedNumberOfHitsDocumentSearch) {
-        EXPECT_EQ(15351, Util::search(index_root_dir, QueryType::document, "fulltext:test", literatures, false)
-                .hit_documents.size());
+        EXPECT_EQ(15351,
+                  SearchIndex::get_search_hits(index_root_dir, QueryType::document, "fulltext:al", literatures)
+                          .hit_documents.size());
     }
 
     TEST_F(ReaderTest, SearchReturnsExpectedNumberOfHitsSentenceSearch) {
-        EXPECT_EQ(15351, Util::search(index_root_dir, QueryType::sentence, "sentence:test", literatures, false)
-                .hit_documents.size());
+        EXPECT_EQ(15351,
+                  SearchIndex::get_search_hits(index_root_dir, QueryType::sentence, "sentence:al", literatures)
+                          .hit_documents.size());
+    }
+
+    TEST_F(ReaderTest, SearchReturnsResultsOrderedByYear) {
+        SearchResult results = SearchIndex::get_search_hits(index_root_dir, QueryType::sentence, "sentence:al",
+                                                            literatures);
+        Document prev;
+        for (const Document& doc : results.hit_documents) {
+            if (prev.year.empty()) {
+                ASSERT_LE(doc.year, prev.year);
+            }
+        }
+
     }
 }
 
