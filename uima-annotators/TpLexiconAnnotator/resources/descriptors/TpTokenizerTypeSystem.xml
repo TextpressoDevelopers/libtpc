@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription>
+    <types>       
+        <typeDescription>
+            <name>org.apache.uima.textpresso.rawsource</name>
+            <description>Source of document.</description>
+            <supertypeName>uima.tcas.Annotation</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>value</name>
+                    <description>Actual source type value.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+            </features>
+        </typeDescription>
+        <typeDescription>
+            <name>org.apache.uima.textpresso.filename</name>
+            <description>Filename of document.</description>
+            <supertypeName>uima.tcas.Annotation</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>value</name>
+                    <description>Actual source type value.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+            </features>
+        </typeDescription>           
+        <typeDescription>
+            <name>org.apache.uima.textpresso.token</name>
+            <description>Token annotation.</description>
+            <supertypeName>uima.tcas.Annotation</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>content</name>
+                    <description>Actual word that is a token.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+                <featureDescriptiom>
+                    <name>aid</name>
+                    <description>Annotation Id</description>
+                    <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                </featureDescriptiom>
+            </features>
+        </typeDescription>      
+        <typeDescription>
+            <name>org.apache.uima.textpresso.tokendelimiter</name>
+            <description>Token delimiter annotation.</description>
+            <supertypeName>uima.tcas.Annotation</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>content</name>
+                    <description>Actual token delimiter used in text.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+            </features>
+        </typeDescription>
+        <typeDescription>
+            <name>org.apache.uima.textpresso.sentence</name>
+            <description>Sentence annotation.</description>
+            <supertypeName>uima.tcas.Annotation</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>content</name>
+                    <description>Actual sentence.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+                <featureDescriptiom>
+                    <name>aid</name>
+                    <description>Annotation Id</description>
+                    <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                </featureDescriptiom>
+            </features>
+        </typeDescription>
+        <typeDescription>
+            <name>org.apache.uima.textpresso.sentencedelimiter</name>
+            <description>Sentence delimiter annotation.</description>
+            <supertypeName>uima.tcas.Annotation</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>content</name>
+                    <description>Actual sentence delimiter used in text.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+            </features>
+        </typeDescription>
+        <typeDescription>
+            <name>org.apache.uima.textpresso.pdftag</name>
+            <description>Tags containing pdf internal information.</description>
+            <supertypeName>uima.tcas.Annotation</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>tagtype</name>
+                    <description>Type of pdf information.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>value</name>
+                    <description>Optional value contained in tag.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+            </features>
+        </typeDescription>
+        <typeDescription>
+            <name>org.apache.uima.textpresso.tpfnvhash</name>
+            <description>Textpresso FNV hash value of document text.</description>
+            <supertypeName>uima.tcas.Annotation</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>content</name>
+                    <description>Actual hash value as string.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+            </features>
+        </typeDescription>
+    </types>
+</typeSystemDescription>

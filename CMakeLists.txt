@@ -1,19 +1,143 @@
 cmake_minimum_required(VERSION 3.7)
 project(libtpc)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake-modules/")
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON) #...is required...
 set(CMAKE_CXX_FLAGS "-DBOOST_NO_CXX11_SCOPED_ENUMS -w")
 
+set(CMAKE_STATIC_LIBRARY_PREFIX "") # avoid the prefix "lib"
+set(CMAKE_SHARED_LIBRARY_PREFIX "")
+
 SET(CMAKE_INSTALL_PREFIX /usr/local)
 
-set(SOURCE_FILES textpressocore.cpp textpressocore.h lucene-custom/CaseSensitiveAnalyzer.h
-        lucene-custom/CaseSensitiveAnalyzer.cpp)
-add_library(textpressocore SHARED ${SOURCE_FILES})
-target_link_libraries(textpressocore lucene++)
+SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-add_executable(test_textpressocore ${SOURCE_FILES} tests/test_textpressocore.cpp)
-target_link_libraries(test_textpressocore gtest lucene++ pthread boost_system)
+find_package(APR REQUIRED)
+include_directories(${APR_INCLUDE_DIR})
 
-install(TARGETS textpressocore RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
-install(FILES textpressocore.h DESTINATION include/textpresso)
+set(SOURCE_FILES TpcCommons.h Utils.h Utils.cpp lucene-custom/CaseSensitiveAnalyzer.h
+        lucene-custom/CaseSensitiveAnalyzer.cpp uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.h
+        uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.cpp)
+add_library(libtextpressocore SHARED ${SOURCE_FILES} TpcIndexWriter.h TpcIndexWriter.cpp TpcIndexReader.h
+        TpcIndexReader.cpp)
+target_link_libraries(libtextpressocore lucene++)
+
+add_executable(test_indexreader ${SOURCE_FILES} TpcIndexReader.h TpcIndexReader.cpp tests/test_indexreader.cpp)
+target_link_libraries(test_indexreader gtest lucene++ pthread boost_system boost_iostreams boost_regex icuuc uima)
+
+add_executable(test_indexwriter ${SOURCE_FILES} TpcIndexWriter.h TpcIndexWriter.cpp tests/test_indexwriter.cpp)
+target_link_libraries(test_indexwriter gtest lucene++ pthread boost_system boost_filesystem boost_iostreams xerces-c
+        uima boost_regex icuuc)
+
+install(TARGETS libtextpressocore RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
+install(FILES TpcCommons.h DESTINATION include/textpresso)
+
+# uima annotators
+
+add_library(Tpcas2TpCentral SHARED uima-annotators/Tpcas2TpCentral/Tpcas2TpCentral.h
+        uima-annotators/Tpcas2TpCentral/Tpcas2TpCentral.cpp)
+
+add_library(TpLexiconAnnotator SHARED uima-annotators/TpLexiconAnnotator/AnnotationCounter.h
+        uima-annotators/TpLexiconAnnotator/AnnotationCounter.cpp uima-annotators/TpLexiconAnnotator/StopWords.h
+        uima-annotators/TpLexiconAnnotator/StopWords.cpp
+        uima-annotators/globaldefinitions.h
+        uima-annotators/TpLexiconAnnotator/TpLexiconAnnotator.h
+        uima-annotators/TpLexiconAnnotator/TpLexiconAnnotator.cpp uima-annotators/TpLexiconAnnotator/TpLexiconNode.h
+        uima-annotators/TpLexiconAnnotator/TpLexiconNode.cpp uima-annotators/TpLexiconAnnotator/TpLexiconTrie.h
+        uima-annotators/TpLexiconAnnotator/TpLexiconTrie.cpp)
+target_link_libraries(TpLexiconAnnotator TpTokenizer)
+
+add_library(TpLexiconAnnotatorFromPg SHARED uima-annotators/TpLexiconAnnotatorFromPg/AnnotationCounter.h
+        uima-annotators/TpLexiconAnnotatorFromPg/AnnotationCounter.cpp
+        uima-annotators/TpLexiconAnnotatorFromPg/StopWords.h
+        uima-annotators/TpLexiconAnnotatorFromPg/StopWords.cpp
+        uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconAnnotatorFromPg.h
+        uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconAnnotatorFromPg.cpp
+        uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconNode.h
+        uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconNode.cpp
+        uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconTrie.h
+        uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconTrie.cpp)
+target_link_libraries(TpLexiconAnnotatorFromPg pqxx TpTokenizer)
+
+add_library(TpLsa SHARED uima-annotators/TpLsa/cmdline.h uima-annotators/TpLsa/LsaTp.h uima-annotators/TpLsa/LsaTp.cpp
+        uima-annotators/TpLsa/main.cpp uima-annotators/TpLsa/redsvd.hpp uima-annotators/TpLsa/redsvdFile.hpp
+        uima-annotators/TpLsa/redsvdFile.cpp uima-annotators/TpLsa/redsvdIncr.hpp uima-annotators/TpLsa/SetsFromPairs.h
+        uima-annotators/TpLsa/SetsFromPairs.cpp uima-annotators/TpLsa/TpCas2LsaToken.h
+        uima-annotators/TpLsa/TpCas2LsaToken.cpp uima-annotators/TpLsa/util.hpp uima-annotators/TpLsa/util.cpp)
+target_link_libraries(TpLsa boost_iostreams boost_system uima xerces-c)
+
+add_library(TpTokenizer SHARED uima-annotators/TpTokenizer/AnnotationCounter.h
+        uima-annotators/TpTokenizer/AnnotationCounter.cpp
+        uima-annotators/TpTokenizer/TpNode.h uima-annotators/TpTokenizer/TpNode.cpp
+        uima-annotators/TpTokenizer/TpTokenizer.h
+        uima-annotators/TpTokenizer/TpTokenizer.cpp uima-annotators/TpTokenizer/TpTrie.h
+        uima-annotators/TpTokenizer/TpTrie.cpp)
+target_link_libraries(TpTokenizer boost_regex)
+
+add_library(TxTokenizer SHARED uima-annotators/TxTokenizer/AnnotationCounter.h
+        uima-annotators/TxTokenizer/AnnotationCounter.cpp
+        uima-annotators/TxTokenizer/TpNode.h uima-annotators/TxTokenizer/TpNode.cpp
+        uima-annotators/TxTokenizer/TxTokenizer.h
+        uima-annotators/TxTokenizer/TxTokenizer.cpp uima-annotators/TxTokenizer/TpTrie.h
+        uima-annotators/TxTokenizer/TpTrie.cpp uima-annotators/TxTokenizer/pugiconfig.hpp
+        uima-annotators/TxTokenizer/pugixml.hpp uima-annotators/TxTokenizer/pugixml.cpp)
+target_link_libraries(TxTokenizer boost_regex)
+
+add_library(Tpcas2Bib SHARED uima-custom-analyzers/Tpcas2Bib/CASUtils.h
+        uima-custom-analyzers/Tpcas2Bib/CASUtils.cpp uima-custom-analyzers/Tpcas2Bib/Tpcas2Bib.h
+        uima-custom-analyzers/Tpcas2Bib/Tpcas2Bib.cpp uima-custom-analyzers/Tpcas2Bib/TpNode.h
+        uima-custom-analyzers/Tpcas2Bib/TpNode.cpp uima-custom-analyzers/Tpcas2Bib/TpTrie.h
+        uima-custom-analyzers/Tpcas2Bib/TpTrie.cpp
+        uima-custom-analyzers/Tpcas2Bib/Utils.h)
+target_link_libraries(Tpcas2Bib lucene++ xerces-c icuuc boost_system uima boost_filesystem boost_regex)
+
+add_library(Tpcas2Bib4Nxml SHARED uima-custom-analyzers/Tpcas2Bib4Nxml/CASUtils.h
+        uima-custom-analyzers/Tpcas2Bib4Nxml/CASUtils.cpp uima-custom-analyzers/Tpcas2Bib4Nxml/Tpcas2Bib4Nxml.h
+        uima-custom-analyzers/Tpcas2Bib4Nxml/Tpcas2Bib4Nxml.cpp uima-custom-analyzers/Tpcas2Bib4Nxml/TpNode.h
+        uima-custom-analyzers/Tpcas2Bib4Nxml/TpNode.cpp uima-custom-analyzers/Tpcas2Bib4Nxml/TpTrie.h
+        uima-custom-analyzers/Tpcas2Bib4Nxml/TpTrie.cpp)
+target_link_libraries(Tpcas2Bib4Nxml lucene++ xerces-c icuuc boost_system uima boost_filesystem boost_regex)
+
+add_library(Tpcas2Lpp SHARED uima-custom-analyzers/Tpcas2Lpp/CASUtils.h
+        uima-custom-analyzers/Tpcas2Lpp/CASUtils.cpp uima-custom-analyzers/Tpcas2Lpp/Tpcas2Lpp.h
+        uima-custom-analyzers/Tpcas2Lpp/Tpcas2Lpp.cpp uima-custom-analyzers/Tpcas2Lpp/Utils.h
+        lucene-custom/CaseSensitiveAnalyzer.cpp lucene-custom/CaseSensitiveAnalyzer.h)
+target_link_libraries(Tpcas2Lpp lucene++ xerces-c icuuc boost_system uima boost_filesystem boost_regex)
+
+add_library(Tpcas2SingleIndex SHARED uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.h
+        uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.cpp uima-custom-analyzers/Tpcas2SingleIndex/Tpcas2SingleIndex.h
+        uima-custom-analyzers/Tpcas2SingleIndex/Tpcas2SingleIndex.cpp uima-custom-analyzers/Tpcas2SingleIndex/TpNode.h
+        uima-custom-analyzers/Tpcas2SingleIndex/TpNode.cpp uima-custom-analyzers/Tpcas2SingleIndex/TpTrie.h
+        uima-custom-analyzers/Tpcas2SingleIndex/TpTrie.cpp uima-custom-analyzers/Tpcas2SingleIndex/Utils.h
+        lucene-custom/CaseSensitiveAnalyzer.cpp lucene-custom/CaseSensitiveAnalyzer.h)
+target_link_libraries(Tpcas2SingleIndex lucene++ xerces-c icuuc boost_system uima boost_filesystem boost_regex
+        boost_iostreams)
+
+add_executable(WriteFeatureDefsFromPg uima-annotators/WriteFeatureDefsFromPg/main.cpp)
+target_link_libraries(WriteFeatureDefsFromPg uima pqxx)
+
+#### INSTALL ####
+
+install(FILES
+        uima-annotators/TpLexiconAnnotatorFromPg/resources/descriptors/TpLexiconAnnotatorFromPgFeatureSupplementals.xml
+        uima-annotators/TpLexiconAnnotatorFromPg/resources/descriptors/TpLexiconAnnotatorFromPgTypeSystem.xml
+        uima-annotators/TpLexiconAnnotatorFromPg/resources/descriptors/TpLexiconAnnotatorFromPgWithTmpTpontology.xml
+        uima-annotators/TpLexiconAnnotatorFromPg/resources/descriptors/TpLexiconAnnotatorFromPg.xml
+        uima-annotators/TpLexiconAnnotator/resources/descriptors/TpLexiconAnnotatorTypeSystem.xml
+        uima-annotators/TpLexiconAnnotator/resources/descriptors/TpLexiconAnnotator.xml
+        uima-annotators/TpTokenizer/resources/descriptors/TpTokenizerTypeSystem.xml
+        uima-annotators/TpTokenizer/resources/descriptors/TpTokenizer.xml
+        uima-annotators/TxTokenizer/resources/descriptors/TxTokenizerTypeSystem.xml
+        uima-annotators/TxTokenizer/resources/descriptors/TxTokenizer.xml
+        uima-annotators/shared_resources/descriptors/Tpcas2Lindex.xml
+        uima-annotators/shared_resources/descriptors/Tpcas2TpCentral.xml
+        DESTINATION uima_descriptors)
+
+install(DIRECTORY tests/data DESTINATION share/textpresso)
+
+install(TARGETS Tpcas2TpCentral TpLexiconAnnotatorFromPg TpTokenizer TxTokenizer Tpcas2Bib Tpcas2Bib4Nxml
+        LIBRARY DESTINATION lib)

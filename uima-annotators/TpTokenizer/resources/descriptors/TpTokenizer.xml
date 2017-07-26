@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<taeDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.cpp</frameworkImplementation>
+  <primitive>true</primitive>
+<annotatorImplementationName>TpTokenizer</annotatorImplementationName>
+<analysisEngineMetaData>
+  <name>TpTokenizer</name>
+  <description>Tokenizes a text for the Textpresso Central system.</description>
+  <version>1.0</version>
+  <vendor>Textpresso</vendor>
+  <typeSystemDescription>
+    <imports>
+      <import location="TpTokenizerTypeSystem.xml"/>
+    </imports>
+  </typeSystemDescription>
+  <capabilities>
+    <capability>
+      <inputs/>
+      <outputs>
+        <type allAnnotatorFeatures="true">org.apache.uima.textpresso.token</type>
+        <type allAnnotatorFeatures="true">org.apache.uima.textpresso.tokendelimiter</type>
+        <type allAnnotatorFeatures="true">org.apache.uima.textpresso.sentence</type>
+        <type allAnnotatorFeatures="true">org.apache.uima.textpresso.sentencedelimiter</type>
+        <type allAnnotatorFeatures="true">org.apache.uima.textpresso.tpfnvhash</type>
+      </outputs> 
+      <languagesSupported>
+        <language>x-unspecified</language>
+      </languagesSupported>
+    </capability>
+  </capabilities>
+</analysisEngineMetaData>
+</taeDescription>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taeDescription xmlns = "http://uima.apache.org/resourceSpecifier" >
+    <frameworkImplementation > org.apache.uima.cpp</frameworkImplementation>
+    <primitive > true </primitive>
+    <annotatorImplementationName > Tpcas2Lpp</annotatorImplementationName>
+    <analysisEngineMetaData>
+        <name > Tpcas2Lpp</name>
+        <description > Writes an XCAS to a Lucene index.</description>
+        <version > 1.0 </version>
+        <vendor > Textpresso</vendor>
+        <configurationParameters>
+            <configurationParameter>
+                <name > FulltextLuceneIndexDirectory</name>
+                <description > Directory path of Lucene index for fulltext.</description>
+                <type > String</type>
+                <multiValued > false </multiValued>
+                <mandatory > true </mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name > TokenLuceneIndexDirectory</name>
+                <description > Directory path of Lucene index for tokens.</description>
+                <type > String</type>
+                <multiValued > false </multiValued>
+                <mandatory > true </mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name > SentenceLuceneIndexDirectory</name>
+                <description > Directory path of Lucene index for sentences.</description>
+                <type > String</type>
+                <multiValued > false </multiValued>
+                <mandatory > true </mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name > LexicalLuceneIndexDirectory</name>
+                <description > Directory path of Lucene index for lexical annotations.</description>
+                <type > String</type>
+                <multiValued > false </multiValued>
+                <mandatory > true </mandatory>
+            </configurationParameter>
+
+            <configurationParameter>
+                <name > FulltextCaseSensitiveLuceneIndexDirectory</name>
+                <description > Directory path of Lucene case sensitive index for fulltext.</description>
+                <type > String</type>
+                <multiValued > false </multiValued>
+                <mandatory > true </mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name > TokenCaseSensitiveLuceneIndexDirectory</name>
+                <description > Directory path of Lucene case sensitive index for tokens.</description>
+                <type > String</type>
+                <multiValued > false </multiValued>
+                <mandatory > true </mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name > SentenceCaseSensitiveLuceneIndexDirectory</name>
+                <description > Directory path of Lucene case sensitive index for sentences.</description>
+                <type > String</type>
+                <multiValued > false </multiValued>
+                <mandatory > true </mandatory>
+            </configurationParameter>
+            <configurationParameter>
+                <name > LexicalCaseSensitiveLuceneIndexDirectory</name>
+                <description > Directory path of Lucene case sensitive index for lexical annotations.</description>
+                <type > String</type>
+                <multiValued > false </multiValued>
+                <mandatory > true </mandatory>
+            </configurationParameter>
+        </configurationParameters>
+        <configurationParameterSettings>
+            <nameValuePair>
+                <name > FulltextLuceneIndexDirectory</name>
+                <value>
+                    <string>index/fulltext</string>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name > TokenLuceneIndexDirectory</name>
+                <value>
+                    <string>index/token</string>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name > SentenceLuceneIndexDirectory</name>
+                <value>
+                    <string>index/sentence</string>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name > LexicalLuceneIndexDirectory</name>
+                <value>
+                    <string>index/lexical</string>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name > FulltextCaseSensitiveLuceneIndexDirectory</name>
+                <value>
+                    <string>index/fulltext_cs</string>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name > TokenCaseSensitiveLuceneIndexDirectory</name>
+                <value>
+                    <string>index/token_cs</string>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name > SentenceCaseSensitiveLuceneIndexDirectory</name>
+                <value>
+                    <string>index/sentence_cs</string>
+                </value>
+            </nameValuePair>
+            <nameValuePair>
+                <name > LexicalCaseSensitiveLuceneIndexDirectory</name>
+                <value>
+                    <string>index/lexical_cs</string>
+                </value>
+            </nameValuePair>
+        </configurationParameterSettings>
+        <typeSystemDescription>
+            <imports>
+                <import location = "TpLexiconAnnotatorTypeSystem.xml"/>
+            </imports>
+        </typeSystemDescription>
+        <capabilities>
+            <capability>
+                <inputs/>
+                <outputs/>
+                <languagesSupported>
+                    <language >x-unspecified</language>
+                </languagesSupported>
+            </capability>
+        </capabilities>
+    </analysisEngineMetaData>
+</taeDescription> 

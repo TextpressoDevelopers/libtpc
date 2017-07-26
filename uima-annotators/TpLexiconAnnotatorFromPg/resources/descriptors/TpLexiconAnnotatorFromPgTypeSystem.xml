@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription>
+    <imports>
+        <import location="TpTokenizerTypeSystem.xml"/>
+        <import location="TxTokenizerTypeSystem.xml"/>
+    </imports>
+    <types>
+        <typeDescription>
+            <name>org.apache.uima.textpresso.lexicalannotation</name>
+            <description></description>
+            <supertypeName>uima.tcas.Annotation</supertypeName>
+            <features>
+                <featureDescription>
+                    <name>term</name>
+                    <description>Stores the string that has been found.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+                <featureDescription>
+                    <name>category</name>
+                    <description>Attaches a category name to each annotation.</description>
+                    <rangeTypeName>uima.cas.String</rangeTypeName>
+                </featureDescription>
+                <featureDescriptiom>
+                    <name>aid</name>
+                    <description>Annotation Id</description>
+                    <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                </featureDescriptiom>       
+            </features>
+        </typeDescription>
+    </types>
+    <imports>
+        <import location="TpLexiconAnnotatorFromPgFeatureSupplementals.xml"/>
+    </imports>
+</typeSystemDescription>

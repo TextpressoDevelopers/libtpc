@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<taeDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.cpp</frameworkImplementation>
+  <primitive>true</primitive>
+<annotatorImplementationName>TpLexiconAnnotatorFromPg</annotatorImplementationName>
+<analysisEngineMetaData>
+  <name>Lexicon-based Annotator</name>
+  <description>Detects terms (from Postgres table, name specified below) in text and annotate them.</description>
+  <version>1.0</version>
+  <vendor>Textpresso</vendor>
+  <configurationParameters>
+    <configurationParameter>
+      <name>LexiconTableName</name>
+      <description>name postgres table that contains the lexicon used for annotation.</description>
+      <type>String</type>
+      <multiValued>false</multiValued>
+      <mandatory>true</mandatory>
+    </configurationParameter>
+  </configurationParameters>
+  <configurationParameterSettings>
+    <nameValuePair>
+      <name>LexiconTableName</name>
+        <value>
+	  <string>tpontology</string>
+        </value>
+    </nameValuePair>
+  </configurationParameterSettings>
+  <typeSystemDescription>
+    <imports>
+      <import location="TpLexiconAnnotatorFromPgTypeSystem.xml"/>
+    </imports>
+  </typeSystemDescription>
+  <capabilities>
+    <capability>
+      <inputs/>
+      <outputs>
+        <type allAnnotatorFeatures="true">org.apache.uima.textpresso.lexicalannotation</type>
+      </outputs> 
+      <languagesSupported>
+        <language>x-unspecified</language>
+      </languagesSupported>
+    </capability>
+  </capabilities>
+</analysisEngineMetaData>
+</taeDescription>

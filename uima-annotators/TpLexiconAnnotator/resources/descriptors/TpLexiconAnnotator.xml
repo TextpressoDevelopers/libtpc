@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<taeDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.cpp</frameworkImplementation>
+  <primitive>true</primitive>
+<annotatorImplementationName>TpLexiconAnnotator</annotatorImplementationName>
+<analysisEngineMetaData>
+  <name>Lexicon-based Annotator</name>
+  <description>Detects terms from a lexicon in text and annotate them.</description>
+  <version>1.0</version>
+  <vendor>Textpresso</vendor>
+  <configurationParameters>
+    <configurationParameter>
+      <name>LocalLexiconFile</name>
+      <description>Filename of lexicon used for annotation.</description>
+      <type>String</type>
+      <multiValued>false</multiValued>
+      <mandatory>true</mandatory>
+    </configurationParameter>
+  </configurationParameters>
+  <configurationParameterSettings>
+    <nameValuePair>
+      <name>LocalLexiconFile</name>
+        <value>
+	  <string>/home/mueller/NetBeansProjects/TpUimaAnnotators/TpLexiconAnnotator/resources/wordlists/tpc.lex</string>
+        </value>
+    </nameValuePair>
+  </configurationParameterSettings>
+  <typeSystemDescription>
+    <imports>
+      <import location="TpLexiconAnnotatorTypeSystem.xml"/>
+    </imports>
+  </typeSystemDescription>
+  <capabilities>
+    <capability>
+      <inputs/>
+      <outputs>
+        <type allAnnotatorFeatures="true">org.apache.uima.textpresso.lexicalannotation</type>
+      </outputs> 
+      <languagesSupported>
+        <language>x-unspecified</language>
+      </languagesSupported>
+    </capability>
+  </capabilities>
+</analysisEngineMetaData>
+</taeDescription>

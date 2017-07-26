@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html dir="ltr" class="client-js ve-not-available" lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<title>Latent semantic indexing - Wikipedia, the free encyclopedia</title>
+<meta name="generator" content="MediaWiki 1.24wmf10">
+<link rel="alternate" href="android-app://org.wikipedia/http/en.m.wikipedia.org/wiki/Latent_semantic_indexing">
+<link rel="alternate" type="application/x-wiki" title="Edit this page" href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;action=edit">
+<link rel="edit" title="Edit this page" href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;action=edit">
+<link rel="apple-touch-icon" href="http://bits.wikimedia.org/apple-touch/wikipedia.png">
+<link rel="shortcut icon" href="http://bits.wikimedia.org/favicon/wikipedia.ico">
+<link rel="search" type="application/opensearchdescription+xml" href="http://en.wikipedia.org/w/opensearch_desc.php" title="Wikipedia (en)">
+<link rel="EditURI" type="application/rsd+xml" href="http://en.wikipedia.org/w/api.php?action=rsd">
+<link rel="copyright" href="http://creativecommons.org/licenses/by-sa/3.0/">
+<link rel="alternate" type="application/atom+xml" title="Wikipedia Atom feed" href="http://en.wikipedia.org/w/index.php?title=Special:RecentChanges&amp;feed=atom">
+<link rel="canonical" href="http://en.wikipedia.org/wiki/Latent_semantic_indexing">
+<link rel="stylesheet" href="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/load.css">
+<style>
+@-webkit-keyframes centralAuthPPersonalAnimation{0%{opacity:0;-webkit-transform:translateY(-20px)}100%{opacity:1;-webkit-transform:translateY(0)}}@-moz-keyframes centralAuthPPersonalAnimation{0%{opacity:0;-moz-transform:translateY(-20px)}100%{opacity:1;-moz-transform:translateY(0)}}@-o-keyframes centralAuthPPersonalAnimation{0%{opacity:0;-o-transform:translateY(-20px)}100%{opacity:1;-o-transform:translateY(0)}}@keyframes centralAuthPPersonalAnimation{0%{opacity:0;transform:translateY(-20px)}100%{opacity:1;transform:translateY(0)}}.centralAuthPPersonalAnimation{-webkit-animation-duration:1s;-moz-animation-duration:1s;-o-animation-duration:1s;animation-duration:1s;-webkit-animation-fill-mode:both;-moz-animation-fill-mode:both;-o-animation-fill-mode:both;animation-fill-mode:both;-webkit-animation-name:centralAuthPPersonalAnimation;-moz-animation-name:centralAuthPPersonalAnimation;-o-animation-name:centralAuthPPersonalAnimation;animation-name:centralAuthPPersonalAnimation}
+/* cache key: enwiki:resourceloader:filter:minify-css:7:0dcacc990dd02e7db9669ab3090b80f1 */
+.mw-editsection{white-space:nowrap; unicode-bidi:-moz-isolate;unicode-bidi:-webkit-isolate;unicode-bidi:isolate}.mw-editsection-divider{color:#555}.ve-tabmessage-appendix{font-size:0.7em;vertical-align:top;line-height:1.43em;padding-left:0.5em; background-image:none !important;display:inline !important}
+/* cache key: enwiki:resourceloader:filter:minify-css:7:50c6a67a11952da7c9e5053046d794ee */
+.uls-menu a{cursor:pointer}.uls-menu.callout .caret-before{border-top:20px solid transparent;border-right:20px solid #C9C9C9;border-bottom:20px solid transparent;display:inline-block;left:-21px;top:30px;position:absolute}.uls-menu.callout .caret-after{border-top:20px solid transparent;border-right:20px solid #FCFCFC;border-bottom:20px solid transparent;display:inline-block;left:-20px;top:30px;position:absolute}.uls-ui-languages button{width:23%;text-overflow:ellipsis;margin-right:4%}button.uls-more-languages{width:auto}.settings-title{font-size:11pt}.settings-text{color:#555555;font-size:9pt}div.display-settings-block:hover .settings-text{color:#252525}
+/* cache key: enwiki:resourceloader:filter:minify-css:7:22d1681fa868b4ff4fbcb1ec1e58a9ea */
+.tipsy{padding:5px;position:absolute;z-index:100000;cursor:default}.tipsy-inner{padding:5px 8px 4px 8px; background-color:#ffffff;border:solid 1px #a7d7f9;color:black;max-width:15em;border-radius:4px; }.tipsy-arrow{position:absolute;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALAgMAAADUwp+1AAAACVBMVEX5+fmn1/n///9s6BFKAAAAAXRSTlMAQObYZgAAACpJREFUCB1jZBD4wMiQMoeRcUU4I9uSaYxSE54xZjn8AtMgPkgcJA9UBwAeDw1Qrb3pVAAAAABJRU5ErkJggg==) no-repeat top left;background:url(//bits.wikimedia.org/static-1.24wmf10/resources/src/jquery.tipsy/images/tipsy.png?2014-06-19T17:58:20Z) no-repeat top left!ie;width:11px;height:6px} .tipsy-n .tipsy-arrow{top:0px;left:50%;margin-left:-5px} .tipsy-nw .tipsy-arrow{top:1px;left:10px} .tipsy-ne .tipsy-arrow{top:1px;right:10px} .tipsy-s .tipsy-arrow{bottom:0px;left:50%;margin-left:-5px;background-position:bottom left} .tipsy-sw .tipsy-arrow{bottom:0px;left:10px;background-position:bottom left} .tipsy-se .tipsy-arrow{bottom:0px;right:10px;background-position:bottom left} .tipsy-e .tipsy-arrow{top:50%;margin-top:-5px;right:1px;width:5px;height:11px;background-position:top right} .tipsy-w .tipsy-arrow{top:50%;margin-top:-5px;left:0px;width:6px;height:11px}
+/* cache key: enwiki:resourceloader:filter:minify-css:7:a1e42166dae13e410e0d41e357117e11 */
+@media print{#centralNotice{display:none}}
+/* cache key: enwiki:resourceloader:filter:minify-css:7:ddb0c98a055632ae8e349c9cf48ac703 */
+.cite-accessibility-label{position:absolute !important; top:-99999px;clip:rect(1px 1px 1px 1px); clip:rect(1px,1px,1px,1px);padding:0 !important;border:0 !important;height:1px !important;width:1px !important;overflow:hidden}.mw-cite-backlink,.cite-accessibility-label{-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none;user-select:none}
+/* cache key: enwiki:resourceloader:filter:minify-css:7:a59b70abe6ecaa39388bb79ebc509cb0 */
+.postedit-container{margin:0 auto;position:fixed;top:0;height:0;left:50%;z-index:1000;font-size:13px}.postedit-container:hover{cursor:pointer}.postedit{position:relative;top:0.6em;left:-50%;padding:.6em 3.6em .6em 1.1em;line-height:1.5625em;color:#626465;background-color:#f4f4f4;border:1px solid #dcd9d9;text-shadow:0 0.0625em 0 rgba(255,255,255,0.5);border-radius:5px;box-shadow:0 2px 5px 0 #ccc;-webkit-transition:all 0.25s ease-in-out;-moz-transition:all 0.25s ease-in-out;-ms-transition:all 0.25s ease-in-out;-o-transition:all 0.25s ease-in-out;transition:all 0.25s ease-in-out}.skin-monobook .postedit{top:6em !important}.postedit-faded{opacity:0}.postedit-icon{padding-left:41px;  line-height:25px;background-repeat:no-repeat;background-position:8px 50%}.postedit-icon-checkmark{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAABblBMVEUAAAD///////9PfTf///80aRdTgjn///9Feij///////////9Rfzf///////////9PfjZRgDh1o1xOfTb///////+bwYqLtnj///////9PfTa82K////9WhT6YxIL///9QgDdTgzr////////j7uDl7eLq8efi693k7OH///////9UhjuBr2rp9uRUhjr///9YljVKgir///9WiTlYjT3////9/v57vFlbkT5PjC9dlD/5/fhuq09stUTs9uhxuElctCpfnT1huDFloEZloUZmpENmvDZpvDxpvTxqvjxrvT5rvT9rwTxsqktswD5uwkBvuUdxw0NztFBztU9ztVBzwkp0tlJ1xkd2t1R3uVR4w1F4xk54x014yE15uVZ5v1R5xVB6v1R7yFJ8wVh9xVl9yFR9yVd9ylN+xVh+yFd/x1l/yFeAylmEx1+Ny2uY0Hqe04Wj1Ymv3Ze33qLD47TJ5L3O6cPU7Mrq9eb2+/Q4j37OAAAAQHRSTlMAAQIEBAUFBQwPFB4fJCUoKiosQEhJS01RUlZZXmdydXaChYuSlJSWmJmoq6uur8LExcvM19fg5ejt8fX2+Pr7SljgewAAAKpJREFUGBkFwQNCAwAAAMDLtl3LtrG4rWXbtvX77gAgZ6grFwC0bhwNVgKgdPZx8b0dgLi+s7Wn0VoAqpfOI9+BNADZI7fLrz2pSEwGHZuH+78lSK8ZLkLezF3ooyUG3VPXq2USei9WngeyoG195yBYWDF3E/2pAhl1e9Gr8bGT+bfOFCC2fnvh4X7rcqIAQNNu+HT6sxkAjceTL/2ZAIhv+PorBwBJxfkA//dFHSCBy/UTAAAAAElFTkSuQmCC);background-image:url(//bits.wikimedia.org/static-1.24wmf10/resources/src/mediawiki.action/images/green-checkmark.png?2014-06-19T17:58:20Z)!ie;background-position:left}.postedit-close{position:absolute;padding:0 .8em;right:0;top:0;font-size:1.25em;font-weight:bold;line-height:2.3em;color:black;text-shadow:0 0.0625em 0 white;text-decoration:none;opacity:0.2;filter:alpha(opacity=20)}.postedit-close:hover{color:black;text-decoration:none;opacity:0.4;filter:alpha(opacity=40)}
+/* cache key: enwiki:resourceloader:filter:minify-css:7:dea339b35edd33f35f8bf960f9469b76 */
+.mw-collapsible-toggle{float:right;-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none;user-select:none}.mw-customtoggle,.mw-collapsible-toggle{cursor:pointer} caption .mw-collapsible-toggle{float:none} li .mw-collapsible-toggle{float:none} .mw-collapsible-toggle-li{list-style:none}
+/* cache key: enwiki:resourceloader:filter:minify-css:7:869aa9133c31e6040d4830b259da96a8 */
+.suggestions{overflow:hidden;position:absolute;top:0;left:0;width:0;border:none;z-index:1099;padding:0;margin:-1px -1px 0 0} html > body .suggestions{margin:-1px 0 0 0}.suggestions-special{position:relative;background-color:white;cursor:pointer;border:solid 1px #aaaaaa;padding:0;margin:0;margin-top:-2px;display:none;padding:0.25em 0.25em;line-height:1.25em}.suggestions-results{background-color:white;cursor:pointer;border:solid 1px #aaaaaa;padding:0;margin:0}.suggestions-result{color:black;margin:0;line-height:1.5em;padding:0.01em 0.25em;text-align:left; overflow:hidden;-o-text-overflow:ellipsis; text-overflow:ellipsis;white-space:nowrap}.suggestions-result-current{background-color:#4C59A6;color:white}.suggestions-special .special-label{color:gray;text-align:left}.suggestions-special .special-query{color:black;font-style:italic;text-align:left}.suggestions-special .special-hover{background-color:silver}.suggestions-result-current .special-label,.suggestions-result-current .special-query{color:white}.highlight{font-weight:bold}
+/* cache key: enwiki:resourceloader:filter:minify-css:7:9f9511aa4ef920d34591113e825e6a1e */
+.wp-teahouse-question-form{position:absolute;margin-left:auto;margin-right:auto;background-color:#f4f3f0;border:1px solid #a7d7f9;padding:1em}#wp-th-question-ask{float:right}.wp-teahouse-ask a.external{background-image:none !important}.wp-teahouse-respond-form{position:absolute;margin-left:auto;margin-right:auto;background-color:#f4f3f0;border:1px solid #a7d7f9;padding:1em}.wp-th-respond{float:right}.wp-teahouse-respond a.external{background-image:none !important}
+/* cache key: enwiki:resourceloader:filter:minify-css:7:8614dfa7ef847fc9bfcc2d1c9f720197 */
+.referencetooltip{position:absolute;list-style:none;list-style-image:none;opacity:0;font-size:10px;margin:0;z-index:5;padding:0}.referencetooltip li{border:#080086 2px solid;max-width:260px;padding:10px 8px 13px 8px;margin:0px;background-color:#F7F7F7;box-shadow:2px 4px 2px rgba(0,0,0,0.3);-moz-box-shadow:2px 4px 2px rgba(0,0,0,0.3);-webkit-box-shadow:2px 4px 2px rgba(0,0,0,0.3)}.referencetooltip li+li{margin-left:7px;margin-top:-2px;border:0;padding:0;height:3px;width:0px;background-color:transparent;box-shadow:none;-moz-box-shadow:none;-webkit-box-shadow:none;border-top:12px #080086 solid;border-right:7px transparent solid;border-left:7px transparent solid}.referencetooltip>li+li::after{content:'';border-top:8px #F7F7F7 solid;border-right:5px transparent solid;border-left:5px transparent solid;margin-top:-12px;margin-left:-5px;z-index:1;height:0px;width:0px;display:block}.client-js body .referencetooltip li li{border:none;box-shadow:none;-moz-box-shadow:none;-webkit-box-shadow:none;height:auto;width:auto;margin:auto;padding:0;position:static}.RTflipped{padding-top:13px}.referencetooltip.RTflipped li+li{position:absolute;top:2px;border-top:0;border-bottom:12px #080086 solid}.referencetooltip.RTflipped li+li::after{border-top:0;border-bottom:8px #F7F7F7 solid;position:absolute;margin-top:7px}.RTsettings{float:right;height:16px;width:16px;cursor:pointer;background-image:url(//upload.wikimedia.org/wikipedia/commons/e/ed/Cog.png);margin-top:-9px;margin-right:-7px;-webkit-transition:opacity 0.15s;-moz-transition:opacity 0.15s;-o-transition:opacity 0.15s;-ms-transition:opacity 0.15s;transition:opacity 0.15s;opacity:0.6;filter:alpha(opacity=60)}.RTsettings:hover{opacity:1;filter:alpha(opacity=100)}.RTTarget{border:#080086 2px solid}
+/* cache key: enwiki:resourceloader:filter:minify-css:7:7efa21f6db726653194905048a6b006a */
+#container{position:relative;min-height:100%}#container,video{width:100%;height:100%}#playerContainer{overflow:hidden;position:relative;height:100%;background:#000}#videoHolder{position:relative;overflow:hidden}.fullscreen #playerContainer{position:absolute !important;width:100% !important;height:100%! important;z-index:9999;min-height:100%;top:0;left:0;margin:0}.mwEmbedPlayer{width:100%;height:100%;overflow:hidden;position:absolute;top:0;left:0}.modal_editor{ left:10px;top:10px;right:10px;bottom:10px;position:fixed;z-index:100}.displayHTML a:visited{color:white}.loadingSpinner{width:32px;height:32px;display:block;padding:0px;background-image:url(//bits.wikimedia.org/static-1.24wmf10/extensions/MwEmbedSupport/MwEmbedModules/MwEmbedSupport/skins/common/images/loading_ani.gif?2014-06-19T18:01:40Z)}.mw-imported-resource{border:thin solid black}.kaltura-icon{background-image:url(//bits.wikimedia.org/static-1.24wmf10/extensions/MwEmbedSupport/MwEmbedModules/MwEmbedSupport/skins/common/images/kaltura_logo_sm_transparent.png?2014-06-19T18:01:40Z) !important;background-repeat:no-repeat;display:block;height:12px;width:12px;margin-top:2px !important;margin-left:3px !important}.mw-fullscreen-overlay{background:rgb(0,0,0) none repeat scroll 0% 0%;position:fixed;top:0pt;left:0pt;width:100%;height:100%;-moz-background-clip:border;-moz-background-origin:padding;-moz-background-inline-policy:continuous} .play-btn-large{width:70px;height:53px;background :url(//bits.wikimedia.org/static-1.24wmf10/extensions/MwEmbedSupport/MwEmbedModules/MwEmbedSupport/skins/common/images/player_big_play_button.png?2014-06-19T18:01:40Z);position :absolute;cursor :pointer;border :none !important;z-index :1}.play-btn-large:hover{background :url(//bits.wikimedia.org/static-1.24wmf10/extensions/MwEmbedSupport/MwEmbedModules/MwEmbedSupport/skins/common/images/player_big_play_button_hover.png?2014-06-19T18:01:40Z)}.carouselContainer{position :absolute;width :100%;z-index :2}.carouselVideoTitle{position :absolute;top :0px;left :0px;width :100%;background :rgba(0,0,0,0.8);color :white;font-size :small;font-weight :bold;z-index :2}.carouselVideoTitleText{display :block;padding :10px 10px 10px 20px}.carouselTitleDuration{position :absolute;top :0px;right :0px;padding :2px;background-color :#5A5A5A;color :#D9D9D9;font-size :smaller;z-index :2}.carouselImgTitle{position :absolute;width :100%;text-align :center;color :white;font-size :small;background :rgba(0,0,0,0.4)}.carouselImgDuration{position :absolute;top :2px;left :2px;background :rgba( 0,0,0,0.7 );color :white;padding :1px 6px;font-size :small}.carouselPrevButton,.carouselNextButton{display :block;position :absolute;bottom:23px}.carouselPrevButton{left :5px}.carouselNextButton{right:6px}.alert-container{-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;background-image:linear-gradient(bottom,rgb(215,215,215) 4%,rgb(230,230,230) 55%,rgb(255,255,255) 100%);background-image:-o-linear-gradient(bottom,rgb(215,215,215) 4%,rgb(230,230,230) 55%,rgb(255,255,255) 100%);background-image:-moz-linear-gradient(bottom,rgb(215,215,215) 4%,rgb(230,230,230) 55%,rgb(255,255,255) 100%);background-image:-webkit-linear-gradient(bottom,rgb(215,215,215) 4%,rgb(230,230,230) 55%,rgb(255,255,255) 100%);background-image:-ms-linear-gradient(bottom,rgb(215,215,215) 4%,rgb(230,230,230) 55%,rgb(255,255,255) 100%);background-image:-webkit-gradient(linear,left bottom,left top,color-stop(0.04,rgb(215,215,215)),color-stop(0.55,rgb(230,230,230)),color-stop(1,rgb(255,255,255)));margin:auto;position:absolute;top:0;left:0;right:0;bottom:0;max-width:80%;max-height:30%}.alert-title{background-color :#E6E6E6;padding :5px;border-bottom :1px solid #D1D1D1;font-weight :normal !important;font-size:14px !important;-webkit-border-top-left-radius:3px;-moz-border-radius-topleft:3px;border-top-left-radius:3px;-webkit-border-top-right-radius:3px;-moz-border-radius-topright:3px;border-top-right-radius:3px }.alert-message{padding :5px;font-weight :normal !important;text-align:center;font-size:14px !important}.alert-buttons-container{text-align:center;padding-bottom:5px}.alert-button{background-color:#474747;color:white;-webkit-border-radius:.5em;-moz-border-radius:.5em;border-radius:.5em;padding:2px 10px;background-image:linear-gradient(bottom,rgb(25,25,25) 4%,rgb(47,47,47) 55%,rgb(71,71,71) 68%);background-image:-o-linear-gradient(bottom,rgb(25,25,25) 4%,rgb(47,47,47) 55%,rgb(71,71,71) 68%);background-image:-moz-linear-gradient(bottom,rgb(25,25,25) 4%,rgb(47,47,47) 55%,rgb(71,71,71) 68%);background-image:-webkit-linear-gradient(bottom,rgb(25,25,25) 4%,rgb(47,47,47) 55%,rgb(71,71,71) 68%);background-image:-ms-linear-gradient(bottom,rgb(25,25,25) 4%,rgb(47,47,47) 55%,rgb(71,71,71) 68%);background-image:-webkit-gradient( linear,left bottom,left top,color-stop(0.04,rgb(25,25,25)),color-stop(0.55,rgb(47,47,47)),color-stop(0.68,rgb(71,71,71)) )}.alert-text{color :black !important}
+/* cache key: enwiki:resourceloader:filter:minify-css:7:d2b8e18d2dab516eef9bd63752cf6523 */
+.mw-mmv-overlay{position:fixed;top:0px;left:0px;right:0px;bottom:0px;z-index:1000;background-color:#000000}body.mw-mmv-lightbox-open{overflow-y:auto}body.mw-mmv-lightbox-open #mw-page-base,body.mw-mmv-lightbox-open #mw-head-base,body.mw-mmv-lightbox-open #mw-navigation,body.mw-mmv-lightbox-open #content,body.mw-mmv-lightbox-open #footer,body.mw-mmv-lightbox-open #globalWrapper // monobook{ display:none}body.mw-mmv-lightbox-open > *{ display:none}body.mw-mmv-lightbox-open > .mw-mmv-overlay,body.mw-mmv-lightbox-open > .mw-mmv-wrapper{display:block}.mw-mmv-view-expanded{display:inline-block;border:1px solid #dddddd;padding:5px 10px;padding-left:35px;background-image:url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE3LjEuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgo8c3ZnIHZlcnNpb249IjEuMSIKCSBpZD0iTGF5ZXJfMSIgeG1sbnM6Y2M9Imh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL25zIyIgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiCgkgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHZpZXdCb3g9IjAgMCA5MDAuNCA3NjgiCgkgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgOTAwLjQgNzY4IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8cG9seWdvbiBmaWxsPSIjNzc3Nzc3IiBwb2ludHM9IjU5OS45LDE4Ni40IDYzMS4xLDIxNy42IDU0NS41LDMwMy4yIDUyNC4xLDI4MS43IDUxOSwzNjkuNiA2MDYuOSwzNjQuNiA1ODUuNCwzNDMuMSA2NzEsMjU3LjUgCgkJNzAyLjIsMjg4LjcgNzA5LjIsMTc5LjQgCSIvPgoJPHBvbHlnb24gZmlsbD0iIzc3Nzc3NyIgcG9pbnRzPSI1NDUuNSwyNjguOCA1ODcuNiwyMjcgNTAzLjUsMjI3IDU0MS4zLDI2NC44IAkiLz4KCTxwYXRoIGZpbGw9IiM3Nzc3NzciIGQ9Ik01MjAuNCwzOTMuOWwtMjcuMywxLjZsMS42LTI3LjNsNS04Ny43bDMuMS01My41SDE5MS4ydjM2Mmg0NzFWMzg1LjhsLTUzLjgsMy4xTDUyMC40LDM5My45eiBNNjExLjIsNTQxCgkJSDIzNy43bDExMC41LTE0NC4xTDM2NSwzOTBsMTA0LjQsMTA5LjNsNTYuNS0zMy43bDg1LjIsNzUuMUw2MTEuMiw1NDFMNjExLjIsNTQxeiIvPgoJPHBvbHlnb24gZmlsbD0iIzc3Nzc3NyIgcG9pbnRzPSI2MjQuMiwzNDcuMyA2NjIuMiwzODUuMyA2NjIuMiwzMDEgNjIwLDM0My4xIAkiLz4KPC9nPgo8L3N2Zz4K);background-image:url(//bits.wikimedia.org/static-1.24wmf10/extensions/MultimediaViewer/resources/mmv/img/expand.svg?2014-06-19T18:01:40Z)!ie;background-position:left;background-repeat:no-repeat}
+/* cache key: enwiki:resourceloader:filter:minify-css:7:028f80c6c4adfc7df95b377a4d8fc4e4 */
+#p-lang .uls-settings-trigger{background:transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAgCAMAAAAVMLmlAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAALpQTFRF////W1tbgICAWVlZgICAUVFRgICAWVlZhYWFUlJShYWFVFRUgYGBVVVVgYGBVVVVgICAVFRUVVVVVlZWgYGBgICAVFRUgYGBVFRUgICAgYGBVVVVVVVVgYGBVlZWgYGBVFRUgICAVFRUgICAVVVVgICAVlZWgICAVFRUgICAVVVVgICAVFRUgICAVlZWgICAVVVVgICAVVVVgICAVVVVgICAVVVVgICAVVVVgICAVVVVgICAVVVVgICA9Fa9bgAAADx0Uk5TAA4OFBQWFhcXGRlJSUtLWlpbXV9fYGFhZGRlZmlpa2twcIiIioqPj5GRn5+goKGh6+vv7/Dw+fn8/P7+YuRUVgAAAOlJREFUGBmNwcdWAgEURMFLFCUaAcWAEhQYHBRmCN3//1u+BYcVC6s4p2U3OLrrVxN7Xn7uELoH5w65Dx1g6JNnoLazfz++VnZehkZir4pQ3NjzBg5TwtgBhzFh6kDr294UobiykxZc7ezVdLyx8yrw6pM+8GjnDjsf7gj3/WpiJ7Vhl6OW3eC/mlKdo5teZSHNSoM24XqvTCHTvg0MdDIASpn08/6ZSlkJ6jMpLUBhLc3qKEwIIwUURoSJAs2ltC5AIZUWTbjcSulktJayCvCikx7wJG0VttrfEp5eLpfS4uLtgaOmVOeMP8BAM9RClMO9AAAAAElFTkSuQmCC) no-repeat right top;background:transparent url(//bits.wikimedia.org/static-1.24wmf10/extensions/UniversalLanguageSelector/resources/css/../images/cog-sprite.png?2014-06-19T18:03:20Z) no-repeat right top!ie;background-image:-webkit-linear-gradient(transparent,transparent),url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxNCIgaGVpZ2h0PSIzMiI+PGRlZnM+PHBhdGggZD0iTTEzLjU4MiA2LjYzMmgtMS4wNjRjLS4xMzMtLjUzOC0uMzU0LTEuMDY1LS42NDUtMS41NTJsLjc1LS43NWMuMTY0LS4xNjQuMTY0LS40MjkgMC0uNTkzbC0xLjM1OS0xLjM2Yy0uMTY0LS4xNjQtLjQzLS4xNjQtLjU5NCAwbC0uNzUuNzVjLS40OS0uMjk0LTEuMDEyLS41MTItMS41NTEtLjY0NXYtMS4wNjRjMC0uMjMxLS4xODctLjQxOC0uNDE5LS40MThoLTEuOTE4Yy0uMjMxIDAtLjQxOC4xODctLjQxOC40MTh2MS4wNjNjLS41NDEuMTM1LTEuMDYyLjM1Mi0xLjU1Mi42NDZsLS43NS0uNzVjLS4xNjQtLjE2NC0uNDI5LS4xNjQtLjU5MyAwbC0xLjM2IDEuMzZjLS4xNjQuMTY0LS4xNjQuNDI5IDAgLjU5M2wuNzUuNzVjLS4yOTIuNDg4LS40OTQgMS4wMTUtLjYyNyAxLjU1MWgtMS4wNjRjLS4yMzEgMC0uNDE4LjE4Ny0uNDE4LjQxOXYxLjkxOGMwIC4yMzEuMTg3LjQxOC40MTguNDE4aDEuMDQ2Yy4xMzQuNTQyLjM1MSAxLjA2Mi42NDUgMS41NTFsLS43NS43NWMtLjE2NC4xNjQtLjE2NC40MjkgMCAuNTkzbDEuMzYgMS4zNmMuMTY0LjE2NC40MjkuMTY0LjU5MyAwbC43NS0uNzVjLjQ5MS4yOTYgMS4wMS40OTMgMS41NTEuNjI3djEuMDYzYy4wMDEuMjMzLjE4OC40Mi40MTkuNDJoMS45MThjLjIzMSAwIC40MTktLjE4Ny40MTktLjQxOHYtMS4wNjNjLjU0Mi0uMTM0IDEuMDYxLS4zMzMgMS41NTEtLjYyN2wuNzUuNzVjLjE2NC4xNjQuNDMuMTY0LjU5NCAwbDEuMzU5LTEuMzZjLjE2NC0uMTY0LjE2NC0uNDI5IDAtLjU5M2wtLjc1LS43NWMuMjk1LS40ODkuNTEtMS4wMTMuNjQ1LTEuNTUxaDEuMDY0Yy4yMy0uMDAyLjQxOC0uMTg5LjQxOC0uNDJ2LTEuOTE4YzAtLjIzMi0uMTg4LS40MTgtLjQxOC0uNDE4em0tNi41ODIgNC4wMTJjLTEuNDYxIDAtMi42NDUtMS4xODQtMi42NDUtMi42NDRzMS4xODQtMi42NDQgMi42NDUtMi42NDQgMi42NDUgMS4xODQgMi42NDUgMi42NDQtMS4xODQgMi42NDQtMi42NDUgMi42NDR6IiBpZD0iYSIvPjwvZGVmcz48dXNlIHhsaW5rOmhyZWY9IiNhIiBmaWxsPSIjODA4MDgwIi8+PHVzZSB4bGluazpocmVmPSIjYSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCAxNikiIGZpbGw9IiM1NTUiLz48L3N2Zz4=);background-image:-webkit-linear-gradient(transparent,transparent),url(//bits.wikimedia.org/static-1.24wmf10/extensions/UniversalLanguageSelector/resources/css/../images/cog-sprite.svg?2014-06-19T18:03:20Z)!ie;background-image:linear-gradient(transparent,transparent),url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxNCIgaGVpZ2h0PSIzMiI+PGRlZnM+PHBhdGggZD0iTTEzLjU4MiA2LjYzMmgtMS4wNjRjLS4xMzMtLjUzOC0uMzU0LTEuMDY1LS42NDUtMS41NTJsLjc1LS43NWMuMTY0LS4xNjQuMTY0LS40MjkgMC0uNTkzbC0xLjM1OS0xLjM2Yy0uMTY0LS4xNjQtLjQzLS4xNjQtLjU5NCAwbC0uNzUuNzVjLS40OS0uMjk0LTEuMDEyLS41MTItMS41NTEtLjY0NXYtMS4wNjRjMC0uMjMxLS4xODctLjQxOC0uNDE5LS40MThoLTEuOTE4Yy0uMjMxIDAtLjQxOC4xODctLjQxOC40MTh2MS4wNjNjLS41NDEuMTM1LTEuMDYyLjM1Mi0xLjU1Mi42NDZsLS43NS0uNzVjLS4xNjQtLjE2NC0uNDI5LS4xNjQtLjU5MyAwbC0xLjM2IDEuMzZjLS4xNjQuMTY0LS4xNjQuNDI5IDAgLjU5M2wuNzUuNzVjLS4yOTIuNDg4LS40OTQgMS4wMTUtLjYyNyAxLjU1MWgtMS4wNjRjLS4yMzEgMC0uNDE4LjE4Ny0uNDE4LjQxOXYxLjkxOGMwIC4yMzEuMTg3LjQxOC40MTguNDE4aDEuMDQ2Yy4xMzQuNTQyLjM1MSAxLjA2Mi42NDUgMS41NTFsLS43NS43NWMtLjE2NC4xNjQtLjE2NC40MjkgMCAuNTkzbDEuMzYgMS4zNmMuMTY0LjE2NC40MjkuMTY0LjU5MyAwbC43NS0uNzVjLjQ5MS4yOTYgMS4wMS40OTMgMS41NTEuNjI3djEuMDYzYy4wMDEuMjMzLjE4OC40Mi40MTkuNDJoMS45MThjLjIzMSAwIC40MTktLjE4Ny40MTktLjQxOHYtMS4wNjNjLjU0Mi0uMTM0IDEuMDYxLS4zMzMgMS41NTEtLjYyN2wuNzUuNzVjLjE2NC4xNjQuNDMuMTY0LjU5NCAwbDEuMzU5LTEuMzZjLjE2NC0uMTY0LjE2NC0uNDI5IDAtLjU5M2wtLjc1LS43NWMuMjk1LS40ODkuNTEtMS4wMTMuNjQ1LTEuNTUxaDEuMDY0Yy4yMy0uMDAyLjQxOC0uMTg5LjQxOC0uNDJ2LTEuOTE4YzAtLjIzMi0uMTg4LS40MTgtLjQxOC0uNDE4em0tNi41ODIgNC4wMTJjLTEuNDYxIDAtMi42NDUtMS4xODQtMi42NDUtMi42NDRzMS4xODQtMi42NDQgMi42NDUtMi42NDQgMi42NDUgMS4xODQgMi42NDUgMi42NDQtMS4xODQgMi42NDQtMi42NDUgMi42NDR6IiBpZD0iYSIvPjwvZGVmcz48dXNlIHhsaW5rOmhyZWY9IiNhIiBmaWxsPSIjODA4MDgwIi8+PHVzZSB4bGluazpocmVmPSIjYSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCAxNikiIGZpbGw9IiM1NTUiLz48L3N2Zz4=);background-image:linear-gradient(transparent,transparent),url(//bits.wikimedia.org/static-1.24wmf10/extensions/UniversalLanguageSelector/resources/css/../images/cog-sprite.svg?2014-06-19T18:03:20Z)!ie;height:16px;width:14px;float:right;cursor:pointer}.skin-vector #p-lang .uls-settings-trigger{ margin-top:3px}#p-lang .uls-settings-trigger:hover{background-position:right -16px}
+/* cache key: enwiki:resourceloader:filter:minify-css:7:51533820929c20014c0881a5efa2143d */</style><style>
+.suggestions a.mw-searchSuggest-link,.suggestions a.mw-searchSuggest-link:hover,.suggestions a.mw-searchSuggest-link:active,.suggestions a.mw-searchSuggest-link:focus{color:black;text-decoration:none}.suggestions-result-current a.mw-searchSuggest-link,.suggestions-result-current a.mw-searchSuggest-link:hover,.suggestions-result-current a.mw-searchSuggest-link:active,.suggestions-result-current a.mw-searchSuggest-link:focus{color:white}.suggestions a.mw-searchSuggest-link .special-query{ overflow:hidden;-o-text-overflow:ellipsis; text-overflow:ellipsis;white-space:nowrap}
+/* cache key: enwiki:resourceloader:filter:minify-css:7:ae3fa4570b5ac0c6cf7b3776c8ae4d6f */</style><meta name="ResourceLoaderDynamicStyles" content="">
+<link rel="stylesheet" href="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/load_002.css">
+<style>a:lang(ar),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}
+/* cache key: enwiki:resourceloader:filter:minify-css:7:3904d24a08aa08f6a68dc338f9be277e */</style>
+<script src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/load.php"></script><script src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/load_003.php"></script><style title="spinjs"></style>
+<script>if(window.mw){
+mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"Latent_semantic_indexing","wgTitle":"Latent semantic indexing","wgCurRevisionId":608723116,"wgRevisionId":608723116,"wgArticleId":21109827,"wgIsArticle":true,"wgIsRedirect":false,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["Articles to be merged from July 2012","All articles to be merged","Information retrieval","Semantic Web"],"wgBreakFrames":false,"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgMonthNamesShort":["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"wgRelevantPageName":"Latent_semantic_indexing","wgIsProbablyEditable":true,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgWikiEditorEnabledModules":{"toolbar":true,"dialogs":true,"hidesig":true,"preview":false,"previewDialog":false,"publish":false},"wgBetaFeaturesFeatures":[],"wgMediaViewerOnClick":true,"wgVisualEditor":{"isPageWatched":false,"magnifyClipIconURL":"//bits.wikimedia.org/static-1.24wmf10/skins/common/images/magnify-clip.png","pageLanguageCode":"en","pageLanguageDir":"ltr","svgMaxSize":2048,"namespacesWithSubpages":{"6":0,"8":0,"1":true,"2":true,"3":true,"4":true,"5":true,"7":true,"9":true,"10":true,"11":true,"12":true,"13":true,"14":true,"15":true,"100":true,"101":true,"102":true,"103":true,"104":true,"105":true,"106":true,"107":true,"108":true,"109":true,"110":true,"111":true,"447":true,"828":true,"829":true}},"wikilove-recipient":"","wikilove-anon":0,"wgGuidedTourHelpGuiderUrl":"Help:Guided tours/guider","wgFlowTermsOfUseEdit":"By saving changes, you agree to our \u003Ca class=\"external text\" href=\"//wikimediafoundation.org/wiki/Terms_of_use\"\u003ETerms of Use\u003C/a\u003E and agree to irrevocably release your text under the \u003Ca rel=\"nofollow\" class=\"external text\" href=\"//creativecommons.org/licenses/by-sa/3.0\"\u003ECC BY-SA 3.0 License\u003C/a\u003E and \u003Ca class=\"external text\" href=\"//en.wikipedia.org/wiki/Wikipedia:Text_of_the_GNU_Free_Documentation_License\"\u003EGFDL\u003C/a\u003E","wgFlowTermsOfUseSummarize":"By clicking \"Summarize\", you agree to the terms of use for this wiki.","wgFlowTermsOfUseCloseTopic":"By clicking \"Close topic\", you agree to the terms of use for this wiki.","wgFlowTermsOfUseReopenTopic":"By clicking \"Reopen topic\", you agree to the terms of use for this wiki.","wgULSAcceptLanguageList":["en-us","en"],"wgULSCurrentAutonym":"English","wgFlaggedRevsParams":{"tags":{"status":{"levels":1,"quality":2,"pristine":3}}},"wgStableRevisionId":null,"wgCategoryTreePageCategoryOptions":"{\"mode\":0,\"hideprefix\":20,\"showcount\":true,\"namespaces\":false}","wgNoticeProject":"wikipedia","wgWikibaseItemId":"Q890676"});
+}</script><script>if(window.mw){
+mw.loader.implement("user.options",function($,jQuery){mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"editfont":"default","editondblclick":0,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"imagesize":2,"math":0,"minordefault":0,"newpageshidepatrolled":0,"nickname":"","norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"rcdays":7,"rclimit":50,"rows":25,"showhiddencats":false,"shownumberswatching":1,"showtoolbar":1,"skin":"vector","stubthreshold":0,"thumbsize":4,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":1,"watchdefault":0,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,
+"useeditwarning":1,"prefershttps":1,"flaggedrevssimpleui":1,"flaggedrevsstable":0,"flaggedrevseditdiffs":true,"flaggedrevsviewdiffs":false,"usebetatoolbar":1,"usebetatoolbar-cgd":1,"multimediaviewer-enable":true,"visualeditor-enable":0,"visualeditor-betatempdisable":0,"visualeditor-enable-experimental":0,"visualeditor-enable-language":0,"visualeditor-hidebetawelcome":0,"wikilove-enabled":1,"mathJax":false,"echo-subscriptions-web-page-review":true,"echo-subscriptions-email-page-review":false,"ep_showtoplink":false,"ep_bulkdelorgs":false,"ep_bulkdelcourses":true,"ep_showdyk":true,"echo-subscriptions-web-education-program":true,"echo-subscriptions-email-education-program":false,"echo-notify-show-link":true,"echo-show-alert":true,"echo-email-frequency":0,"echo-email-format":"html","echo-subscriptions-email-system":true,"echo-subscriptions-web-system":true,"echo-subscriptions-email-user-rights":true,"echo-subscriptions-web-user-rights":true,"echo-subscriptions-email-other":false,
+"echo-subscriptions-web-other":true,"echo-subscriptions-email-edit-user-talk":false,"echo-subscriptions-web-edit-user-talk":true,"echo-subscriptions-email-reverted":false,"echo-subscriptions-web-reverted":true,"echo-subscriptions-email-article-linked":false,"echo-subscriptions-web-article-linked":false,"echo-subscriptions-email-mention":false,"echo-subscriptions-web-mention":true,"echo-subscriptions-web-edit-thank":true,"echo-subscriptions-email-edit-thank":false,"echo-subscriptions-web-flow-discussion":true,"echo-subscriptions-email-flow-discussion":false,"gettingstarted-task-toolbar-show-intro":true,"uls-preferences":"","language":"en","variant-gan":"gan","variant-iu":"iu","variant-kk":"kk","variant-ku":"ku","variant-shi":"shi","variant-sr":"sr","variant-tg":"tg","variant-uz":"uz","variant-zh":"zh","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,
+"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false,"searchNs100":false,"searchNs101":false,"searchNs108":false,"searchNs109":false,"searchNs118":false,"searchNs119":false,"searchNs446":false,"searchNs447":false,"searchNs710":false,"searchNs711":false,"searchNs828":false,"searchNs829":false,"gadget-teahouse":1,"gadget-ReferenceTooltips":1,"gadget-DRN-wizard":1,"gadget-charinsert":1,"gadget-refToolbar":1,"gadget-mySandbox":1,"variant":"en"});},{},{});mw.loader.implement("user.tokens",function($,jQuery){mw.user.tokens.set({"editToken":"+\\","patrolToken":false,"watchToken":false});},{},{});
+/* cache key: enwiki:resourceloader:filter:minify-js:7:bcb89b2f32dd43f2bd4d7fbef2aef0d5 */
+}</script>
+<script>if(window.mw){
+mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.legacy.ajax","ext.centralauth.centralautologin","mmv.head","ext.visualEditor.viewPageTarget.init","ext.uls.init","ext.uls.interface","ext.centralNotice.bannerController","skins.vector.js"]);
+}</script>
+<link rel="dns-prefetch" href="http://meta.wikimedia.org/">
+<!--[if lt IE 7]><style type="text/css">body{behavior:url("/w/static-1.24wmf10/skins/vector/csshover.min.htc")}</style><![endif]-->
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Latent_semantic_indexing skin-vector action-view vector-animateLayout">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<div id="content" class="mw-body" role="main">
+			<a id="top"></a>
+
+							<div id="siteNotice"><div class="cn-Wiknic2014" id="centralNotice"><style type="text/css">
+.mw-wiknic2013 {
+ position: relative;
+ margin-bottom: 0.5em;
+ background: #eee url(//upload.wikimedia.org/wikipedia/commons/0/0d/Gray-gradient1.png) repeat-x;
+ border: solid 1px #000;
+ height: auto;
+}
+
+.mw-wiknic2013:hover {
+ cursor: pointer;
+}
+
+.mw-wiknic2013-logo {
+ position: relative;
+ margin: 8px 0 10px 10px;
+ width: 25px;
+ height: 31px;
+ background: url(//upload.wikimedia.org/wikipedia/commons/thumb/3/39/Leaf_icon_15.svg/25px-Leaf_icon_15.svg.png) no-repeat;
+ float: left;
+}
+
+.mw-wiknic2013-content {
+ padding: 0px 50px 0 60px;
+ text-align: center;
+ position: relative;
+ margin: auto;
+ margin-top: 12px;
+ margin-bottom: 12px;
+}
+
+.mw-wiknic2013-text {
+ font-size: 13px;
+ font-weight: bold;
+ line-height: 1.7;
+}
+
+#mw-wiknic2013-close {
+ position: absolute;
+ top: 0;
+ right: 0;
+ width: 27px;
+ height: 32px;
+ background: url(//bits.wikimedia.org/skins/common/images/closewindow19x19.png) no-repeat 50% 40%;
+ z-index: 98;
+}
+</style>
+<div class="mw-wiknic2013" id="mw-wiknic2013">
+  <div class="mw-wiknic2013-logo"></div>
+    <div class="mw-wiknic2013-content">
+      <span class="mw-wiknic2013-text"><a href="http://en.wikipedia.org/wiki/Wikipedia:Wiknic">Celebrate the Great American Wiknic in 15+ cities around July 6!</a></span>
+    </div>
+    <div id="mw-wiknic2013-close"></div>
+</div>
+<script>
+$('#mw-wiknic2013').click(function () {
+	window.location = "//en.wikipedia.org/wiki/Wikipedia:Wiknic";
+});
+$('#mw-wiknic2013-close').click(function () {
+	hideBanner();
+	return false; // stop (im)propagation and any default
+});
+</script></div><!-- CentralNotice --></div>
+						<h1 id="firstHeading" class="firstHeading" lang="en"><span dir="auto">Latent semantic indexing</span></h1>
+						<div id="bodyContent" class="mw-body-content">
+									<div id="siteSub">From Wikipedia, the free encyclopedia</div>
+								<div id="contentSub"></div>
+												<div id="jump-to-nav" class="mw-jump">
+					Jump to:					<a href="#mw-navigation">navigation</a>, 					<a href="#p-search">search</a>
+				</div>
+				<div id="mw-content-text" dir="ltr" class="mw-content-ltr" lang="en"><table class="metadata plainlinks ambox ambox-move" role="presentation">
+<tbody><tr>
+<td class="mbox-image">
+<div style="width:52px;"><img alt="" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/50px-Merge-arrow.png" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Merge-arrow.svg/75px-Merge-arrow.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Merge-arrow.svg/100px-Merge-arrow.svg.png 2x" data-file-width="50" data-file-height="20" height="20" width="50"></div>
+</td>
+<td class="mbox-text"><span class="mbox-text-span">It has been suggested that this article be <a href="http://en.wikipedia.org/wiki/Wikipedia:Merging" title="Wikipedia:Merging">merged</a> into <i><a href="http://en.wikipedia.org/wiki/Latent_semantic_analysis" title="Latent semantic analysis">Latent semantic analysis</a></i>. (<a href="http://en.wikipedia.org/wiki/Talk:Latent_semantic_analysis" title="Talk:Latent semantic analysis">Discuss</a>) <small><i>Proposed since July 2012.</i></small></span></td>
+</tr>
+</tbody></table>
+<p><b>Latent semantic indexing</b> (<b>LSI</b>) is an indexing and retrieval method that uses a mathematical technique called <a href="http://en.wikipedia.org/wiki/Singular_value_decomposition" title="Singular value decomposition">singular value decomposition</a>
+ (SVD) to identify patterns in the relationships between the terms and 
+concepts contained in an unstructured collection of text. LSI is based 
+on the principle that words that are used in the same contexts tend to 
+have similar meanings. A key feature of LSI is its ability to extract 
+the conceptual content of a body of text by establishing associations 
+between those terms that occur in similar contexts.<sup id="cite_ref-1" class="reference"><a href="#cite_note-1"><span>[</span>1<span>]</span></a></sup></p>
+<p>LSI is also an application of <a href="http://en.wikipedia.org/wiki/Correspondence_analysis" title="Correspondence analysis">correspondence analysis</a>, a multivariate statistical technique developed by <a href="http://en.wikipedia.org/wiki/Jean-Paul_Benz%C3%A9cri" title="Jean-Paul Benzécri">Jean-Paul Benzécri</a><sup id="cite_ref-2" class="reference"><a href="#cite_note-2"><span>[</span>2<span>]</span></a></sup> in the early 1970s, to a <a href="http://en.wikipedia.org/wiki/Contingency_table" title="Contingency table">contingency table</a> built from word counts in documents.</p>
+<p>Called Latent Semantic Indexing because of its ability to correlate 
+semantically related terms that are latent in a collection of text, it 
+was first applied to text at Bellcore in the late 1980s. The method, 
+also called <a href="http://en.wikipedia.org/wiki/Latent_semantic_analysis" title="Latent semantic analysis">latent semantic analysis</a>
+ (LSA), uncovers the underlying latent semantic structure in the usage 
+of words in a body of text and how it can be used to extract the meaning
+ of the text in response to user queries, commonly referred to as 
+concept searches. Queries, or concept searches, against a set of 
+documents that have undergone LSI will return results that are 
+conceptually similar in meaning to the search criteria even if the 
+results don’t share a specific word or words with the search criteria.</p>
+<p></p>
+<div id="toc" class="toc">
+<div id="toctitle">
+<h2>Contents</h2>
+<span class="toctoggle">&nbsp;[<a href="#" class="internal" id="togglelink">hide</a>]&nbsp;</span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Benefits_of_LSI"><span class="tocnumber">1</span> <span class="toctext">Benefits of LSI</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#LSI_timeline"><span class="tocnumber">2</span> <span class="toctext">LSI timeline</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Mathematics_of_LSI"><span class="tocnumber">3</span> <span class="toctext">Mathematics of LSI</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Term-document_matrix"><span class="tocnumber">3.1</span> <span class="toctext">Term-document matrix</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Rank-reduced_singular_value_decomposition"><span class="tocnumber">3.2</span> <span class="toctext">Rank-reduced singular value decomposition</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-6"><a href="#Querying_and_augmenting_LSI_vector_spaces"><span class="tocnumber">4</span> <span class="toctext">Querying and augmenting LSI vector spaces</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Additional_uses_of_LSI"><span class="tocnumber">5</span> <span class="toctext">Additional uses of LSI</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Challenges_to_LSI"><span class="tocnumber">6</span> <span class="toctext">Challenges to LSI</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#See_also"><span class="tocnumber">7</span> <span class="toctext">See also</span></a></li>
+<li class="toclevel-1 tocsection-10"><a href="#References"><span class="tocnumber">8</span> <span class="toctext">References</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#Further_reading"><span class="tocnumber">9</span> <span class="toctext">Further reading</span></a></li>
+<li class="toclevel-1 tocsection-12"><a href="#External_links"><span class="tocnumber">10</span> <span class="toctext">External links</span></a></li>
+</ul>
+</div>
+<p></p>
+<h2><span class="mw-headline" id="Benefits_of_LSI">Benefits of LSI</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;action=edit&amp;section=1" title="Edit section: Benefits of LSI">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>LSI overcomes two of the most problematic constraints of Boolean keyword queries: multiple words that have similar meanings (<a href="http://en.wikipedia.org/wiki/Synonymy" title="Synonymy" class="mw-redirect">synonymy</a>) and words that have more than one meaning (<a href="http://en.wikipedia.org/wiki/Polysemy" title="Polysemy">polysemy</a>). Synonymy is often the cause of <a href="http://en.wikipedia.org/wiki/Vocabulary_mismatch" title="Vocabulary mismatch">mismatches in the vocabulary</a> used by the authors of documents and the users of information retrieval systems.<sup id="cite_ref-3" class="reference"><a href="#cite_note-3"><span>[</span>3<span>]</span></a></sup><sup id="cite_ref-4" class="reference"><a href="#cite_note-4"><span>[</span>4<span>]</span></a></sup> As a result, Boolean or keyword queries often return irrelevant results and miss information that is relevant.</p>
+<p>LSI is also used to perform automated document categorization. In 
+fact, several experiments have demonstrated that there are a number of 
+correlations between the way LSI and humans process and categorize text.<sup id="cite_ref-5" class="reference"><a href="#cite_note-5"><span>[</span>5<span>]</span></a></sup>
+ Document categorization is the assignment of documents to one or more 
+predefined categories based on their similarity to the conceptual 
+content of the categories.<sup id="cite_ref-6" class="reference"><a href="#cite_note-6"><span>[</span>6<span>]</span></a></sup> LSI uses <i>example</i>
+ documents to establish the conceptual basis for each category. During 
+categorization processing, the concepts contained in the documents being
+ categorized are compared to the concepts contained in the example 
+items, and a category (or categories) is assigned to the documents based
+ on the similarities between the concepts they contain and the concepts 
+that are contained in the example documents.</p>
+<p>Dynamic clustering based on the conceptual content of documents can 
+also be accomplished using LSI. Clustering is a way to group documents 
+based on their conceptual similarity to each other without using example
+ documents to establish the conceptual basis for each cluster. This is 
+very useful when dealing with an unknown collection of unstructured 
+text.</p>
+<p>Because it uses a strictly mathematical approach, LSI is inherently 
+independent of language. This enables LSI to elicit the semantic content
+ of information written in any language without requiring the use of 
+auxiliary structures, such as dictionaries and thesauri. LSI can also 
+perform cross-linguistic concept searching and example-based 
+categorization. For example, queries can be made in one language, such 
+as English, and conceptually similar results will be returned even if 
+they are composed of an entirely different language or of multiple 
+languages.</p>
+<p>LSI is not restricted to working only with words. It can also process
+ arbitrary character strings. Any object that can be expressed as text 
+can be represented in an LSI vector space.<sup id="cite_ref-7" class="reference"><a href="#cite_note-7"><span>[</span>7<span>]</span></a></sup>
+ For example, tests with MEDLINE abstracts have shown that LSI is able 
+to effectively classify genes based on conceptual modeling of the 
+biological information contained in the titles and abstracts of the 
+MEDLINE citations.<sup id="cite_ref-8" class="reference"><a href="#cite_note-8"><span>[</span>8<span>]</span></a></sup></p>
+<p>LSI automatically adapts to new and changing terminology, and has 
+been shown to be very tolerant of noise (i.e., misspelled words, 
+typographical errors, unreadable characters, etc.).<sup id="cite_ref-9" class="reference"><a href="#cite_note-9"><span>[</span>9<span>]</span></a></sup>
+ This is especially important for applications using text derived from 
+Optical Character Recognition (OCR) and speech-to-text conversion. LSI 
+also deals effectively with sparse, ambiguous, and contradictory data.</p>
+<p>Text does not need to be in sentence form for LSI to be effective. It
+ can work with lists, free-form notes, email, Web-based content, etc. As
+ long as a collection of text contains multiple terms, LSI can be used 
+to identify patterns in the relationships between the important terms 
+and concepts contained in the text.</p>
+<p>LSI has proven to be a useful solution to a number of conceptual matching problems.<sup id="cite_ref-10" class="reference"><a href="#cite_note-10"><span>[</span>10<span>]</span></a></sup><sup id="cite_ref-11" class="reference"><a href="#cite_note-11"><span>[</span>11<span>]</span></a></sup>
+ The technique has been shown to capture key relationship information, 
+including causal, goal-oriented, and taxonomic information.<sup id="cite_ref-12" class="reference"><a href="#cite_note-12"><span>[</span>12<span>]</span></a></sup></p>
+<h2><span class="mw-headline" id="LSI_timeline">LSI timeline</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;action=edit&amp;section=2" title="Edit section: LSI timeline">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p><b>Mid-1960s</b> – Factor analysis technique first described and tested (H. Borko and M. Bernick)</p>
+<p><b>1988</b> – Seminal paper on LSI technique published (Deerwester et al.)</p>
+<p><b>1989</b> – Original patent granted (Deerwester et al.)</p>
+<p><b>1992</b> – First use of LSI to assign articles to reviewers<sup id="cite_ref-13" class="reference"><a href="#cite_note-13"><span>[</span>13<span>]</span></a></sup> (Dumais and Nielsen)</p>
+<p><b>1994</b> – Patent granted for the cross-lingual application of LSI (Landauer et al.)</p>
+<p><b>1995</b> – First use of LSI for grading essays (Foltz, et al., Landauer et al.)</p>
+<p><b>1999</b> – First implementation of LSI technology for intelligence community for analyzing unstructured text (SAIC).</p>
+<p><b>2002</b> – LSI-based product offering to intelligence-based government agencies (SAIC)</p>
+<p><b>2005</b> – First vertical-specific application – publishing – EDB (EBSCO, <a href="http://en.wikipedia.org/wiki/Content_Analyst_Company" title="Content Analyst Company">Content Analyst Company</a>)</p>
+<h2><span class="mw-headline" id="Mathematics_of_LSI">Mathematics of LSI</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;action=edit&amp;section=3" title="Edit section: Mathematics of LSI">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>LSI uses common linear algebra techniques to learn the conceptual 
+correlations in a collection of text. In general, the process involves 
+constructing a weighted term-document matrix, performing a <b>Singular Value Decomposition</b> on the matrix, and using the matrix to identify the concepts contained in the text.</p>
+<h3><span class="mw-headline" id="Term-document_matrix">Term-document matrix</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;action=edit&amp;section=4" title="Edit section: Term-document matrix">edit</a><span class="mw-editsection-bracket">]</span></span></h3>
+<p>LSI begins by constructing a term-document matrix, <img class="mwe-math-fallback-png-inline tex" alt="A" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/7fc56270e7a70fa81a5935b72eacbe29.png">, to identify the occurrences of the <img class="mwe-math-fallback-png-inline tex" alt="m" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/6f8f57715090da2632453988d9a1501b.png"> unique terms within a collection of <img class="mwe-math-fallback-png-inline tex" alt="n" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/7b8b965ad4bca0e41ab51de7b31363a1.png">
+ documents. In a term-document matrix, each term is represented by a 
+row, and each document is represented by a column, with each matrix 
+cell, <img class="mwe-math-fallback-png-inline tex" alt="a_{ij}" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/5fe0de05a0584639c658a0815efccce9.png">, initially representing the number of times the associated term appears in the indicated document, <img class="mwe-math-fallback-png-inline tex" alt="\mathrm{tf_{ij}}" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/9b7828392ca7126b34199625ebc65006.png">. This matrix is usually very large and very sparse.</p>
+<p>Once a term-document matrix is constructed, local and global 
+weighting functions can be applied to it to condition the data. The 
+weighting functions transform each cell, <img class="mwe-math-fallback-png-inline tex" alt="a_{ij}" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/5fe0de05a0584639c658a0815efccce9.png"> of <img class="mwe-math-fallback-png-inline tex" alt="A" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/7fc56270e7a70fa81a5935b72eacbe29.png">, to be the product of a local term weight, <img class="mwe-math-fallback-png-inline tex" alt="l_{ij}" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/760b6535492fb1efd1436a983647b7ba.png">, which describes the relative frequency of a term in a document, and a global weight, <img class="mwe-math-fallback-png-inline tex" alt="g_i" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/8a063395ded15845176d0b1e07824cbf.png">, which describes the relative frequency of the term within the entire collection of documents.</p>
+<p>Some common local weighting functions <sup id="cite_ref-14" class="reference"><a href="#cite_note-14"><span>[</span>14<span>]</span></a></sup> are defined in the following table.</p>
+<table class="wikitable" style="width:60%" align="center" border="1" cellpadding="25" cellspacing="5">
+<tbody><tr>
+<td style="width:22%"><b>Binary</b></td>
+<td></td>
+<td><img class="mwe-math-fallback-png-inline tex" alt="l_{ij} = 1" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/7c3775d5148cc9cf6c9d367b93f7ab7e.png"> if the term exists in the document, or else <img class="mwe-math-fallback-png-inline tex" alt="0" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/cfcd208495d565ef66e7dff9f98764da.png"></td>
+</tr>
+<tr>
+<td style="width:22%"><b>TermFrequency</b></td>
+<td></td>
+<td><img class="mwe-math-fallback-png-inline tex" alt="l_{ij} = \mathrm{tf}_{ij}" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/c32f972a2b525d4fd4ce5621dfe6b410.png">, the number of occurrences of term <img class="mwe-math-fallback-png-inline tex" alt="i" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/865c0c0b4ab0e063e5caa3387c1a8741.png"> in document <img class="mwe-math-fallback-png-inline tex" alt="j" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/363b122c528f54df4a0446b6bab05515.png"></td>
+</tr>
+<tr>
+<td style="width:22%"><b>Log</b></td>
+<td></td>
+<td><img class="mwe-math-fallback-png-inline tex" alt="l_{ij} = \log(\mathrm{tf}_{ij} + 1)" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/b32c148cbb131287ddf849fb5c6dd53c.png"></td>
+</tr>
+<tr>
+<td style="width:22%"><b>Augnorm</b></td>
+<td></td>
+<td><img class="mwe-math-fallback-png-inline tex" alt="l_{ij} = \frac{\Big(\frac{\mathrm{tf}_{ij}}{\max_i(\mathrm{tf}_{ij})}\Big) + 1}{2}" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/151ecb3b07dbc2211f02d10a78e2c0c8.png"></td>
+</tr>
+</tbody></table>
+<p>Some common global weighting functions are defined in the following table.</p>
+<table class="wikitable" style="width:60%" align="center" border="1" cellpadding="25" cellspacing="5">
+<tbody><tr>
+<td style="width:22%"><b>Binary</b></td>
+<td></td>
+<td><img class="mwe-math-fallback-png-inline tex" alt="g_i = 1" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/dfaae9c8cc4472d8a86264c340c1225d.png"></td>
+</tr>
+<tr>
+<td style="width:22%"><b>Normal</b></td>
+<td></td>
+<td><img class="mwe-math-fallback-png-inline tex" alt="g_i = \frac{1}{\sqrt{\sum_j \mathrm{tf}_{ij}^2}}" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/cebf7e90bd4dd9661dc2ae19bb0f9caa.png"></td>
+</tr>
+<tr>
+<td style="width:22%"><b>GfIdf</b></td>
+<td></td>
+<td><img class="mwe-math-fallback-png-inline tex" alt="g_i = \mathrm{gf}_i / \mathrm{df}_i" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/b3d0c080f267f3f7073ad7ededbdbc97.png">, where <img class="mwe-math-fallback-png-inline tex" alt="\mathrm{gf}_i" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/3f02c3b4575091d6f7638ab18bfc5403.png"> is the total number of times term <img class="mwe-math-fallback-png-inline tex" alt="i" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/865c0c0b4ab0e063e5caa3387c1a8741.png"> occurs in the whole collection, and <img class="mwe-math-fallback-png-inline tex" alt="\mathrm{df}_i" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/791041fe7229955113dac887dedf2f70.png"> is the number of documents in which term <img class="mwe-math-fallback-png-inline tex" alt="i" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/865c0c0b4ab0e063e5caa3387c1a8741.png"> occurs.</td>
+</tr>
+<tr>
+<td style="width:22%"><b>Idf</b></td>
+<td></td>
+<td><img class="mwe-math-fallback-png-inline tex" alt="g_i = \log_2 \frac{n}{1+ \mathrm{df}_i}" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/e6924ab17864197951f49a31ba752f72.png"></td>
+</tr>
+<tr>
+<td style="width:22%"><b>Entropy</b></td>
+<td></td>
+<td><img class="mwe-math-fallback-png-inline tex" alt="g_i = 1 - \sum_j \frac{p_{ij} \log p_{ij}}{\log n}" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/2e793f9914d6a374b1a30cd0d9bbc2bb.png">, where <img class="mwe-math-fallback-png-inline tex" alt="p_{ij} = \frac{\mathrm{tf}_{ij}}{\mathrm{gf}_i}" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/56fe61463028b51ccdd5b03339bba2fa.png"></td>
+</tr>
+</tbody></table>
+<p>Empirical studies with LSI report that the Log Entropy weighting functions work well, in practice, with many data sets.<sup id="cite_ref-15" class="reference"><a href="#cite_note-15"><span>[</span>15<span>]</span></a></sup> In other words, each entry <img class="mwe-math-fallback-png-inline tex" alt="a_{ij}" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/5fe0de05a0584639c658a0815efccce9.png"> of <img class="mwe-math-fallback-png-inline tex" alt="A" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/7fc56270e7a70fa81a5935b72eacbe29.png"> is computed as:</p>
+<p><img class="mwe-math-fallback-png-inline tex" alt="g_i = 1 - \sum_j \frac{p_{ij} \log p_{ij}}{\log n}" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/2e793f9914d6a374b1a30cd0d9bbc2bb.png"></p>
+<p><img class="mwe-math-fallback-png-inline tex" alt="a_{ij} = g_i \ \log (\mathrm{tf}_{ij} + 1)" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/157a913b11297ee9bbaa9da8ed1c2b27.png"></p>
+<h3><span class="mw-headline" id="Rank-reduced_singular_value_decomposition">Rank-reduced singular value decomposition</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;action=edit&amp;section=5" title="Edit section: Rank-reduced singular value decomposition">edit</a><span class="mw-editsection-bracket">]</span></span></h3>
+<p>A rank-reduced, <a href="http://en.wikipedia.org/wiki/Singular_value_decomposition" title="Singular value decomposition">singular value decomposition</a>
+ is performed on the matrix to determine patterns in the relationships 
+between the terms and concepts contained in the text. The SVD forms the 
+foundation for LSI.<sup id="cite_ref-16" class="reference"><a href="#cite_note-16"><span>[</span>16<span>]</span></a></sup> It computes the term and document vector spaces by transforming the single term-frequency matrix, <img class="mwe-math-fallback-png-inline tex" alt="A" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/7fc56270e7a70fa81a5935b72eacbe29.png">, into three other matrices— an <i><b>m</b></i> by <i><b>r</b></i> term-concept vector matrix <img class="mwe-math-fallback-png-inline tex" alt="T" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/b9ece18c950afbfa6b0fdbfa4ff731d3.png">, an <i><b>r</b></i> by <i><b>r</b></i> singular values matrix <img class="mwe-math-fallback-png-inline tex" alt="S" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/5dbc98dcc983a70728bd082d1a47546e.png">, and a <i><b>n</b></i> by <i><b>r</b></i> concept-document vector matrix, <img class="mwe-math-fallback-png-inline tex" alt="D" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/f623e75af30e62bbd73d6df5b50bb7b5.png">, which satisfy the following relations:</p>
+<p><img class="mwe-math-fallback-png-inline tex" alt="A = TSD^T" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/791c38445d7813392627a7c0f2e67146.png"></p>
+<p><img class="mwe-math-fallback-png-inline tex" alt="T^T T = I_r \quad D^T D = I_r " src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/650c5647784249e39303301007674dfc.png"></p>
+<p><img class="mwe-math-fallback-png-inline tex" alt="S_{1,1} \geq S_{2,2} \geq \ldots \geq  S_{r,r} &gt; 0 \quad S_{i,j} = 0 \; \text{where} \; i \neq j" src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/551c532c5010a0c639e737639a58cf17.png"></p>
+<p>In the formula, <b>A</b> is the supplied <i><b>m</b></i> by <i><b>n</b></i> weighted matrix of term frequencies in a collection of text where <i><b>m</b></i> is the number of unique terms, and <i><b>n</b></i> is the number of documents. <b>T</b> is a computed <i><b>m</b></i> by <i><b>r</b></i> matrix of term vectors where <i><b>r</b></i> is the rank of <b>A</b>—a measure of its unique dimensions <b>≤ min(<i>m,n</i>)</b>. <b>S</b> is a computed <i><b>r</b></i> by <i><b>r</b></i> diagonal matrix of decreasing singular values, and <b>D</b> is a computed <i><b>n</b></i> by <i><b>r</b></i> matrix of document vectors.</p>
+<p>The LSI modification to a standard SVD is to reduce the rank or truncate the singular value matrix <b>S</b> to size <i><b>k</b></i> «&nbsp;<i><b>r</b></i>, typically on the order of a <i><b>k</b></i> in the range of 100 to 300 dimensions, effectively reducing the term and document vector matrix sizes to <i><b>m</b></i> by <i><b>k</b></i> and <i><b>n</b></i> by <i><b>k</b></i>
+ respectively. The SVD operation, along with this reduction, has the 
+effect of preserving the most important semantic information in the text
+ while reducing noise and other undesirable artifacts of the original 
+space of <b>A</b>. This reduced set of matrices is often denoted with a modified formula such as:</p>
+<dl>
+<dd>
+<dl>
+<dd>
+<dl>
+<dd>
+<dl>
+<dd>
+<dl>
+<dd>
+<dl>
+<dd>
+<dl>
+<dd><b>A ≈ A<i><sub>k</sub></i> = T<i><sub>k</sub></i> S<i><sub>k</sub></i> D<i><sub>k</sub></i><sup>T</sup></b></dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Efficient LSI algorithms only compute the first <i><b>k</b></i> singular values and term and document vectors as opposed to computing a full SVD and then truncating it.</p>
+<p>Note that this rank reduction is essentially the same as doing <a href="http://en.wikipedia.org/wiki/Principal_Component_Analysis" title="Principal Component Analysis" class="mw-redirect">Principal Component Analysis</a> (PCA) on the matrix <b>A</b>, except that PCA subtracts off the means. PCA loses the sparseness of the <b>A</b> matrix, which can make it infeasible for large lexicons.</p>
+<h2><span class="mw-headline" id="Querying_and_augmenting_LSI_vector_spaces">Querying and augmenting LSI vector spaces</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;action=edit&amp;section=6" title="Edit section: Querying and augmenting LSI vector spaces">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>The computed <b>T<i><sub>k</sub></i></b> and <b>D<i><sub>k</sub></i></b> matrices define the term and document vector spaces, which with the computed singular values, <b>S<i><sub>k</sub></i></b>,
+ embody the conceptual information derived from the document collection.
+ The similarity of terms or documents within these spaces is a factor of
+ how close they are to each other in these spaces, typically computed as
+ a function of the angle between the corresponding vectors.</p>
+<p>The same steps are used to locate the vectors representing the text 
+of queries and new documents within the document space of an existing 
+LSI index. By a simple transformation of the <b>A = T S D<sup>T</sup></b> equation into the equivalent <b>D = A<sup>T</sup> T S<sup>−1</sup></b> equation, a new vector, <i><b>d</b></i>, for a query or for a new document can be created by computing a new column in <b>A</b> and then multiplying the new column by <b>T S<sup>−1</sup></b>. The new column in <b>A</b>
+ is computed using the originally derived global term weights and 
+applying the same local weighting function to the terms in the query or 
+in the new document.</p>
+<p>A drawback to computing vectors in this way, when adding new 
+searchable documents, is that terms that were not known during the SVD 
+phase for the original index are ignored. These terms will have no 
+impact on the global weights and learned correlations derived from the 
+original collection of text. However, the computed vectors for the new 
+text are still very relevant for similarity comparisons with all other 
+document vectors.</p>
+<p>The process of augmenting the document vector spaces for an LSI index with new documents in this manner is called <i>folding in</i>.
+ Although the folding-in process does not account for the new semantic 
+content of the new text, adding a substantial number of documents in 
+this way will still provide good results for queries as long as the 
+terms and concepts they contain are well represented within the LSI 
+index to which they are being added. When the terms and concepts of a 
+new set of documents need to be included in an LSI index, either the 
+term-document matrix, and the SVD, must be recomputed or an incremental 
+update method (such as the one described in <sup id="cite_ref-brand2006_17-0" class="reference"><a href="#cite_note-brand2006-17"><span>[</span>17<span>]</span></a></sup>) be used.</p>
+<h2><span class="mw-headline" id="Additional_uses_of_LSI">Additional uses of LSI</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;action=edit&amp;section=7" title="Edit section: Additional uses of LSI">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>It is generally acknowledged that the ability to work with text on a 
+semantic basis is essential to modern information retrieval systems. As a
+ result, the use of LSI has significantly expanded in recent years as 
+earlier challenges in scalability and performance have been overcome.</p>
+<p>LSI is being used in a variety of information retrieval and text 
+processing applications, although its primary application has been for 
+concept searching and automated document categorization.<sup id="cite_ref-18" class="reference"><a href="#cite_note-18"><span>[</span>18<span>]</span></a></sup> Below are some other ways in which LSI is being used:</p>
+<ul>
+<li>Information discovery<sup id="cite_ref-19" class="reference"><a href="#cite_note-19"><span>[</span>19<span>]</span></a></sup> (eDiscovery, Government/Intelligence community, Publishing)</li>
+<li>Automated document classification (eDiscovery, Government/Intelligence community, Publishing)<sup id="cite_ref-20" class="reference"><a href="#cite_note-20"><span>[</span>20<span>]</span></a></sup></li>
+<li>Text summarization<sup id="cite_ref-21" class="reference"><a href="#cite_note-21"><span>[</span>21<span>]</span></a></sup> (eDiscovery, Publishing)</li>
+<li>Relationship discovery<sup id="cite_ref-22" class="reference"><a href="#cite_note-22"><span>[</span>22<span>]</span></a></sup> (Government, Intelligence community, Social Networking)</li>
+<li>Automatic generation of link charts of individuals and organizations<sup id="cite_ref-23" class="reference"><a href="#cite_note-23"><span>[</span>23<span>]</span></a></sup> (Government, Intelligence community)</li>
+<li>Matching technical papers and grants with reviewers<sup id="cite_ref-24" class="reference"><a href="#cite_note-24"><span>[</span>24<span>]</span></a></sup> (Government)</li>
+<li>Online customer support<sup id="cite_ref-25" class="reference"><a href="#cite_note-25"><span>[</span>25<span>]</span></a></sup> (Customer Management)</li>
+<li>Determining document authorship<sup id="cite_ref-26" class="reference"><a href="#cite_note-26"><span>[</span>26<span>]</span></a></sup> (Education)</li>
+<li>Automatic keyword annotation of images<sup id="cite_ref-27" class="reference"><a href="#cite_note-27"><span>[</span>27<span>]</span></a></sup></li>
+<li>Understanding software source code<sup id="cite_ref-28" class="reference"><a href="#cite_note-28"><span>[</span>28<span>]</span></a></sup> (Software Engineering)</li>
+<li>Filtering <a href="http://en.wikipedia.org/wiki/Spam_%28electronic%29" title="Spam (electronic)" class="mw-redirect">spam</a><sup id="cite_ref-29" class="reference"><a href="#cite_note-29"><span>[</span>29<span>]</span></a></sup> (System Administration)</li>
+<li>Information visualization<sup id="cite_ref-30" class="reference"><a href="#cite_note-30"><span>[</span>30<span>]</span></a></sup></li>
+<li><a href="http://en.wikipedia.org/wiki/Automated_essay_scoring" title="Automated essay scoring">Essay scoring</a><sup id="cite_ref-31" class="reference"><a href="#cite_note-31"><span>[</span>31<span>]</span></a></sup> (Education)</li>
+<li><a href="http://en.wikipedia.org/wiki/Literature-based_discovery" title="Literature-based discovery">Literature-based discovery</a><sup id="cite_ref-32" class="reference"><a href="#cite_note-32"><span>[</span>32<span>]</span></a></sup></li>
+</ul>
+<p>LSI is increasingly being used for electronic document discovery 
+(eDiscovery) to help enterprises prepare for litigation. In eDiscovery, 
+the ability to cluster, categorize, and search large collections of 
+unstructured text on a conceptual basis is essential. Concept-based 
+searching using LSI has been applied to the eDiscovery process by 
+leading providers as early as 2003.<sup id="cite_ref-33" class="reference"><a href="#cite_note-33"><span>[</span>33<span>]</span></a></sup></p>
+<h2><span class="mw-headline" id="Challenges_to_LSI">Challenges to LSI</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;action=edit&amp;section=8" title="Edit section: Challenges to LSI">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<p>Early challenges to LSI focused on scalability and performance. LSI 
+requires relatively high computational performance and memory in 
+comparison to other information retrieval techniques.<sup id="cite_ref-34" class="reference"><a href="#cite_note-34"><span>[</span>34<span>]</span></a></sup>
+ However, with the implementation of modern high-speed processors and 
+the availability of inexpensive memory, these considerations have been 
+largely overcome. Real-world applications involving more than 30 million
+ documents that were fully processed through the matrix and SVD 
+computations are not uncommon in some LSI applications. A fully scalable
+ (unlimited number of documents, online training) implementation of LSI 
+is contained in the open source <a href="http://en.wikipedia.org/wiki/Gensim" title="Gensim">gensim</a> software package.<sup id="cite_ref-rehurek2011_35-0" class="reference"><a href="#cite_note-rehurek2011-35"><span>[</span>35<span>]</span></a></sup></p>
+<p>Another challenge to LSI has been the alleged difficulty in 
+determining the optimal number of dimensions to use for performing the 
+SVD. As a general rule, fewer dimensions allow for broader comparisons 
+of the concepts contained in a collection of text, while a higher number
+ of dimensions enable more specific (or more relevant) comparisons of 
+concepts. The actual number of dimensions that can be used is limited by
+ the number of documents in the collection. Research has demonstrated 
+that around 300 dimensions will usually provide the best results with 
+moderate-sized document collections (hundreds of thousands of documents)
+ and perhaps 400 dimensions for larger document collections (millions of
+ documents).<sup id="cite_ref-36" class="reference"><a href="#cite_note-36"><span>[</span>36<span>]</span></a></sup>
+ However, recent studies indicate that 50-1000 dimensions are suitable 
+depending on the size and nature of the document collection.<sup id="cite_ref-37" class="reference"><a href="#cite_note-37"><span>[</span>37<span>]</span></a></sup></p>
+<p>Checking the amount of variance in the data after computing the SVD 
+can be used to determine the optimal number of dimensions to retain. The
+ variance contained in the data can be viewed by plotting the singular 
+values (S) in a <a href="http://en.wikipedia.org/wiki/Scree_plot" title="Scree plot" class="mw-redirect">scree plot</a>.
+ Some LSI practitioners select the dimensionality associated with the 
+knee of the curve as the cut-off point for the number of dimensions to 
+retain. Others argue that some quantity of the variance must be 
+retained, and the amount of variance in the data should dictate the 
+proper dimensionality to retain. Seventy percent is often mentioned as 
+the amount of variance in the data that should be used to select the 
+optimal dimensionality for recomputing the SVD.<sup id="cite_ref-38" class="reference"><a href="#cite_note-38"><span>[</span>38<span>]</span></a></sup><sup id="cite_ref-39" class="reference"><a href="#cite_note-39"><span>[</span>39<span>]</span></a></sup><sup id="cite_ref-40" class="reference"><a href="#cite_note-40"><span>[</span>40<span>]</span></a></sup></p>
+<h2><span class="mw-headline" id="See_also">See also</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;action=edit&amp;section=9" title="Edit section: See also">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Latent_semantic_analysis" title="Latent semantic analysis">Latent semantic analysis</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Latent_Semantic_Structure_Indexing" title="Latent Semantic Structure Indexing" class="mw-redirect">Latent Semantic Structure Indexing</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Principal_component_analysis" title="Principal component analysis">Principal component analysis</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Correspondence_analysis" title="Correspondence analysis">Correspondence analysis</a></li>
+</ul>
+<h2><span class="mw-headline" id="References">References</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;action=edit&amp;section=10" title="Edit section: References">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<div class="reflist" style="list-style-type: decimal;">
+<ol class="references">
+<li id="cite_note-1"><span class="mw-cite-backlink"><b><a href="#cite_ref-1"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Deerwester,
+ S., et al, Improving Information Retrieval with Latent Semantic 
+Indexing, Proceedings of the 51st Annual Meeting of the American Society
+ for Information Science 25, 1988, pp. 36–40.</span></li>
+<li id="cite_note-2"><span class="mw-cite-backlink"><b><a href="#cite_ref-2"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text"><span class="citation book">Benzécri, J.-P. (1973). <i>L'Analyse des Données. Volume II. L'Analyse des Correspondences</i>. Paris, France: Dunod.</span><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ALatent+semantic+indexing&amp;rft.au=Benz%C3%A9cri%2C+J.-P.&amp;rft.aulast=Benz%C3%A9cri%2C+J.-P.&amp;rft.btitle=L%27Analyse+des+Donn%C3%A9es.+Volume+II.+L%27Analyse+des+Correspondences&amp;rft.date=1973&amp;rft.genre=book&amp;rft.place=Paris%2C+France&amp;rft.pub=Dunod&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook" class="Z3988"><span style="display:none;">&nbsp;</span></span></span></li>
+<li id="cite_note-3"><span class="mw-cite-backlink"><b><a href="#cite_ref-3"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text"><span class="citation journal">Furnas, G. W.; Landauer, T. K.; Gomez, L. M.; Dumais, S. T. (1987). "The vocabulary problem in human-system communication". <i>Communications of the ACM</i> <b>30</b> (11): 964. <a href="http://en.wikipedia.org/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="http://dx.doi.org/10.1145%2F32206.32212">10.1145/32206.32212</a>.</span><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ALatent+semantic+indexing&amp;rft.atitle=The+vocabulary+problem+in+human-system+communication&amp;rft.au=Dumais%2C+S.+T.&amp;rft.aufirst=G.+W.&amp;rft.au=Furnas%2C+G.+W.&amp;rft.au=Gomez%2C+L.+M.&amp;rft.au=Landauer%2C+T.+K.&amp;rft.aulast=Furnas&amp;rft.date=1987&amp;rft.genre=article&amp;rft_id=info%3Adoi%2F10.1145%2F32206.32212&amp;rft.issue=11&amp;rft.jtitle=Communications+of+the+ACM&amp;rft.pages=964&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.volume=30" class="Z3988"><span style="display:none;">&nbsp;</span></span> <span class="plainlinks noprint" style="font-size:smaller"><a class="external text" href="http://en.wikipedia.org/w/index.php?title=Template:Cite_doi/10.1145.2F32206.32212&amp;action=edit&amp;editintro=Template:Cite_doi/editintro2">edit</a></span></span></li>
+<li id="cite_note-4"><span class="mw-cite-backlink"><b><a href="#cite_ref-4"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text"><span class="citation journal">Zhao, L.; Callan, J. (2010). <a rel="nofollow" class="external text" href="http://www.cs.cmu.edu/%7Ecallan/Papers/cikm10-lezhao.pdf">"Term necessity prediction"</a>. <i>Proceedings of the 19th ACM international conference on Information and knowledge management - CIKM '10</i>. p.&nbsp;259. <a href="http://en.wikipedia.org/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="http://dx.doi.org/10.1145%2F1871437.1871474">10.1145/1871437.1871474</a>. <a href="http://en.wikipedia.org/wiki/International_Standard_Book_Number" title="International Standard Book Number">ISBN</a>&nbsp;<a href="http://en.wikipedia.org/wiki/Special:BookSources/9781450300995" title="Special:BookSources/9781450300995">9781450300995</a>.</span><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ALatent+semantic+indexing&amp;rft.atitle=Proceedings+of+the+19th+ACM+international+conference+on+Information+and+knowledge+management+-+CIKM+%2710&amp;rft.au=Callan%2C+J.&amp;rft.aufirst=L.&amp;rft.aulast=Zhao&amp;rft.au=Zhao%2C+L.&amp;rft.btitle=Term+necessity+prediction&amp;rft.date=2010&amp;rft.genre=bookitem&amp;rft_id=http%3A%2F%2Fwww.cs.cmu.edu%2F~callan%2FPapers%2Fcikm10-lezhao.pdf&amp;rft_id=info%3Adoi%2F10.1145%2F1871437.1871474&amp;rft.isbn=9781450300995&amp;rft.pages=259&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook" class="Z3988"><span style="display:none;">&nbsp;</span></span> <span class="plainlinks noprint" style="font-size:smaller"><a class="external text" href="http://en.wikipedia.org/w/index.php?title=Template:Cite_doi/10.1145.2F1871437.1871474&amp;action=edit&amp;editintro=Template:Cite_doi/editintro2">edit</a></span></span></li>
+<li id="cite_note-5"><span class="mw-cite-backlink"><b><a href="#cite_ref-5"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Landauer,
+ T., et al., Learning Human-like Knowledge by Singular Value 
+Decomposition: A Progress Report, M. I. Jordan, M. J. Kearns &amp; S. A.
+ Solla (Eds.), Advances in Neural Information Processing Systems 10, 
+Cambridge: MIT Press, 1998, pp. 45–51.</span></li>
+<li id="cite_note-6"><span class="mw-cite-backlink"><b><a href="#cite_ref-6"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text"><span class="citation journal">Dumais, S.; Platt, J.; Heckerman, D.; Sahami, M. (1998). <a rel="nofollow" class="external text" href="http://research.microsoft.com/en-us/um/people/jplatt/cikm98.pdf">"Inductive learning algorithms and representations for text categorization"</a>. <i>Proceedings of the seventh international conference on Information and knowledge management - CIKM '98</i>. p.&nbsp;148. <a href="http://en.wikipedia.org/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="http://dx.doi.org/10.1145%2F288627.288651">10.1145/288627.288651</a>. <a href="http://en.wikipedia.org/wiki/International_Standard_Book_Number" title="International Standard Book Number">ISBN</a>&nbsp;<a href="http://en.wikipedia.org/wiki/Special:BookSources/1581130619" title="Special:BookSources/1581130619">1581130619</a>.</span><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ALatent+semantic+indexing&amp;rft.atitle=Proceedings+of+the+seventh+international+conference+on+Information+and+knowledge+management++-+CIKM+%2798&amp;rft.au=Dumais%2C+S.&amp;rft.aufirst=S.&amp;rft.au=Heckerman%2C+D.&amp;rft.aulast=Dumais&amp;rft.au=Platt%2C+J.&amp;rft.au=Sahami%2C+M.&amp;rft.btitle=Inductive+learning+algorithms+and+representations+for+text+categorization&amp;rft.date=1998&amp;rft.genre=bookitem&amp;rft_id=http%3A%2F%2Fresearch.microsoft.com%2Fen-us%2Fum%2Fpeople%2Fjplatt%2Fcikm98.pdf&amp;rft_id=info%3Adoi%2F10.1145%2F288627.288651&amp;rft.isbn=1581130619&amp;rft.pages=148&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook" class="Z3988"><span style="display:none;">&nbsp;</span></span> <span class="plainlinks noprint" style="font-size:smaller"><a class="external text" href="http://en.wikipedia.org/w/index.php?title=Template:Cite_doi/10.1145.2F288627.288651&amp;action=edit&amp;editintro=Template:Cite_doi/editintro2">edit</a></span></span></li>
+<li id="cite_note-7"><span class="mw-cite-backlink"><b><a href="#cite_ref-7"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Zukas, Anthony, Price, Robert J., Document Categorization Using Latent Semantic Indexing, White Paper, <a href="http://en.wikipedia.org/wiki/Content_Analyst_Company" title="Content Analyst Company">Content Analyst Company</a>, LLC</span></li>
+<li id="cite_note-8"><span class="mw-cite-backlink"><b><a href="#cite_ref-8"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text"><span class="citation journal">Homayouni, R.; Heinrich, K.; Wei, L.; Berry, M. W. (2004). "Gene clustering by Latent Semantic Indexing of MEDLINE abstracts". <i>Bioinformatics</i> <b>21</b> (1): 104–115. <a href="http://en.wikipedia.org/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="http://dx.doi.org/10.1093%2Fbioinformatics%2Fbth464">10.1093/bioinformatics/bth464</a>. <a href="http://en.wikipedia.org/wiki/PubMed_Identifier" title="PubMed Identifier" class="mw-redirect">PMID</a>&nbsp;<a rel="nofollow" class="external text" href="http://www.ncbi.nlm.nih.gov/pubmed/15308538">15308538</a>.</span><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ALatent+semantic+indexing&amp;rft.atitle=Gene+clustering+by+Latent+Semantic+Indexing+of+MEDLINE+abstracts&amp;rft.au=Berry%2C+M.+W.&amp;rft.aufirst=R.&amp;rft.au=Heinrich%2C+K.&amp;rft.au=Homayouni%2C+R.&amp;rft.aulast=Homayouni&amp;rft.au=Wei%2C+L.&amp;rft.date=2004&amp;rft.genre=article&amp;rft_id=info%3Adoi%2F10.1093%2Fbioinformatics%2Fbth464&amp;rft_id=info%3Apmid%2F15308538&amp;rft.issue=1&amp;rft.jtitle=Bioinformatics&amp;rft.pages=104-115&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.volume=21" class="Z3988"><span style="display:none;">&nbsp;</span></span> <span class="plainlinks noprint" style="font-size:smaller"><a class="external text" href="http://en.wikipedia.org/w/index.php?title=Template:Cite_doi/10.1093.2Fbioinformatics.2Fbth464&amp;action=edit&amp;editintro=Template:Cite_doi/editintro2">edit</a></span></span></li>
+<li id="cite_note-9"><span class="mw-cite-backlink"><b><a href="#cite_ref-9"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text"><span class="citation journal">Price, R. J.; Zukas, A. E. (2005). "Application of Latent Semantic Indexing to Processing of Noisy Text". <i>Intelligence and Security Informatics</i>. Lecture Notes in Computer Science <b>3495</b>. p.&nbsp;602. <a href="http://en.wikipedia.org/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="http://dx.doi.org/10.1007%2F11427995_68">10.1007/11427995_68</a>. <a href="http://en.wikipedia.org/wiki/International_Standard_Book_Number" title="International Standard Book Number">ISBN</a>&nbsp;<a href="http://en.wikipedia.org/wiki/Special:BookSources/978-3-540-25999-2" title="Special:BookSources/978-3-540-25999-2">978-3-540-25999-2</a>.</span><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ALatent+semantic+indexing&amp;rft.atitle=Intelligence+and+Security+Informatics&amp;rft.aufirst=R.+J.&amp;rft.aulast=Price&amp;rft.au=Price%2C+R.+J.&amp;rft.au=Zukas%2C+A.+E.&amp;rft.btitle=Application+of+Latent+Semantic+Indexing+to+Processing+of+Noisy+Text&amp;rft.date=2005&amp;rft.genre=bookitem&amp;rft_id=info%3Adoi%2F10.1007%2F11427995_68&amp;rft.isbn=978-3-540-25999-2&amp;rft.pages=602&amp;rft.series=Lecture+Notes+in+Computer+Science&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&amp;rft.volume=3495" class="Z3988"><span style="display:none;">&nbsp;</span></span> <span class="plainlinks noprint" style="font-size:smaller"><a class="external text" href="http://en.wikipedia.org/w/index.php?title=Template:Cite_doi/10.1007.2F11427995_68&amp;action=edit&amp;editintro=Template:Cite_doi/editintro2">edit</a></span></span></li>
+<li id="cite_note-10"><span class="mw-cite-backlink"><b><a href="#cite_ref-10"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Ding,
+ C., A Similarity-based Probability Model for Latent Semantic Indexing, 
+Proceedings of the 22nd International ACM SIGIR Conference on Research 
+and Development in Information Retrieval, 1999, pp. 59–65.</span></li>
+<li id="cite_note-11"><span class="mw-cite-backlink"><b><a href="#cite_ref-11"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Bartell,
+ B., Cottrell, G., and Belew, R., Latent Semantic Indexing is an Optimal
+ Special Case of Multidimensional Scaling, Proceedings, ACM SIGIR 
+Conference on Research and Development in Information Retrieval, 1992, 
+pp. 161–167.</span></li>
+<li id="cite_note-12"><span class="mw-cite-backlink"><b><a href="#cite_ref-12"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Graesser,
+ A., and Karnavat, A., Latent Semantic Analysis Captures Causal, 
+Goal-oriented, and Taxonomic Structures, Proceedings of CogSci 2000, pp.
+ 184–189.</span></li>
+<li id="cite_note-13"><span class="mw-cite-backlink"><b><a href="#cite_ref-13"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Dumais,
+ S., and Nielsen, J., Automating the Assignment of Submitted Manuscripts
+ to Reviewers, Proceedings of the Fifteenth Annual International 
+Conference on Research and Development in Information Retrieval, 1992, 
+pp. 233–244.</span></li>
+<li id="cite_note-14"><span class="mw-cite-backlink"><b><a href="#cite_ref-14"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Berry,
+ M. W., and Browne, M., Understanding Search Engines: Mathematical 
+Modeling and Text Retrieval, Society for Industrial and Applied 
+Mathematics, Philadelphia, (2005).</span></li>
+<li id="cite_note-15"><span class="mw-cite-backlink"><b><a href="#cite_ref-15"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Landauer, T., et al., Handbook of Latent Semantic Analysis, Lawrence Erlbaum Associates, 2007.</span></li>
+<li id="cite_note-16"><span class="mw-cite-backlink"><b><a href="#cite_ref-16"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Berry,
+ Michael W., Dumais, Susan T., O'Brien, Gavin W., Using Linear Algebra 
+for Intelligent Information Retrieval, December 1994, SIAM Review 37:4 
+(1995), pp. 573–595.</span></li>
+<li id="cite_note-brand2006-17"><span class="mw-cite-backlink"><b><a href="#cite_ref-brand2006_17-0"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text"><span class="citation journal">Matthew Brand (2006). <a rel="nofollow" class="external text" href="http://www.merl.com/reports/docs/TR2006-059.pdf">"Fast Low-Rank Modifications of the Thin Singular Value Decomposition"</a> (PDF). <i>Linear Algebra and Its Applications</i> <b>415</b>: 20–30. <a href="http://en.wikipedia.org/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="http://dx.doi.org/10.1016%2Fj.laa.2005.07.021">10.1016/j.laa.2005.07.021</a>.</span><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ALatent+semantic+indexing&amp;rft.atitle=Fast+Low-Rank+Modifications+of+the+Thin+Singular+Value+Decomposition&amp;rft.aulast=Matthew+Brand&amp;rft.au=Matthew+Brand&amp;rft.date=2006&amp;rft.genre=article&amp;rft_id=http%3A%2F%2Fwww.merl.com%2Freports%2Fdocs%2FTR2006-059.pdf&amp;rft_id=info%3Adoi%2F10.1016%2Fj.laa.2005.07.021&amp;rft.jtitle=Linear+Algebra+and+Its+Applications&amp;rft.pages=20-30&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.volume=415" class="Z3988"><span style="display:none;">&nbsp;</span></span></span></li>
+<li id="cite_note-18"><span class="mw-cite-backlink"><b><a href="#cite_ref-18"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Dumais, S., Latent Semantic Analysis, ARIST Review of Information Science and Technology, vol. 38, 2004, Chapter 4.</span></li>
+<li id="cite_note-19"><span class="mw-cite-backlink"><b><a href="#cite_ref-19"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Best
+ Practices Commentary on the Use of Search and Information Retrieval 
+Methods in E-Discovery, the Sedona Conference, 2007, pp. 189–223.</span></li>
+<li id="cite_note-20"><span class="mw-cite-backlink"><b><a href="#cite_ref-20"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Foltz,
+ P. W. and Dumais, S. T. Personalized Information Delivery: An analysis 
+of information filtering methods, Communications of the ACM, 1992, 
+34(12), 51-60.</span></li>
+<li id="cite_note-21"><span class="mw-cite-backlink"><b><a href="#cite_ref-21"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Gong,
+ Y., and Liu, X., Creating Generic Text Summaries, Proceedings, Sixth 
+International Conference on Document Analysis and Recognition, 2001, pp.
+ 903–907.</span></li>
+<li id="cite_note-22"><span class="mw-cite-backlink"><b><a href="#cite_ref-22"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Bradford,
+ R., Efficient Discovery of New Information in Large Text Databases, 
+Proceedings, IEEE International Conference on Intelligence and Security 
+Informatics, Atlanta, Georgia, LNCS Vol. 3495, Springer, 2005, pp. 
+374–380.</span></li>
+<li id="cite_note-23"><span class="mw-cite-backlink"><b><a href="#cite_ref-23"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Bradford,
+ R., Application of Latent Semantic Indexing in Generating Graphs of 
+Terrorist Networks, in: Proceedings, IEEE International Conference on 
+Intelligence and Security Informatics, ISI 2006, San Diego, CA, USA, May
+ 23–24, 2006, Springer, LNCS vol. 3975, pp. 674–675.</span></li>
+<li id="cite_note-24"><span class="mw-cite-backlink"><b><a href="#cite_ref-24"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Yarowsky,
+ D., and Florian, R., Taking the Load off the Conference Chairs: Towards
+ a Digital Paper-routing Assistant, Proceedings of the 1999 Joint SIGDAT
+ Conference on Empirical Methods in NLP and Very-Large Corpora, 1999, 
+pp. 220–230.</span></li>
+<li id="cite_note-25"><span class="mw-cite-backlink"><b><a href="#cite_ref-25"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Caron, J., Applying LSA to Online Customer Support: A Trial Study, Unpublished Master's Thesis, May 2000.</span></li>
+<li id="cite_note-26"><span class="mw-cite-backlink"><b><a href="#cite_ref-26"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Soboroff,
+ I., et al, Visualizing Document Authorship Using N-grams and Latent 
+Semantic Indexing, Workshop on New Paradigms in Information 
+Visualization and Manipulation, 1997, pp. 43–48.</span></li>
+<li id="cite_note-27"><span class="mw-cite-backlink"><b><a href="#cite_ref-27"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Monay,
+ F., and Gatica-Perez, D., On Image Auto-annotation with Latent Space 
+Models, Proceedings of the 11th ACM international conference on 
+Multimedia, Berkeley, CA, 2003, pp. 275–278.</span></li>
+<li id="cite_note-28"><span class="mw-cite-backlink"><b><a href="#cite_ref-28"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Maletic,
+ J., and Marcus, A., Using Latent Semantic Analysis to Identify 
+Similarities in Source Code to Support Program Understanding, 
+Proceedings of 12th IEEE International Conference on Tools with 
+Artificial Intelligence, Vancouver, British Columbia, November 13–15, 
+2000, pp. 46–53.</span></li>
+<li id="cite_note-29"><span class="mw-cite-backlink"><b><a href="#cite_ref-29"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Gee,
+ K., Using Latent Semantic Indexing to Filter Spam, in: Proceedings, 
+2003 ACM Symposium on Applied Computing, Melbourne, Florida, pp. 
+460–464.</span></li>
+<li id="cite_note-30"><span class="mw-cite-backlink"><b><a href="#cite_ref-30"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Landauer,
+ T., Laham, D., and Derr, M., From Paragraph to Graph: Latent Semantic 
+Analysis for Information Visualization, Proceedings of the National 
+Academy of Science, 101, 2004, pp. 5214–5219.</span></li>
+<li id="cite_note-31"><span class="mw-cite-backlink"><b><a href="#cite_ref-31"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Foltz,
+ Peter W., Laham, Darrell, and Landauer, Thomas K., Automated Essay 
+Scoring: Applications to Educational Technology, Proceedings of EdMedia,
+ 1999.</span></li>
+<li id="cite_note-32"><span class="mw-cite-backlink"><b><a href="#cite_ref-32"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Gordon,
+ M., and Dumais, S., Using Latent Semantic Indexing for Literature Based
+ Discovery, Journal of the American Society for Information Science, 
+49(8), 1998, pp. 674–685.</span></li>
+<li id="cite_note-33"><span class="mw-cite-backlink"><b><a href="#cite_ref-33"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">There Has to be a Better Way to Search, 2008, White Paper, Fios, Inc.</span></li>
+<li id="cite_note-34"><span class="mw-cite-backlink"><b><a href="#cite_ref-34"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Karypis,
+ G., Han, E., Fast Supervised Dimensionality Reduction Algorithm with 
+Applications to Document Categorization and Retrieval, Proceedings of 
+CIKM-00, 9th ACM Conference on Information and Knowledge Management.</span></li>
+<li id="cite_note-rehurek2011-35"><span class="mw-cite-backlink"><b><a href="#cite_ref-rehurek2011_35-0"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text"><span class="citation journal">Radim Řehůřek (2011). <a rel="nofollow" class="external text" href="http://dx.doi.org/10.1007/978-3-642-20161-5_29">"Subspace Tracking for Latent Semantic Analysis"</a> (PDF). <i>Advances in Information Retrieval - 33rd European Conference on IR Research, ECIR 2011</i> <b>6611</b>: 289–300. <a href="http://en.wikipedia.org/wiki/Digital_object_identifier" title="Digital object identifier">doi</a>:<a rel="nofollow" class="external text" href="http://dx.doi.org/10.1007%2F978-3-642-20161-5_29">10.1007/978-3-642-20161-5_29</a>.</span><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ALatent+semantic+indexing&amp;rft.atitle=Subspace+Tracking+for+Latent+Semantic+Analysis&amp;rft.aulast=Radim+%C5%98eh%C5%AF%C5%99ek&amp;rft.au=Radim+%C5%98eh%C5%AF%C5%99ek&amp;rft.date=2011&amp;rft.genre=article&amp;rft_id=http%3A%2F%2Fdx.doi.org%2F10.1007%2F978-3-642-20161-5_29&amp;rft_id=info%3Adoi%2F10.1007%2F978-3-642-20161-5_29&amp;rft.jtitle=Advances+in+Information+Retrieval+-+33rd+European+Conference+on+IR+Research%2C+ECIR+2011&amp;rft.pages=289-300&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.volume=6611" class="Z3988"><span style="display:none;">&nbsp;</span></span></span></li>
+<li id="cite_note-36"><span class="mw-cite-backlink"><b><a href="#cite_ref-36"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Bradford,
+ R., An Empirical Study of Required Dimensionality for Large-scale 
+Latent Semantic Indexing Applications, Proceedings of the 17th ACM 
+Conference on Information and Knowledge Management, Napa Valley, 
+California, USA, 2008, pp. 153–162.</span></li>
+<li id="cite_note-37"><span class="mw-cite-backlink"><b><a href="#cite_ref-37"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Landauer, Thomas K., and Dumais, Susan T., Latent Semantic Analysis, Scholarpedia, 3(11):4356, 2008.</span></li>
+<li id="cite_note-38"><span class="mw-cite-backlink"><b><a href="#cite_ref-38"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Cangelosi,
+ R., Goriely A., Component Retention In Principal Component Analysis 
+With Application to Cdna Microarray Data, BMC Biology Direct 2(2) 
+(2007).</span></li>
+<li id="cite_note-39"><span class="mw-cite-backlink"><b><a href="#cite_ref-39"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Jolliffe, L. T., Principal Component Analysis, Springer-Verlag, New York, (1986).</span></li>
+<li id="cite_note-40"><span class="mw-cite-backlink"><b><a href="#cite_ref-40"><span class="cite-accessibility-label">Jump up </span>^</a></b></span> <span class="reference-text">Hu,
+ X., Z. Cai, et al., LSA: First Dimension and Dimensional Weighting, 
+25th Annual Meeting of the Cognitive Science Society, Boston, MA.</span></li>
+</ol>
+</div>
+<h2><span class="mw-headline" id="Further_reading">Further reading</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;action=edit&amp;section=11" title="Edit section: Further reading">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul>
+<li><span class="citation book">Berry, M. W., Browne M. (2005). <a rel="nofollow" class="external text" href="http://www.mblazquez.es/blog-ccdoc-recuperacion/documentos/book_understanding-search-engines.pdf"><i>Understanding Search Engines: Mathematical Modeling and Text Retrieval</i></a>. Philadelphia: Society for Industrial and Applied Mathematics. <a href="http://en.wikipedia.org/wiki/International_Standard_Book_Number" title="International Standard Book Number">ISBN</a>&nbsp;<a href="http://en.wikipedia.org/wiki/Special:BookSources/978-0898715811" title="Special:BookSources/978-0898715811">978-0898715811</a>.</span><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ALatent+semantic+indexing&amp;rft.au=Berry%2C+M.+W.%2C+Browne+M.&amp;rft.aulast=Berry%2C+M.+W.%2C+Browne+M.&amp;rft.btitle=Understanding+Search+Engines%3A+Mathematical+Modeling+and+Text+Retrieval&amp;rft.date=2005&amp;rft.genre=book&amp;rft_id=http%3A%2F%2Fwww.mblazquez.es%2Fblog-ccdoc-recuperacion%2Fdocumentos%2Fbook_understanding-search-engines.pdf&amp;rft.isbn=978-0898715811&amp;rft.place=Philadelphia&amp;rft.pub=Society+for+Industrial+and+Applied+Mathematics&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook" class="Z3988"><span style="display:none;">&nbsp;</span></span></li>
+<li><span class="citation book">Berry, M. W., ed. (2004). <a rel="nofollow" class="external text" href="https://perso.uclouvain.be/vincent.blondel/publications/08-textmining.pdf"><i>Survey of Text Mining: Clustering, Classification, and Retrieval</i></a>. New York: Springer. <a href="http://en.wikipedia.org/wiki/International_Standard_Book_Number" title="International Standard Book Number">ISBN</a>&nbsp;<a href="http://en.wikipedia.org/wiki/Special:BookSources/978-0387955636" title="Special:BookSources/978-0387955636">978-0387955636</a>.</span><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ALatent+semantic+indexing&amp;rft.btitle=Survey+of+Text+Mining%3A+Clustering%2C+Classification%2C+and+Retrieval&amp;rft.date=2004&amp;rft.genre=book&amp;rft_id=https%3A%2F%2Fperso.uclouvain.be%2Fvincent.blondel%2Fpublications%2F08-textmining.pdf&amp;rft.isbn=978-0387955636&amp;rft.place=New+York&amp;rft.pub=Springer&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook" class="Z3988"><span style="display:none;">&nbsp;</span></span></li>
+<li><span class="citation book">Landauer, T., et al. (2007). <a rel="nofollow" class="external text" href="http://books.google.de/books/about/Handbook_of_latent_semantic_analysis.html?id=jgVWCuFXePEC&amp;redir_esc=y"><i>Handbook of Latent Semantic Analysis</i></a>. Lawrence Erlbaum Associates. <a href="http://en.wikipedia.org/wiki/International_Standard_Book_Number" title="International Standard Book Number">ISBN</a>&nbsp;<a href="http://en.wikipedia.org/wiki/Special:BookSources/978-0805854183" title="Special:BookSources/978-0805854183">978-0805854183</a>.</span><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ALatent+semantic+indexing&amp;rft.au=Landauer%2C+T.%2C+et+al.&amp;rft.aulast=Landauer%2C+T.%2C+et+al.&amp;rft.btitle=Handbook+of+Latent+Semantic+Analysis&amp;rft.date=2007&amp;rft.genre=book&amp;rft_id=http%3A%2F%2Fbooks.google.de%2Fbooks%2Fabout%2FHandbook_of_latent_semantic_analysis.html%3Fid%3DjgVWCuFXePEC%26redir_esc%3Dy&amp;rft.isbn=978-0805854183&amp;rft.pub=Lawrence+Erlbaum+Associates&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook" class="Z3988"><span style="display:none;">&nbsp;</span></span></li>
+<li><span class="citation book">Manning, C. D., Schutze H. (1999). <a rel="nofollow" class="external text" href="http://nlp.stanford.edu/fsnlp/promo/contents.ps"><i>Foundations of Statistical Natural Language Processing</i></a>. Cambridge, MA: The MIT Press. <a href="http://en.wikipedia.org/wiki/International_Standard_Book_Number" title="International Standard Book Number">ISBN</a>&nbsp;<a href="http://en.wikipedia.org/wiki/Special:BookSources/9780262133609" title="Special:BookSources/9780262133609">9780262133609</a>.</span><span title="ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3ALatent+semantic+indexing&amp;rft.aulast=Manning%2C+C.+D.%2C+Schutze+H.&amp;rft.au=Manning%2C+C.+D.%2C+Schutze+H.&amp;rft.btitle=Foundations+of+Statistical+Natural+Language+Processing&amp;rft.date=1999&amp;rft.genre=book&amp;rft_id=http%3A%2F%2Fnlp.stanford.edu%2Ffsnlp%2Fpromo%2Fcontents.ps&amp;rft.isbn=9780262133609&amp;rft.place=Cambridge%2C+MA&amp;rft.pub=The+MIT+Press&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook" class="Z3988"><span style="display:none;">&nbsp;</span></span> <a rel="nofollow" class="external text" href="http://nlp.stanford.edu/fsnlp/">Companion webpage</a></li>
+</ul>
+<h2><span class="mw-headline" id="External_links">External links</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;action=edit&amp;section=12" title="Edit section: External links">edit</a><span class="mw-editsection-bracket">]</span></span></h2>
+<ul>
+<li><a rel="nofollow" class="external text" href="http://www.cs.utk.edu/%7Elsi/">Michael Berry’s site</a></li>
+<li><a rel="nofollow" class="external text" href="http://radimrehurek.com/gensim">Gensim</a> contains a scalable Python+<a href="http://en.wikipedia.org/wiki/NumPy" title="NumPy">NumPy</a> implementation of LSI, even for datasets larger than the available RAM.</li>
+<li><a rel="nofollow" class="external text" href="http://scgroup.hpclab.ceid.upatras.gr/scgroup/Projects/TMG/">Text to Matrix Generator (TMG)</a>
+ MATLAB toolbox that can be used for various tasks in text mining (TM) 
+specifically i) indexing, ii) retrieval, iii) dimensionality reduction, 
+iv) clustering, v) classification. Most of TMG is written in MATLAB and 
+parts in Perl. It contains implementations of LSI, clustered LSI, NMF 
+and other methods.</li>
+<li><a rel="nofollow" class="external text" href="http://www.youtube.com/watch?v=QGd06MTRMHs">Stanford University Andrew Ng Video on LSI</a></li>
+</ul>
+
+
+<!-- 
+NewPP limit report
+Parsed by mw1111
+CPU time usage: 0.896 seconds
+Real time usage: 1.032 seconds
+Preprocessor visited node count: 1971/1000000
+Preprocessor generated node count: 7045/1500000
+Post‐expand include size: 59001/2048000 bytes
+Template argument size: 923/2048000 bytes
+Highest expansion depth: 14/40
+Expensive parser function count: 7/500
+Lua time usage: 0.084/10.000 seconds
+Lua memory usage: 2.88 MB/50 MB
+-->
+
+<!-- Saved in parser cache with key enwiki:pcache:idhash:21109827-0!*!0!!en!4!*!math=0 and timestamp 20140610192246 and revision id 608723116
+ -->
+<noscript><img src="//en.wikipedia.org/wiki/Special:CentralAutoLogin/start?type=1x1" alt="" title="" width="1" height="1" style="border: none; position: absolute;" /></noscript></div>									<div class="printfooter">
+						Retrieved from "<a dir="ltr" href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;oldid=608723116">http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;oldid=608723116</a>"					</div>
+													<div id="catlinks" class="catlinks"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="http://en.wikipedia.org/wiki/Help:Category" title="Help:Category">Categories</a>: <ul><li><a href="http://en.wikipedia.org/wiki/Category:Information_retrieval" title="Category:Information retrieval">Information retrieval</a></li><li><a href="http://en.wikipedia.org/wiki/Category:Semantic_Web" title="Category:Semantic Web">Semantic Web</a></li></ul></div><div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul><li><a href="http://en.wikipedia.org/wiki/Category:Articles_to_be_merged_from_July_2012" title="Category:Articles to be merged from July 2012">Articles to be merged from July 2012</a></li><li><a href="http://en.wikipedia.org/wiki/Category:All_articles_to_be_merged" title="Category:All articles to be merged">All articles to be merged</a></li></ul></div></div>												<div class="visualClear"></div>
+							</div>
+		</div>
+		<div id="mw-navigation">
+			<h2>Navigation menu</h2>
+
+			<div id="mw-head">
+									<div id="p-personal" role="navigation" class="" aria-labelledby="p-personal-label">
+						<h3 id="p-personal-label">Personal tools</h3>
+						<ul>
+							<li id="pt-createaccount"><a href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin&amp;returnto=Latent+semantic+indexing&amp;type=signup">Create account</a></li><li id="pt-login"><a href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin&amp;returnto=Latent+semantic+indexing" title="You're encouraged to log in; however, it's not mandatory. [Alt+Shift+o]" accesskey="o">Log in</a></li>						</ul>
+					</div>
+									<div id="left-navigation">
+										<div id="p-namespaces" role="navigation" class="vectorTabs" aria-labelledby="p-namespaces-label">
+						<h3 id="p-namespaces-label">Namespaces</h3>
+						<ul>
+															<li id="ca-nstab-main" class="selected"><span><a href="http://en.wikipedia.org/wiki/Latent_semantic_indexing" title="View the content page [Alt+Shift+c]" accesskey="c">Article</a></span></li>
+															<li id="ca-talk"><span><a href="http://en.wikipedia.org/wiki/Talk:Latent_semantic_indexing" title="Discussion about the content page [Alt+Shift+t]" accesskey="t">Talk</a></span></li>
+													</ul>
+					</div>
+										<div id="p-variants" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-variants-label">
+						<h3 id="mw-vector-current-variant">
+													</h3>
+
+						<h3 tabindex="0" id="p-variants-label"><span>Variants</span><a tabindex="-1" href="#"></a></h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+									</div>
+				<div id="right-navigation">
+										<div id="p-views" role="navigation" class="vectorTabs" aria-labelledby="p-views-label">
+						<h3 id="p-views-label">Views</h3>
+						<ul>
+															<li id="ca-view" class="selected"><span><a href="http://en.wikipedia.org/wiki/Latent_semantic_indexing">Read</a></span></li>
+															<li id="ca-edit"><span><a href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;action=edit" title="You can edit this page. Please use the preview button before saving [Alt+Shift+e]" accesskey="e">Edit</a></span></li>
+															<li id="ca-history" class="collapsible"><span><a href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;action=history" title="Past versions of this page [Alt+Shift+h]" accesskey="h">View history</a></span></li>
+													</ul>
+					</div>
+										<div style="" id="p-cactions" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-cactions-label">
+						<h3 tabindex="0" id="p-cactions-label"><span>More</span><a tabindex="-1" href="#"></a></h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+										<div id="p-search" role="search">
+						<h3>
+							<label for="searchInput">Search</label>
+						</h3>
+
+						<form action="/w/index.php" id="searchform">
+														<div id="simpleSearch">
+															<input autocomplete="off" tabindex="1" name="search" placeholder="Search" title="Search Wikipedia [Alt+Shift+f]" accesskey="f" id="searchInput" type="search"><input value="Special:Search" name="title" type="hidden"><input name="go" value="Go" title="Go to a page with this exact name if one exists" id="searchButton" class="searchButton" type="submit">								</div>
+						</form>
+					</div>
+									</div>
+			</div>
+			<div id="mw-panel">
+				<div id="p-logo" role="banner"><a style="background-image: url(//upload.wikimedia.org/wikipedia/en/b/bc/Wiki.png);" href="http://en.wikipedia.org/wiki/Main_Page" title="Visit the main page"></a></div>
+						<div class="portal first" role="navigation" id="p-navigation" aria-labelledby="p-navigation-label">
+			<h3 id="p-navigation-label">Navigation</h3>
+
+			<div class="body">
+									<ul>
+													<li id="n-mainpage-description"><a href="http://en.wikipedia.org/wiki/Main_Page" title="Visit the main page [Alt+Shift+z]" accesskey="z">Main page</a></li>
+													<li id="n-contents"><a href="http://en.wikipedia.org/wiki/Portal:Contents" title="Guides to browsing Wikipedia">Contents</a></li>
+													<li id="n-featuredcontent"><a href="http://en.wikipedia.org/wiki/Portal:Featured_content" title="Featured content – the best of Wikipedia">Featured content</a></li>
+													<li id="n-currentevents"><a href="http://en.wikipedia.org/wiki/Portal:Current_events" title="Find background information on current events">Current events</a></li>
+													<li id="n-randompage"><a href="http://en.wikipedia.org/wiki/Special:Random" title="Load a random article [Alt+Shift+x]" accesskey="x">Random article</a></li>
+													<li id="n-sitesupport"><a href="https://donate.wikimedia.org/wiki/Special:FundraiserRedirector?utm_source=donate&amp;utm_medium=sidebar&amp;utm_campaign=C13_en.wikipedia.org&amp;uselang=en" title="Support us">Donate to Wikipedia</a></li>
+													<li id="n-shoplink"><a href="http://shop.wikimedia.org/" title="Visit the Wikimedia Shop">Wikimedia Shop</a></li>
+											</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id="p-interaction" aria-labelledby="p-interaction-label">
+			<h3 id="p-interaction-label">Interaction</h3>
+
+			<div class="body">
+									<ul>
+													<li id="n-help"><a href="http://en.wikipedia.org/wiki/Help:Contents" title="Guidance on how to use and edit Wikipedia">Help</a></li>
+													<li id="n-aboutsite"><a href="http://en.wikipedia.org/wiki/Wikipedia:About" title="Find out about Wikipedia">About Wikipedia</a></li>
+													<li id="n-portal"><a href="http://en.wikipedia.org/wiki/Wikipedia:Community_portal" title="About the project, what you can do, where to find things">Community portal</a></li>
+													<li id="n-recentchanges"><a href="http://en.wikipedia.org/wiki/Special:RecentChanges" title="A list of recent changes in the wiki [Alt+Shift+r]" accesskey="r">Recent changes</a></li>
+													<li id="n-contactpage"><a href="http://en.wikipedia.org/wiki/Wikipedia:Contact_us">Contact page</a></li>
+											</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id="p-tb" aria-labelledby="p-tb-label">
+			<h3 id="p-tb-label">Tools</h3>
+
+			<div class="body">
+									<ul>
+													<li id="t-whatlinkshere"><a href="http://en.wikipedia.org/wiki/Special:WhatLinksHere/Latent_semantic_indexing" title="List of all English Wikipedia pages containing links to this page [Alt+Shift+j]" accesskey="j">What links here</a></li>
+													<li id="t-recentchangeslinked"><a href="http://en.wikipedia.org/wiki/Special:RecentChangesLinked/Latent_semantic_indexing" title="Recent changes in pages linked from this page [Alt+Shift+k]" accesskey="k">Related changes</a></li>
+													<li id="t-upload"><a href="http://en.wikipedia.org/wiki/Wikipedia:File_Upload_Wizard" title="Upload files [Alt+Shift+u]" accesskey="u">Upload file</a></li>
+													<li id="t-specialpages"><a href="http://en.wikipedia.org/wiki/Special:SpecialPages" title="A list of all special pages [Alt+Shift+q]" accesskey="q">Special pages</a></li>
+													<li id="t-permalink"><a href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;oldid=608723116" title="Permanent link to this revision of the page">Permanent link</a></li>
+													<li id="t-info"><a href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;action=info">Page information</a></li>
+													<li id="t-wikibase"><a href="http://www.wikidata.org/wiki/Q890676" title="Link to connected data repository item [Alt+Shift+g]" accesskey="g">Data item</a></li>
+						<li id="t-cite"><a href="http://en.wikipedia.org/w/index.php?title=Special:Cite&amp;page=Latent_semantic_indexing&amp;id=608723116" title="Information on how to cite this page">Cite this page</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id="p-coll-print_export" aria-labelledby="p-coll-print_export-label">
+			<h3 id="p-coll-print_export-label">Print/export</h3>
+
+			<div class="body">
+									<ul>
+													<li id="coll-create_a_book"><a href="http://en.wikipedia.org/w/index.php?title=Special:Book&amp;bookcmd=book_creator&amp;referer=Latent+semantic+indexing">Create a book</a></li>
+													<li id="coll-download-as-rl"><a href="http://en.wikipedia.org/w/index.php?title=Special:Book&amp;bookcmd=render_article&amp;arttitle=Latent+semantic+indexing&amp;oldid=608723116&amp;writer=rl">Download as PDF</a></li>
+													<li id="t-print"><a href="http://en.wikipedia.org/w/index.php?title=Latent_semantic_indexing&amp;printable=yes" title="Printable version of this page [Alt+Shift+p]" accesskey="p">Printable version</a></li>
+											</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id="p-lang" aria-labelledby="p-lang-label"><span original-title="Language settings" aria-haspopup="true" role="button" tabindex="0" class="uls-settings-trigger"></span>
+			<h3 id="p-lang-label">Languages</h3>
+
+			<div class="body">
+									<ul>
+													<li class="interlanguage-link interwiki-es"><a href="http://es.wikipedia.org/wiki/Indexaci%C3%B3n_Sem%C3%A1ntica_Latente" title="Indexación Semántica Latente – Spanish" hreflang="es" lang="es">Español</a></li>
+													<li class="interlanguage-link interwiki-fa"><a href="http://fa.wikipedia.org/wiki/%D9%86%D9%85%D8%A7%DB%8C%D9%87%E2%80%8C%D8%B3%D8%A7%D8%B2%DB%8C_%D9%85%D8%B9%D9%86%D8%A7%DB%8C%DB%8C_%D9%86%D9%87%D8%A7%D9%86" title="نمایه‌سازی معنایی نهان – Persian" hreflang="fa" lang="fa">فارسی</a></li>
+													<li class="interlanguage-link interwiki-zh"><a href="http://zh.wikipedia.org/wiki/%E6%BD%9C%E5%9C%A8%E8%AF%AD%E4%B9%89%E7%B4%A2%E5%BC%95" title="潜在语义索引 – Chinese" hreflang="zh" lang="zh">中文</a></li>
+													
+											</ul>
+				<div class="after-portlet after-portlet-lang"><span class="wb-langlinks-edit wb-langlinks-link"><a action="edit" href="http://www.wikidata.org/wiki/Q890676#sitelinks-wikipedia" text="Edit links" title="Edit interlanguage links" class="wbc-editpage">Edit links</a></span></div>			</div>
+		</div>
+				</div>
+		</div>
+		<div id="footer" role="contentinfo">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 15 May 2014 at 18:47.<br></li>
+											<li id="footer-info-copyright">Text is available under the <a rel="license" href="http://en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License">Creative Commons Attribution-ShareAlike License</a><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/" style="display:none;"></a>;
+additional terms may apply.  By using this site, you agree to the <a href="http://wikimediafoundation.org/wiki/Terms_of_Use">Terms of Use</a> and <a href="http://wikimediafoundation.org/wiki/Privacy_policy">Privacy Policy</a>. Wikipedia® is a registered trademark of the <a href="http://www.wikimediafoundation.org/">Wikimedia Foundation, Inc.</a>, a non-profit organization.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="http://wikimediafoundation.org/wiki/Privacy_policy" title="wikimedia:Privacy policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="http://en.wikipedia.org/wiki/Wikipedia:About" title="Wikipedia:About">About Wikipedia</a></li>
+											<li id="footer-places-disclaimer"><a href="http://en.wikipedia.org/wiki/Wikipedia:General_disclaimer" title="Wikipedia:General disclaimer">Disclaimers</a></li>
+											<li id="footer-places-contact"><a href="http://en.wikipedia.org/wiki/Wikipedia:Contact_us">Contact Wikipedia</a></li>
+											<li id="footer-places-developers"><a href="https://www.mediawiki.org/wiki/Special:MyLanguage/How_to_contribute">Developers</a></li>
+											<li id="footer-places-mobileview"><a href="http://en.m.wikipedia.org/wiki/Latent_semantic_indexing" class="noprint stopMobileRedirectToggle">Mobile view</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+											<li id="footer-copyrightico">
+															<a href="http://wikimediafoundation.org/"><img src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/wikimedia-button.png" alt="Wikimedia Foundation" height="31" width="88"></a>
+													</li>
+											<li id="footer-poweredbyico">
+															<a href="http://www.mediawiki.org/"><img src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" height="31" width="88"></a>
+													</li>
+									</ul>
+						<div style="clear:both"></div>
+		</div>
+		<script>/*<![CDATA[*/window.jQuery && jQuery.ready();/*]]>*/</script><script>if(window.mw){
+mw.loader.state({"site":"loading","user":"ready","user.groups":"ready"});
+}</script>
+<script>if(window.mw){
+mw.loader.load(["ext.cite","ext.math.mathjax.enabler","mediawiki.toc","mobile.desktop","mediawiki.action.view.postEdit","mediawiki.user","mediawiki.hidpi","mediawiki.page.ready","mediawiki.searchSuggest","ext.gadget.teahouse","ext.gadget.ReferenceTooltips","ext.gadget.DRN-wizard","ext.gadget.charinsert","ext.gadget.refToolbar","mw.MwEmbedSupport.style","mmv.bootstrap.autostart","ext.eventLogging.subscriber","ext.navigationTiming","schema.UniversalLanguageSelector","ext.uls.eventlogger","ext.uls.interlanguage"],null,true);
+}</script>
+<script src="Latent%20semantic%20indexing%20-%20Wikipedia,%20the%20free%20encyclopedia_files/load_002.php"></script>
+<script>if(window.mw){
+mw.config.set({"wgBackendResponseTime":340,"wgHostname":"mw1077"});
+}</script>
+	
+
+	<div class="suggestions" style="display: none; font-size: 13px;"><div class="suggestions-results"></div><div class="suggestions-special"></div></div></body></html>
