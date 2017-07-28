@@ -22,9 +22,9 @@ include_directories(${APR_INCLUDE_DIR})
 set(SOURCE_FILES TpcCommons.h Utils.h Utils.cpp lucene-custom/CaseSensitiveAnalyzer.h
         lucene-custom/CaseSensitiveAnalyzer.cpp uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.h
         uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.cpp)
-add_library(libtextpressocore SHARED ${SOURCE_FILES} TpcIndexWriter.h TpcIndexWriter.cpp TpcIndexReader.h
+add_library(libtextpresso SHARED ${SOURCE_FILES} TpcIndexWriter.h TpcIndexWriter.cpp TpcIndexReader.h
         TpcIndexReader.cpp)
-target_link_libraries(libtextpressocore lucene++)
+target_link_libraries(libtextpresso lucene++)
 
 add_executable(test_indexreader ${SOURCE_FILES} TpcIndexReader.h TpcIndexReader.cpp tests/test_indexreader.cpp)
 target_link_libraries(test_indexreader gtest lucene++ pthread boost_system boost_iostreams boost_regex icuuc uima)
@@ -33,8 +33,8 @@ add_executable(test_indexwriter ${SOURCE_FILES} TpcIndexWriter.h TpcIndexWriter.
 target_link_libraries(test_indexwriter gtest lucene++ pthread boost_system boost_filesystem boost_iostreams xerces-c
         uima boost_regex icuuc)
 
-install(TARGETS libtextpressocore RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
-install(FILES TpcCommons.h DESTINATION include/textpresso)
+install(TARGETS libtextpresso RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
+install(FILES TpcCommons.h TpcIndexWriter.h TpcIndexReader.h DESTINATION include/textpresso)
 
 # uima annotators
 

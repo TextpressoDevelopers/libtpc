@@ -13,6 +13,7 @@
 #include <vector>
 #include <string>
 #include <lucene++/LuceneHeaders.h>
+#include <cfloat>
 
 namespace tpc {
 
@@ -33,7 +34,7 @@ namespace tpc {
      * @var <b>score</b> the score of the sentence returned by the search
      */
     struct SentenceSummary {
-        int sentence_id{0};
+        int sentence_id{-1};
         double score{0};
     };
 
@@ -114,7 +115,7 @@ namespace tpc {
         std::string query_text;
         bool case_sensitive{false};
         bool sort_by_year{false};
-        std::vector <std::string> literatures;
+        std::vector <std::string> subindices;
     };
 
     /*!
@@ -132,7 +133,7 @@ namespace tpc {
         std::vector <DocumentSummary> hit_documents;
         size_t total_num_sentences{0};
         double max_score{0};
-        double min_score{0};
+        double min_score{DBL_MAX};
     };
 
     class index_exception : public std::exception {
@@ -148,13 +149,13 @@ namespace tpc {
     public:
 
         /*!
-         * @brief search the Lucene index for documents matching the provided Lucene query and return summary
+         * @brief search the Textpresso index for documents matching the provided Lucene query and return summary
          * information with a list of results sorted by score
          *
          * The results returned by this method contain basic information regarding the documents matching the searches
          *
-         * note that while the documents are sorted by score, their matched sentences, in case of sentence searches,
-         * are not sorted so as to have better performances
+         * Note that while the documents are sorted by score, their matched sentences, in case of sentence searches,
+         * are not sorted in order to obtain better performances
          * @param index_root_dir the root dir of the Lucene indexes
          * @param query a query object
          * @param doc_ids limit the search to a set of document ids. This is useful for sentence queries to retrieve
@@ -170,7 +171,7 @@ namespace tpc {
          *
          * @param doc_summary the DocumentSummary object that identifies the document
          * @param index_root_dir the root directory of the index containing information about the document
-         * @param literatures the list of literatures to search
+         * @param subindices the list of subindices to search
          * @param include_sentences_details whether to retrieve the details of the matching sentences specified in the
          * DocumentSummary object
          * @param include_doc_fields the list of fields to retrieve for the document. Retrieve all fields if not
@@ -183,14 +184,14 @@ namespace tpc {
          * @return the detailed information of the document
          */
         static DocumentDetails get_document_details(
-                const DocumentSummary &doc_summary,
-                const std::string &index_root_dir,
-                const std::vector <std::string> &literatures,
+                const DocumentSummary& doc_summary,
+                const std::string& index_root_dir,
+                const std::vector <std::string>& subindices,
                 bool include_sentences_details = true,
                 std::set <std::string> include_doc_fields = document_fields_detailed,
                 std::set <std::string> include_match_sentences_fields = sentence_fields_detailed,
-                const std::set <std::string> &exclude_doc_fields = {},
-                const std::set <std::string> &exclude_match_sentences_fields = {});
+                const std::set <std::string>& exclude_doc_fields = {},
+                const std::set <std::string>& exclude_match_sentences_fields = {});
 
         /*!
          * @brief get detailed information for a set of documents specified by a list of DocumentSummary objects
@@ -199,7 +200,7 @@ namespace tpc {
          * optionally, the list of sentences in the matching_sentences field of the document for which to retrieve
          * detailed information
          * @param index_root_dir the root directory of the index containing information about the document
-         * @param literatures the list of literatures to search
+         * @param subindices the list of subindices to search
          * @param sort_by_year whether to sort the results by year
          * @param include_sentences_details whether to retrieve the details of the matching sentences specified in the
          * DocumentSummary object
@@ -213,15 +214,15 @@ namespace tpc {
          * @return the detailed information of the document
          */
         static std::vector <DocumentDetails> get_documents_details(
-                const std::vector <DocumentSummary> &doc_summaries,
-                const std::string &index_root_dir,
-                const std::vector <std::string> &literatures,
+                const std::vector <DocumentSummary>& doc_summaries,
+                const std::string& index_root_dir,
+                const std::vector <std::string>& subindices,
                 bool sort_by_year,
                 bool include_sentences_details = true,
                 std::set <std::string> include_doc_fields = document_fields_detailed,
                 std::set <std::string> include_match_sentences_fields = sentence_fields_detailed,
-                const std::set <std::string> &exclude_doc_fields = {},
-                const std::set <std::string> &exclude_match_sentences_fields = {});
+                const std::set <std::string>& exclude_doc_fields = {},
+                const std::set <std::string>& exclude_match_sentences_fields = {});
 
         // comparators for reverse sorting of documents and sentence objects
         static bool document_score_gt(const Document &a, const Document &b) { return a.score > b.score; }
@@ -239,14 +240,14 @@ namespace tpc {
 
         /*!
          * create a collection of sub-readers with multiple Lucene indexes
-         * @param literatures the list of directory names for the indexed literatures
+         * @param subindices the list of directory names for the indexed literatures
          * @param index_root_dir the name of the index to be read within the literatures
          * @param type the type of query to be performed by the subreaders
          * @param case_sensitive whether to get case sensitive subreaders
          * @return a collection of readers created from the Lucene indexes
          */
-        static Lucene::Collection <Lucene::IndexReaderPtr> get_subreaders(const std::vector <std::string> &literatures,
-                                                                          const std::string &index_root_dir,
+        static Lucene::Collection <Lucene::IndexReaderPtr> get_subreaders(const std::vector <std::string>& subindices,
+                                                                          const std::string& index_root_dir,
                                                                           QueryType type, bool case_sensitive = false);
 
         /*!
@@ -258,8 +259,8 @@ namespace tpc {
          * SearchResult object
          */
         static SearchResults read_documents_summaries(
-                const Lucene::Collection <Lucene::ScoreDocPtr> &matches_collection,
-                const Lucene::Collection <Lucene::IndexReaderPtr> &subreaders,
+                const Lucene::Collection <Lucene::ScoreDocPtr>& matches_collection,
+                const Lucene::Collection <Lucene::IndexReaderPtr>& subreaders,
                 Lucene::SearcherPtr searcher, bool sort_by_year = false);
 
         /*!
@@ -271,8 +272,8 @@ namespace tpc {
          * documents, encapsulated in a SearchResult object
          */
         static SearchResults read_sentences_summaries(
-                const Lucene::Collection <Lucene::ScoreDocPtr> &matches_collection,
-                const Lucene::Collection <Lucene::IndexReaderPtr> &subreaders,
+                const Lucene::Collection <Lucene::ScoreDocPtr>& matches_collection,
+                const Lucene::Collection <Lucene::IndexReaderPtr>& subreaders,
                 Lucene::SearcherPtr searcher, bool sort_by_year = false, bool return_match_sentences_ids = false);
 
         /*!
@@ -284,11 +285,12 @@ namespace tpc {
          * @param fields the set of fields to be retrieved for the document
          * @return the details of the document
          */
-        static DocumentDetails read_document_details(const DocumentSummary &doc_summary,
+
+        static DocumentDetails read_document_details(const DocumentSummary& doc_summary,
                                                      Lucene::QueryParserPtr doc_parser,
                                                      Lucene::SearcherPtr searcher,
                                                      Lucene::FieldSelectorPtr fsel,
-                                                     const std::set <Lucene::String> &fields);
+                                                     const std::set <Lucene::String>& fields);
 
         /*!
          * get detailed information for the sentences of a document specifed by a DocumentSummary object and update the
@@ -302,25 +304,25 @@ namespace tpc {
          * @param fields the set of fields to be retrieved for the sentences
          * @return the details of the document
          */
-        static void update_sentences_details_for_document(const DocumentSummary &doc_summary,
-                                                          DocumentDetails &doc_details,
+        static void update_sentences_details_for_document(const DocumentSummary& doc_summary,
+                                                          DocumentDetails& doc_details,
                                                           Lucene::QueryParserPtr sent_parser,
                                                           Lucene::SearcherPtr searcher,
                                                           Lucene::FieldSelectorPtr fsel,
-                                                          const std::set <Lucene::String> &fields);
+                                                          const std::set <Lucene::String>& fields);
 
-        static std::set <Lucene::String> compose_field_set(const std::set <std::string> &include_fields,
-                                                           const std::set <std::string> &exclude_fields,
-                                                           const std::set <std::string> &required_fields = {});
+        static std::set <Lucene::String> compose_field_set(const std::set <std::string>& include_fields,
+                                                           const std::set <std::string>& exclude_fields,
+                                                           const std::set <std::string>& required_fields = {});
 
-        static void update_document_details(DocumentDetails &doc_details, Lucene::String field,
+        static void update_document_details(DocumentDetails& doc_details, Lucene::String field,
                                             Lucene::DocumentPtr doc_ptr);
 
-        static std::vector <DocumentDetails> read_documents_details(const std::vector <DocumentSummary> &doc_summaries,
+        static std::vector <DocumentDetails> read_documents_details(const std::vector <DocumentSummary>& doc_summaries,
                                                                     Lucene::QueryParserPtr doc_parser,
                                                                     Lucene::SearcherPtr searcher,
                                                                     Lucene::FieldSelectorPtr fsel,
-                                                                    const std::set <Lucene::String> &fields);
+                                                                    const std::set <Lucene::String>& fields);
     };
 }
 

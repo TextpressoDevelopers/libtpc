@@ -1,0 +1,10 @@
+/*! \mainpage Main Page
+ *
+ * \section intro_sec Introduction
+ *
+ * Textpresso is a static library that contains a set of core functions to create Textpresso indices from cas files
+ * containing information about scientific papers and functions to efficiently search the stored documents.
+ *
+ * The main classes of the library are \ref tpc::TpcIndexWriter, which contains methods for creating and updating
+ * indices, and \ref tpc::TpcIndexReader, which contains functions to search documents.
+ */

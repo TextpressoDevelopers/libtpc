@@ -32,7 +32,7 @@ SearchResults TpcIndexReader::search_documents(const string& index_root_dir, con
     } else {
         analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_30);
     }
-    Collection<IndexReaderPtr> subReaders = get_subreaders(query.literatures, index_root_dir, query.type,
+    Collection<IndexReaderPtr> subReaders = get_subreaders(query.subindices, index_root_dir, query.type,
                                                            query.case_sensitive);
     MultiReaderPtr multireader = newLucene<MultiReader>(subReaders, true);
     QueryParserPtr parser = newLucene<QueryParser>(
@@ -83,7 +83,7 @@ set<String> TpcIndexReader::compose_field_set(const set<string> &include_fields,
     return fields;
 }
 
-Collection<IndexReaderPtr> TpcIndexReader::get_subreaders(const vector<string>& literatures,
+Collection<IndexReaderPtr> TpcIndexReader::get_subreaders(const vector<string>& subindices,
                                                           const string& index_root_dir, QueryType type,
                                                           bool case_sensitive)
 {
@@ -94,7 +94,7 @@ Collection<IndexReaderPtr> TpcIndexReader::get_subreaders(const vector<string>& 
         index_type = case_sensitive ? sentence_indexname_cs : sentence_indexname;
     }
     Collection<IndexReaderPtr> subReaders = Collection<IndexReaderPtr>::newInstance(0);
-    for (const string& literature : literatures) {
+    for (const string& literature : subindices) {
         string index_dir;
         index_dir.append(index_root_dir); index_dir.append("/"); index_dir.append(literature);
         index_dir.append("/"); index_dir.append(index_type);
@@ -292,7 +292,7 @@ SearchResults TpcIndexReader::read_sentences_summaries(const Collection<ScoreDoc
 
 vector<DocumentDetails> TpcIndexReader::get_documents_details(const vector<DocumentSummary> &doc_summaries,
                                                               const string &index_root_dir,
-                                                              const vector<string> &literatures,
+                                                              const vector<string> &subindices,
                                                               bool sort_by_year,
                                                               bool include_sentences,
                                                               set<string> include_doc_fields,
@@ -304,7 +304,7 @@ vector<DocumentDetails> TpcIndexReader::get_documents_details(const vector<Docum
     set<String> doc_f = compose_field_set(include_doc_fields, exclude_doc_fields, {"year"});
     FieldSelectorPtr doc_fsel = newLucene<LazySelector>(doc_f);
     AnalyzerPtr analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_30);
-    Collection<IndexReaderPtr> docSubReaders = get_subreaders(literatures, index_root_dir, QueryType::document);
+    Collection<IndexReaderPtr> docSubReaders = get_subreaders(subindices, index_root_dir, QueryType::document);
     MultiReaderPtr docMultireader = newLucene<MultiReader>(docSubReaders, true);
     QueryParserPtr docParser = newLucene<QueryParser>(LuceneVersion::LUCENE_30,
                                                       String(document_indexname.begin(), document_indexname.end()),
@@ -319,25 +319,24 @@ vector<DocumentDetails> TpcIndexReader::get_documents_details(const vector<Docum
     if (include_sentences) {
         sent_f = compose_field_set(include_match_sentences_fields, exclude_match_sentences_fields);
         sent_fsel = newLucene<LazySelector>(sent_f);
-        sentSubReaders = get_subreaders(literatures, index_root_dir, QueryType::sentence_without_ids);
+        sentSubReaders = get_subreaders(subindices, index_root_dir, QueryType::sentence_without_ids);
         sentMultireader = newLucene<MultiReader>(sentSubReaders, true);
         sentParser = newLucene<QueryParser>(LuceneVersion::LUCENE_30,
                                             String(sentence_indexname.begin(), sentence_indexname.end()),
                                             analyzer);
         sent_searcher = newLucene<IndexSearcher>(sentMultireader);
     }
-    vector<DocumentDetails> documentsDetails = read_documents_details(doc_summaries, docParser, searcher,
+    results = read_documents_details(doc_summaries, docParser, searcher,
                                                                       doc_fsel, doc_f);
     map<string, DocumentSummary> doc_summaries_map;
     for (const auto& doc_summary : doc_summaries) {
         doc_summaries_map[doc_summary.identifier] = doc_summary;
     }
-    for (DocumentDetails& docDetails : documentsDetails ) {
-        if (include_sentences) {
+    if (include_sentences) {
+        for (DocumentDetails& docDetails : results ) {
             update_sentences_details_for_document(doc_summaries_map[docDetails.identifier], docDetails, sentParser,
                                                   sent_searcher, sent_fsel, sent_f);
         }
-        results.push_back(docDetails);
     }
     docMultireader->close();
     if (include_sentences) {
@@ -353,14 +352,14 @@ vector<DocumentDetails> TpcIndexReader::get_documents_details(const vector<Docum
 
 DocumentDetails TpcIndexReader::get_document_details(const DocumentSummary& doc_summary,
                                                      const string& index_root_dir,
-                                                     const vector<string>& literatures,
+                                                     const vector<string>& subindices,
                                                      bool include_sentences,
                                                      set<string> include_doc_fields,
                                                      set<string> include_match_sentences_fields,
                                                      const set<string>& exclude_doc_fields,
                                                      const set<string>& exclude_match_sentences_fields)
 {
-    return get_documents_details({doc_summary}, index_root_dir, literatures, false, include_sentences,
+    return get_documents_details({doc_summary}, index_root_dir, subindices, false, include_sentences,
                                  include_doc_fields, include_match_sentences_fields, exclude_doc_fields,
                                  exclude_match_sentences_fields)[0];
 }

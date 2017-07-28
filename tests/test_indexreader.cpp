@@ -32,25 +32,25 @@ namespace {
             query_sentence_woids.type = QueryType::sentence_without_ids;
             query_sentence_woids.query_text = "sentence:al";
             query_sentence_woids.case_sensitive = false;
-            query_sentence_woids.literatures = literatures;
+            query_sentence_woids.subindices = literatures;
 
             query_sentence_wids.sort_by_year = false;
             query_sentence_wids.type = QueryType::sentence_with_ids;
             query_sentence_wids.query_text = "sentence:al";
             query_sentence_wids.case_sensitive = false;
-            query_sentence_wids.literatures = literatures;
+            query_sentence_wids.subindices = literatures;
 
             query_sentence_year.sort_by_year = true;
             query_sentence_year.type = QueryType::sentence_without_ids;
             query_sentence_year.query_text = "sentence:test";
             query_sentence_year.case_sensitive = false;
-            query_sentence_year.literatures = literatures;
+            query_sentence_year.subindices = literatures;
 
             query_document.sort_by_year = true;
             query_document.type = QueryType::document;
             query_document.query_text = "fulltext:DYN-1";
             query_document.case_sensitive = false;
-            query_document.literatures = literatures;
+            query_document.subindices = literatures;
         }
 
         void TearDown() override{
@@ -106,7 +106,7 @@ namespace {
     TEST_F(ReaderTest, SearchSummaryAndDetailsHaveSameSize) {
         SearchResults results = TpcIndexReader::search_documents(index_root_dir, query_document);
         std::vector<DocumentDetails> docDetails = TpcIndexReader::get_documents_details(
-                results.hit_documents, index_root_dir, query_document.literatures, false, false);
+                results.hit_documents, index_root_dir, query_document.subindices, false, false);
         ASSERT_EQ(results.hit_documents.size(), docDetails.size());
     }
 }
