@@ -29,9 +29,6 @@
 #include <boost/algorithm/string.hpp>
 #include <codecvt>
 #include <chrono>
-#include <cryptopp/hex.h>
-#include <cryptopp/files.h>
-#include <cryptopp/sha.h>
 #include "../../lucene-custom/CaseSensitiveAnalyzer.h"
 
 using namespace std;

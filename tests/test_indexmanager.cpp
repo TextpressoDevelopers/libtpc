@@ -131,11 +131,6 @@ namespace {
     TEST_F(IndexManagerTest, DeleteDocument) {
         IndexManager indexManager1("/tmp/textpresso_test/index", false);
         indexManager1.remove_file_from_index("076e42e3e7ee32a9", "celegans");
-        DocumentSummary docSummary = DocumentSummary();
-        docSummary.identifier = "076e42e3e7ee32a9";
-        Query q = Query();
-        q.
-        indexManager1.get_document_details()
     }
 }
 
