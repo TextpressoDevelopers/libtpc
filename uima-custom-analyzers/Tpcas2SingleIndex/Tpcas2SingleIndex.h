@@ -62,6 +62,8 @@ private:
     IndexWriterPtr sentencewriter; 
     IndexWriterPtr fulltextwriter_casesens; //index writers
     IndexWriterPtr sentencewriter_casesens;
+
+    std::string root_dir;
 };
 
 #endif	/* TPCAS2LPP_H */

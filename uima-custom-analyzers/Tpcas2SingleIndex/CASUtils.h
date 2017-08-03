@@ -24,7 +24,7 @@ std::wstring getCleanText(CAS& tcas);
 std::wstring getFulltext(CAS& tcas);// get full texto(not clean)
 std::string getCASType(uima::CAS & tcas); // get CAS file type(PDF or NXML)
 std::string gettpfnvHash(uima::CAS& tcas); // get hash value
-std::string getFilename(uima::CAS& tcas); // get filename
+std::string getFilename(uima::CAS& tcas);
 std::string getXMLstring(uima::CAS & tcas); // get xml from tpcas
 
 #endif	/* CASUTILS_H */

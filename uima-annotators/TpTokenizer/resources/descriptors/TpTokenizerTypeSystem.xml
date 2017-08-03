@@ -24,7 +24,7 @@
                     <rangeTypeName>uima.cas.String</rangeTypeName>
                 </featureDescription>
             </features>
-        </typeDescription>           
+        </typeDescription>
         <typeDescription>
             <name>org.apache.uima.textpresso.token</name>
             <description>Token annotation.</description>

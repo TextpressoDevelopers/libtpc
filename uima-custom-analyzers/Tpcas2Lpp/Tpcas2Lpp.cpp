@@ -6,7 +6,6 @@
  * modified Nov, 2013, liyuling
  */
 
-#include "../../TpcCommons.h"
 #include "Tpcas2Lpp.h"
 #include <lucene++/FileUtils.h>
 #include "CASUtils.h"

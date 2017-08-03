@@ -19,22 +19,46 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 find_package(APR REQUIRED)
 include_directories(${APR_INCLUDE_DIR})
 
-set(SOURCE_FILES TpcCommons.h Utils.h Utils.cpp lucene-custom/CaseSensitiveAnalyzer.h
+find_package(CImg REQUIRED)
+include_directories(${CImg_INCLUDE_DIRS})
+
+set(SOURCE_FILES Utils.h Utils.cpp lucene-custom/CaseSensitiveAnalyzer.h
         lucene-custom/CaseSensitiveAnalyzer.cpp uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.h
         uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.cpp)
-add_library(libtextpresso SHARED ${SOURCE_FILES} TpcIndexWriter.h TpcIndexWriter.cpp TpcIndexReader.h
-        TpcIndexReader.cpp)
-target_link_libraries(libtextpresso lucene++)
+add_library(libtextpresso SHARED ${SOURCE_FILES} IndexManager.h IndexManager.cpp CASManager.h CASManager.cpp
+        cas-generators/pdf2tpcas/ElementCluster.cpp
+        cas-generators/pdf2tpcas/ElementCluster.h cas-generators/pdf2tpcas/PdfInfo.cpp
+        cas-generators/pdf2tpcas/PdfInfo.h cas-generators/pdf2tpcas/PdfMyFontInfo.h
+        cas-generators/pdf2tpcas/PdfMyFontInfo.cpp cas-generators/Stream2Tpcas.h
+        cas-generators/Stream2Tpcas.cpp cas-generators/pdf2tpcas/TextElement.cpp
+        cas-generators/pdf2tpcas/TextElement.h cas-generators/xml2tpcas/pugiconfig.hpp
+        cas-generators/xml2tpcas/pugixml.cpp cas-generators/xml2tpcas/pugixml.hpp
+        cas-generators/xml2tpcas/PugiXml2Tpcas.cpp cas-generators/xml2tpcas/PugiXml2Tpcas.h
+        cas-generators/xml2tpcas/ReadXml2Stream.cpp cas-generators/xml2tpcas/ReadXml2Stream.h
+        cas-generators/Stream2Tpcas.cpp cas-generators/Stream2Tpcas.h)
+target_link_libraries(libtextpresso lucene++ icuuc uima boost_iostreams boost_system boost_regex boost_filesystem
+        xerces-c podofo z ${CImg_SYSTEM_LIBS})
 
-add_executable(test_indexreader ${SOURCE_FILES} TpcIndexReader.h TpcIndexReader.cpp tests/test_indexreader.cpp)
-target_link_libraries(test_indexreader gtest lucene++ pthread boost_system boost_iostreams boost_regex icuuc uima)
+add_executable(test_indexmanager ${SOURCE_FILES} IndexManager.h IndexManager.cpp tests/test_indexmanager.cpp)
+target_link_libraries(test_indexmanager gtest lucene++ pthread boost_system boost_iostreams boost_regex icuuc uima
+        boost_filesystem xerces-c)
 
-add_executable(test_indexwriter ${SOURCE_FILES} TpcIndexWriter.h TpcIndexWriter.cpp tests/test_indexwriter.cpp)
-target_link_libraries(test_indexwriter gtest lucene++ pthread boost_system boost_filesystem boost_iostreams xerces-c
-        uima boost_regex icuuc)
+add_executable(test_casmanager ${SOURCE_FILES} CASManager.h CASManager.cpp tests/test_casmanager.cpp
+        cas-generators/pdf2tpcas/ElementCluster.cpp
+        cas-generators/pdf2tpcas/ElementCluster.h cas-generators/pdf2tpcas/PdfInfo.cpp
+        cas-generators/pdf2tpcas/PdfInfo.h cas-generators/pdf2tpcas/PdfMyFontInfo.h
+        cas-generators/pdf2tpcas/PdfMyFontInfo.cpp cas-generators/Stream2Tpcas.h
+        cas-generators/Stream2Tpcas.cpp cas-generators/pdf2tpcas/TextElement.cpp
+        cas-generators/pdf2tpcas/TextElement.h cas-generators/xml2tpcas/pugiconfig.hpp
+        cas-generators/xml2tpcas/pugixml.cpp cas-generators/xml2tpcas/pugixml.hpp
+        cas-generators/xml2tpcas/PugiXml2Tpcas.cpp cas-generators/xml2tpcas/PugiXml2Tpcas.h
+        cas-generators/xml2tpcas/ReadXml2Stream.cpp cas-generators/xml2tpcas/ReadXml2Stream.h
+        cas-generators/Stream2Tpcas.cpp cas-generators/Stream2Tpcas.h)
+target_link_libraries(test_casmanager gtest lucene++ pthread boost_system boost_iostreams boost_regex icuuc uima
+        boost_filesystem xerces-c podofo z ${CImg_SYSTEM_LIBS})
 
 install(TARGETS libtextpresso RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
-install(FILES TpcCommons.h TpcIndexWriter.h TpcIndexReader.h DESTINATION include/textpresso)
+install(FILES IndexManager.h CASManager.h DESTINATION include/textpresso)
 
 # uima annotators
 
@@ -115,7 +139,7 @@ add_library(Tpcas2SingleIndex SHARED uima-custom-analyzers/Tpcas2SingleIndex/CAS
         uima-custom-analyzers/Tpcas2SingleIndex/TpTrie.cpp uima-custom-analyzers/Tpcas2SingleIndex/Utils.h
         lucene-custom/CaseSensitiveAnalyzer.cpp lucene-custom/CaseSensitiveAnalyzer.h)
 target_link_libraries(Tpcas2SingleIndex lucene++ xerces-c icuuc boost_system uima boost_filesystem boost_regex
-        boost_iostreams)
+        boost_iostreams crypto++)
 
 add_executable(WriteFeatureDefsFromPg uima-annotators/WriteFeatureDefsFromPg/main.cpp)
 target_link_libraries(WriteFeatureDefsFromPg uima pqxx)
@@ -139,5 +163,6 @@ install(FILES
 
 install(DIRECTORY tests/data DESTINATION share/textpresso)
 
-install(TARGETS Tpcas2TpCentral TpLexiconAnnotatorFromPg TpTokenizer TxTokenizer Tpcas2Bib Tpcas2Bib4Nxml
+install(TARGETS Tpcas2TpCentral Tpcas2SingleIndex TpLexiconAnnotatorFromPg TpTokenizer TxTokenizer Tpcas2Bib
+        Tpcas2Bib4Nxml
         LIBRARY DESTINATION lib)

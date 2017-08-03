@@ -6,7 +6,6 @@
  */
 
 #include "Tpcas2Bib4Nxml.h"
-#include "../../TpcCommons.h"
 #include "CASUtils.h"
 #include "TpTrie.h"
 #include <iomanip>

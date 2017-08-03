@@ -5,7 +5,6 @@
  * Created on February 5, 2013, 1:27 PM
  * modified Nov, 2013, liyuling
  */
-#include "../../TpcCommons.h"
 #include "Tpcas2SingleIndex.h"
 #include <lucene++/FileUtils.h>
 #include "CASUtils.h"
@@ -30,7 +29,9 @@
 #include <boost/algorithm/string.hpp>
 #include <codecvt>
 #include <chrono>
-
+#include <cryptopp/hex.h>
+#include <cryptopp/files.h>
+#include <cryptopp/sha.h>
 #include "../../lucene-custom/CaseSensitiveAnalyzer.h"
 
 using namespace std;
@@ -38,6 +39,7 @@ using namespace boost;
 using namespace std::chrono;
 
 Tpcas2SingleIndex::Tpcas2SingleIndex() {
+    root_dir = "/usr/local/textpresso/tpcas";
 }
 
 Tpcas2SingleIndex::Tpcas2SingleIndex(const Tpcas2SingleIndex & orig) {
@@ -727,6 +729,7 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
     vector<String> bib_info;
     //string regex_wb = "WBPaper";
     string filename = getFilename(tcas);
+    string filetime = to_string(boost::filesystem::last_write_time(root_dir + "/" + filename + ".gz"));
     //boost::regex regex_to_match(regex_wb.c_str(), boost::regex::icase);
     bib_info = GetBib(filename);
     String l_filepath = StringUtils::toString(filename.c_str());
@@ -805,7 +808,9 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
                                         Field::STORE_YES));
     fulltextdoc->add(newLucene<Field > (L"literature_compressed", CompressionTools::compressString(l_literature),
                                         Field::STORE_YES));
-    fulltextwriter->addDocument(fulltextdoc);
+    fulltextdoc->add(newLucene<Field > (L"last_write_time", String(filetime.begin(), filetime.end()), Field::STORE_YES,
+                                        Field::INDEX_NO));
+    fulltextwriter->updateDocument(newLucene<Term> (L"identifier", l_filenamehash), fulltextdoc);
     fulltextwriter_casesens->addDocument(fulltextdoc);
     IndexSentences(tcas, cat_map,bib_info,sentencewriter);
     IndexSentences(tcas, cat_map,bib_info,sentencewriter_casesens);
