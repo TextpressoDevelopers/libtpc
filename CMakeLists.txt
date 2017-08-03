@@ -139,7 +139,7 @@ add_library(Tpcas2SingleIndex SHARED uima-custom-analyzers/Tpcas2SingleIndex/CAS
         uima-custom-analyzers/Tpcas2SingleIndex/TpTrie.cpp uima-custom-analyzers/Tpcas2SingleIndex/Utils.h
         lucene-custom/CaseSensitiveAnalyzer.cpp lucene-custom/CaseSensitiveAnalyzer.h)
 target_link_libraries(Tpcas2SingleIndex lucene++ xerces-c icuuc boost_system uima boost_filesystem boost_regex
-        boost_iostreams crypto++)
+        boost_iostreams)
 
 add_executable(WriteFeatureDefsFromPg uima-annotators/WriteFeatureDefsFromPg/main.cpp)
 target_link_libraries(WriteFeatureDefsFromPg uima pqxx)
