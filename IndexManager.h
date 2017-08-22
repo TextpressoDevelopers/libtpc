@@ -178,7 +178,7 @@ namespace tpc {
         };
 
         /*!
-         * search Textpresso Lucene index for documents
+         * add, retrieve or remove documents from Textpresso index
          */
         class IndexManager {
         public:
@@ -222,13 +222,12 @@ namespace tpc {
 
             /*!
              * @brief search the Textpresso index for documents matching the provided Lucene query and return summary
-             * information with a list of results sorted by score
+             * information with a list of results sorted by their match score
              *
              * The results returned by this method contain basic information regarding the documents matching the searches
              *
              * Note that while the documents are sorted by score, their matched sentences, in case of sentence searches,
              * are not sorted in order to obtain better performances
-             * @param index_root_dir the root dir of the Lucene indexes
              * @param query a query object
              * @param doc_ids limit the search to a set of document ids. This is useful for sentence queries to retrieve
              * the sentence ids for a set of documents obtained by a previous search without ids
@@ -241,8 +240,7 @@ namespace tpc {
              * @brief get detailed information about a document specified by a DocumentSummary object
              *
              * @param doc_summary the DocumentSummary object that identifies the document
-             * @param index_root_dir the root directory of the index containing information about the document
-             * @param subindices the list of subindices to search
+             * @param literatures the list of subindices to search
              * @param include_sentences_details whether to retrieve the details of the matching sentences specified in the
              * DocumentSummary object
              * @param include_doc_fields the list of fields to retrieve for the document. Retrieve all fields if not
@@ -255,7 +253,7 @@ namespace tpc {
              * @return the detailed information of the document
              */
             DocumentDetails get_document_details(const DocumentSummary &doc_summary,
-                                                 const std::vector<std::string> &subindices,
+                                                 const std::vector<std::string> &literatures,
                                                  bool include_sentences_details = true,
                                                  std::set<std::string> include_doc_fields = document_fields_detailed,
                                                  std::set<std::string> include_match_sentences_fields = sentence_fields_detailed,
@@ -268,8 +266,7 @@ namespace tpc {
              * @param doc_summaries a list of DocumentSummary object that identifies the documents to be searched and,
              * optionally, the list of sentences in the matching_sentences field of the document for which to retrieve
              * detailed information
-             * @param index_root_dir the root directory of the index containing information about the document
-             * @param subindices the list of subindices to search
+             * @param literatures the list of subindices to search
              * @param sort_by_year whether to sort the results by year
              * @param include_sentences_details whether to retrieve the details of the matching sentences specified in the
              * DocumentSummary object
@@ -280,10 +277,10 @@ namespace tpc {
              * @param exclude_doc_fields the list of fields to exclude for the document
              * @param exclude_match_sentences_fields the list of fields to exclude for the matching sentences specified in
              * the DocumentSummary object
-             * @return the detailed information of the document
+             * @return the detailed information of the documents
              */
             std::vector<DocumentDetails> get_documents_details(const std::vector<DocumentSummary> &doc_summaries,
-                                                               const std::vector<std::string> &subindices,
+                                                               const std::vector<std::string> &literatures,
                                                                bool sort_by_year,
                                                                bool include_sentences_details = true,
                                                                std::set<std::string> include_doc_fields = document_fields_detailed,

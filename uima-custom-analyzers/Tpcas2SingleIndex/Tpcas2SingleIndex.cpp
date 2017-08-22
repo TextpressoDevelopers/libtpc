@@ -465,7 +465,8 @@ std::map<wstring, vector<wstring> > collectCategoryMapping(CAS& tcas) {
     return cat_map;
 }
 
-void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<String> bib_info, IndexWriterPtr sentencewriter) {
+void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<String> bib_info,
+                    const IndexWriterPtr& sentencewriter) {
     string filenamehash = gettpfnvHash(tcas);
     String l_filenamehash = StringUtils::toString(filenamehash.c_str());
     String l_author = fieldStartMark + bib_info[0] + fieldEndMark;
@@ -726,7 +727,7 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
     vector<String> bib_info;
     //string regex_wb = "WBPaper";
     string filename = getFilename(tcas);
-    string filetime = to_string(boost::filesystem::last_write_time(root_dir + "/" + filename + ".gz"));
+    //string filetime = to_string(boost::filesystem::last_write_time(root_dir + "/" + filename + ".gz"));
     //boost::regex regex_to_match(regex_wb.c_str(), boost::regex::icase);
     bib_info = GetBib(filename);
     String l_filepath = StringUtils::toString(filename.c_str());
@@ -805,12 +806,14 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
                                         Field::STORE_YES));
     fulltextdoc->add(newLucene<Field > (L"literature_compressed", CompressionTools::compressString(l_literature),
                                         Field::STORE_YES));
-    fulltextdoc->add(newLucene<Field > (L"last_write_time", String(filetime.begin(), filetime.end()), Field::STORE_YES,
-                                        Field::INDEX_NO));
+    //fulltextdoc->add(newLucene<Field > (L"last_write_time", String(filetime.begin(), filetime.end()), Field::STORE_YES,
+    //                                    Field::INDEX_NO));
     fulltextwriter->updateDocument(newLucene<Term> (L"identifier", l_filenamehash), fulltextdoc);
-    fulltextwriter_casesens->addDocument(fulltextdoc);
-    IndexSentences(tcas, cat_map,bib_info,sentencewriter);
-    IndexSentences(tcas, cat_map,bib_info,sentencewriter_casesens);
+    fulltextwriter_casesens->updateDocument(newLucene<Term> (L"identifier", l_filenamehash), fulltextdoc);
+    sentencewriter->deleteDocuments(newLucene<Term> (L"identifier", l_filenamehash));
+    sentencewriter_casesens->deleteDocuments(newLucene<Term> (L"identifier", l_filenamehash));
+    IndexSentences(tcas, cat_map,bib_info, sentencewriter);
+    IndexSentences(tcas, cat_map,bib_info, sentencewriter_casesens);
     return (TyErrorId) UIMA_ERR_NONE;
 }
 

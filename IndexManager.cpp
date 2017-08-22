@@ -328,7 +328,7 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
 }
 
 vector<DocumentDetails> IndexManager::get_documents_details(const vector<DocumentSummary> &doc_summaries,
-                                                              const vector<string> &subindices,
+                                                              const vector<string> &literatures,
                                                               bool sort_by_year,
                                                               bool include_sentences,
                                                               set<string> include_doc_fields,
@@ -340,7 +340,7 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
     set<String> doc_f = compose_field_set(include_doc_fields, exclude_doc_fields, {"year"});
     FieldSelectorPtr doc_fsel = newLucene<LazySelector>(doc_f);
     AnalyzerPtr analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_30);
-    Collection<IndexReaderPtr> docSubReaders = get_subreaders(subindices, QueryType::document);
+    Collection<IndexReaderPtr> docSubReaders = get_subreaders(literatures, QueryType::document);
     MultiReaderPtr docMultireader = newLucene<MultiReader>(docSubReaders, false);
     QueryParserPtr docParser = newLucene<QueryParser>(LuceneVersion::LUCENE_30,
                                                       String(document_indexname.begin(), document_indexname.end()),
@@ -355,7 +355,7 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
     if (include_sentences) {
         sent_f = compose_field_set(include_match_sentences_fields, exclude_match_sentences_fields);
         sent_fsel = newLucene<LazySelector>(sent_f);
-        sentSubReaders = get_subreaders(subindices, QueryType::sentence_without_ids);
+        sentSubReaders = get_subreaders(literatures, QueryType::sentence_without_ids);
         sentMultireader = newLucene<MultiReader>(sentSubReaders, false);
         sentParser = newLucene<QueryParser>(LuceneVersion::LUCENE_30,
                                             String(sentence_indexname.begin(), sentence_indexname.end()),
@@ -386,14 +386,14 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
 }
 
 DocumentDetails IndexManager::get_document_details(const DocumentSummary& doc_summary,
-                                                     const vector<string>& subindices,
+                                                     const vector<string>& literatures,
                                                      bool include_sentences,
                                                      set<string> include_doc_fields,
                                                      set<string> include_match_sentences_fields,
                                                      const set<string>& exclude_doc_fields,
                                                      const set<string>& exclude_match_sentences_fields)
 {
-    return get_documents_details({doc_summary}, subindices, false, include_sentences,
+    return get_documents_details({doc_summary}, literatures, false, include_sentences,
                                  include_doc_fields, include_match_sentences_fields, exclude_doc_fields,
                                  exclude_match_sentences_fields)[0];
 }
