@@ -436,7 +436,7 @@ namespace tpc {
              * @param index_descriptor the index descriptor location
              * @param temp_dir the temp dir location
              */
-            void add_cas_file_to_index(const char *file_path, std::string index_descriptor, std::string tempDir);
+            int add_cas_file_to_index(const char *file_path, std::string index_descriptor, std::string tempDir);
 
             /*!
              * process a single file to be added to the index, calling the appropriate UIMA annotator

@@ -467,8 +467,10 @@ std::map<wstring, vector<wstring> > collectCategoryMapping(CAS& tcas) {
 
 void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<String> bib_info,
                     const IndexWriterPtr& sentencewriter) {
-    string filenamehash = gettpfnvHash(tcas);
-    String l_filenamehash = StringUtils::toString(filenamehash.c_str());
+    std::hash<std::string> string_hash;
+    size_t filenamehash = string_hash(getFilename(tcas));
+    //string filenamehash = gettpfnvHash(tcas);
+    String l_filenamehash = StringUtils::toString(to_string(filenamehash).c_str());
     String l_author = fieldStartMark + bib_info[0] + fieldEndMark;
     String l_accession = bib_info[1];
     String l_type = bib_info[2];
@@ -716,8 +718,10 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
     string pid = tpfnv(usdocref);
     wstring w_cleanText = getCleanText(tcas);
 
-    string filenamehash = gettpfnvHash(tcas);
-    String l_filenamehash = StringUtils::toString(filenamehash.c_str());
+    std::hash<std::string> string_hash;
+    size_t filenamehash = string_hash(getFilename(tcas));
+    //string filenamehash = gettpfnvHash(tcas);
+    String l_filenamehash = StringUtils::toString(to_string(filenamehash).c_str());
 
     // collecting and indexing categories
     auto cat_map = collectCategoryMapping(tcas);

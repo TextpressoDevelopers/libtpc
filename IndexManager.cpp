@@ -651,7 +651,7 @@ TmpConf IndexManager::write_tmp_conf_files(const string &index_path) {
     return tmpConf;
 }
 
-void IndexManager::add_cas_file_to_index(const char* file_path, string index_descriptor, string temp_dir_path) {
+int IndexManager::add_cas_file_to_index(const char* file_path, string index_descriptor, string temp_dir_path) {
     std::string gzfile(file_path);
     string source_file = gzfile;
     boost::replace_all(source_file, ".tpcas.gz", ".bib");
@@ -661,11 +661,11 @@ void IndexManager::add_cas_file_to_index(const char* file_path, string index_des
     boost::replace_all(filename, ".tpcas.gz", ".bib");
     if(gzfile.find(".tpcas") == std::string::npos) {
         //std::cerr << "No .tpcas file found for file " << source.filename().string() << endl;
-        return;
+        return 0;
     }
     if(!exists(bib_file)) {
         //std::cerr << "No .bib file found for file " << source.filename().string() << endl;
-        return;
+        return 0;
     }
     string bib_file_temp = temp_dir_path + "/" + filename;
     path dst  = temp_dir_path + "/" + filename;
@@ -724,8 +724,10 @@ void IndexManager::add_cas_file_to_index(const char* file_path, string index_des
         delete pEngine;
         std::remove(tpcasfile.c_str()); //delete uncompressed temp casfile
         std::remove(bib_file_temp.c_str());
+        return 1;
     } catch (uima::Exception e) {
         std::cerr << "Exception: " << e << std::endl;
+        return 0;
     }
 }
 
@@ -734,11 +736,16 @@ bool IndexManager::process_single_file(const string& filepath, bool& first_paper
         return false;
     cout << "processing cas file: " << filepath << endl;
     if (first_paper) {
-        add_cas_file_to_index(filepath.c_str(), tmp_conf.index_descriptor, tmp_conf.tmp_dir);
-        first_paper = false;
-        boost::filesystem::remove(tmp_conf.new_index_flag);
+        if (add_cas_file_to_index(filepath.c_str(), tmp_conf.index_descriptor, tmp_conf.tmp_dir) == 1) {
+            first_paper = false;
+            boost::filesystem::remove(tmp_conf.new_index_flag);
+        } else {
+            return false;
+        }
     } else {
-        add_cas_file_to_index(filepath.c_str(), tmp_conf.index_descriptor, tmp_conf.tmp_dir);
+        if (add_cas_file_to_index(filepath.c_str(), tmp_conf.index_descriptor, tmp_conf.tmp_dir) == 0) {
+            return false;
+        }
     }
     return true;
 }
