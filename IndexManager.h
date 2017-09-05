@@ -212,8 +212,8 @@ namespace tpc {
             };
             IndexManager(IndexManager&& other) noexcept :
                     readers_vec_map(std::move(other.readers_vec_map)),
-                    readers_map(other.readers_map),
-                    readersname_map(other.readersname_map),
+                    readers_map(std::move(other.readers_map)),
+                    readersname_map(std::move(other.readersname_map)),
                     readonly(other.readonly) {  };
             IndexManager& operator=(IndexManager&& other) noexcept {
                 readers_vec_map = std::move(other.readers_vec_map);
