@@ -194,22 +194,35 @@ namespace tpc {
             };
             IndexManager(const IndexManager& other) {
                 readers_vec_map = other.readers_vec_map;
+                readers_map = other.readers_map;
+                readersname_map = other.readersname_map;
                 index_dir = other.index_dir;
                 available_literatures = other.available_literatures;
                 available_subindices = other.available_subindices;
+                readonly = other.readonly;
             };
             IndexManager& operator=(const IndexManager& other) {
                 readers_vec_map = other.readers_vec_map;
+                readers_map = other.readers_map;
+                readersname_map = other.readersname_map;
                 index_dir = other.index_dir;
                 available_literatures = other.available_literatures;
                 available_subindices = other.available_subindices;
+                readonly = other.readonly;
             };
-            IndexManager(IndexManager&& other) noexcept : readers_vec_map(std::move(other.readers_vec_map)) { };
+            IndexManager(IndexManager&& other) noexcept :
+                    readers_vec_map(std::move(other.readers_vec_map)),
+                    readers_map(other.readers_map),
+                    readersname_map(other.readersname_map),
+                    readonly(other.readonly) {  };
             IndexManager& operator=(IndexManager&& other) noexcept {
                 readers_vec_map = std::move(other.readers_vec_map);
+                readers_map = std::move(other.readers_map);
+                readersname_map = std::move(other.readersname_map);
                 index_dir = std::move(other.index_dir);
                 available_literatures = std::move(other.available_literatures);
                 available_subindices = std::move(other.available_subindices);
+                readonly = other.readonly;
             };
 
             void close() {
@@ -442,6 +455,8 @@ namespace tpc {
             std::string index_dir;
             std::set<std::string> available_literatures;
             std::set<std::string> available_subindices;
+            bool readonly;
+            std::map<std::string, std::vector<std::string>> readersname_map;
         };
     }
 }

@@ -48,21 +48,17 @@ IndexManager::IndexManager(const string& index_path, bool read_only) {
                 index_dir.append("/");
                 index_dir.append(index_type);
                 if (exists(path(index_dir + "/segments.gen"))) {
-                    IndexReaderPtr reader = IndexReader::open(
-                            FSDirectory::open(String(index_dir.begin(), index_dir.end())), read_only);
-                    if (reader) {
-                        readers_vec_map[line.substr(0, line.find_first_of("_")) + "_" + index_type].push_back(reader);
-                        readers_map[line + "_" + index_type] = reader;
-                        available_literatures.insert(line.substr(0, line.find_first_of("_")));
-                        available_subindices.insert(line);
-                    } else {
-                        throw index_exception();
-                    }
+                    available_literatures.insert(line.substr(0, line.find_first_of("_")));
+                    available_subindices.insert(line);
+                } else {
+                    throw index_exception();
                 }
             }
+            readersname_map[line.substr(0, line.find_first_of("_"))].push_back(line);
         }
         lit_file.close();
     }
+    readonly = read_only;
 }
 
 SearchResults IndexManager::search_documents(const Query& query, const set<string>& doc_ids)
@@ -126,6 +122,7 @@ set<String> IndexManager::compose_field_set(const set<string> &include_fields, c
 Collection<IndexReaderPtr> IndexManager::get_subreaders(const vector<string>& literatures, QueryType type,
                                                         bool case_sensitive)
 {
+
     string index_type;
     if (type == QueryType::document) {
         index_type = case_sensitive ? document_indexname_cs : document_indexname;
@@ -135,7 +132,19 @@ Collection<IndexReaderPtr> IndexManager::get_subreaders(const vector<string>& li
     Collection<IndexReaderPtr> subReaders = Collection<IndexReaderPtr>::newInstance(0);
     for (const string& literature : literatures) {
         try {
-            for (const auto& subreader : readers_vec_map[literature + "_" + index_type]) {
+            if (readers_vec_map.find(literature + "_" + index_type) == readers_vec_map.end()) {
+                for (auto subreader : readersname_map[literature]) {
+                    string index_subdir = index_dir + "/" + subreader + "/" + index_type;
+                    IndexReaderPtr reader = IndexReader::open(
+                            FSDirectory::open(String(index_subdir.begin(), index_subdir.end())), readonly);
+                    if (reader) {
+                        readers_vec_map[subreader.substr(0, subreader.find_first_of("_")) + "_" + index_type].push_back(
+                                reader);
+                        readers_map[subreader + "_" + index_type] = reader;
+                    }
+                }
+            }
+            for (const auto &subreader : readers_vec_map[literature + "_" + index_type]) {
                 subReaders.add(subreader);
             }
         } catch (out_of_range e) {
