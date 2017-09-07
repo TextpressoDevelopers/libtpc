@@ -12,8 +12,8 @@
 
 class Stream2Tpcas {
 public:
-    Stream2Tpcas(std::stringstream & streamin, std::string outfn, const char * cnfg, const std::string& filetime);
-    Stream2Tpcas(std::string & stringin, std::string outfn, const char * cnfg, const std::string& filetime);
+    Stream2Tpcas(std::stringstream & streamin, std::string outfn, const char * cnfg);
+    Stream2Tpcas(std::string & stringin, std::string outfn, const char * cnfg);
     Stream2Tpcas(const Stream2Tpcas & orig);
     virtual ~Stream2Tpcas();
     void processInputStream();

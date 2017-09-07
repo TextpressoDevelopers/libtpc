@@ -135,6 +135,10 @@ wstring getCleanText(CAS& tcas) {
 string getXMLstring(CAS & tcas)
 {
     UnicodeStringRef usdocref = tcas.getDocumentText();
-    string xmlstring = usdocref.asUTF8();
-    return xmlstring;
+    if (usdocref.length() > 0) {
+        std::string xmlstring = usdocref.asUTF8();
+        return xmlstring;
+    } else {
+        return "";
+    }
 }

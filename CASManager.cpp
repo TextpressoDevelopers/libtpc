@@ -31,10 +31,10 @@ void CASManager::add_file(FileType type, const string& cas_repo_location, const 
         file_name_no_ext.erase(extPos);
     }
     file_name_tpcas = file_name_no_ext + ".tpcas";
-    string foutname = cas_repo_location + "/" + literature + "/" + file_name_no_ext;
+    string foutname = cas_repo_location + "/" + literature + "/" + boost::filesystem::path(file_path).parent_path()
+                                                                           .filename().string();
     string fimageoutname = foutname + "/images";
     foutname.append("/" + file_name_tpcas);
-    fimageoutname.append("/" + file_name_no_ext);
     boost::filesystem::create_directories(fimageoutname);
     stringstream sout;
     string file_time = to_string(boost::filesystem::last_write_time(file_path));
@@ -44,7 +44,7 @@ void CASManager::add_file(FileType type, const string& cas_repo_location, const 
                 PdfInfo myInfo(file_path, fimageoutname);
                 myInfo.StreamAll(sout);
                 const char *descriptor = pdf2tpcasdescriptor.c_str();
-                Stream2Tpcas stp(sout, foutname, descriptor, file_time);
+                Stream2Tpcas stp(sout, foutname, descriptor);
                 stp.processInputStream();
             } catch (PoDoFo::PdfError &e) {
                 cerr << "Error: An error occurred during processing the pdf file." << endl << e.GetError() << endl
@@ -57,7 +57,7 @@ void CASManager::add_file(FileType type, const string& cas_repo_location, const 
             std::stringstream sout;
             rs.GetStream(sout);
             const char *descriptor = xml2tpcasdescriptor.c_str();
-            Stream2Tpcas stp(sout, foutname, descriptor, file_time);
+            Stream2Tpcas stp(sout, foutname, descriptor);
             stp.processInputStream();
             break;
     }

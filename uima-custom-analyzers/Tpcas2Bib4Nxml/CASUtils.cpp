@@ -15,7 +15,12 @@ std::string getFilename(uima::CAS& tcas) {
 }
 
 std::string getXMLstring(uima::CAS & tcas) {
-    uima::UnicodeStringRef usdocref = tcas.getDocumentText();
-    std::string xmlstring = usdocref.asUTF8();
-    return xmlstring;
+    uima::UnicodeStringRef usdocref;
+    usdocref = tcas.getDocumentText();
+    if (usdocref.getBuffer() != NULL) {
+        std::string xmlstring = usdocref.asUTF8();
+        return xmlstring;
+    } else {
+        return "";
+    }
 }

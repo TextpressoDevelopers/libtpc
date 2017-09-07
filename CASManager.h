@@ -32,7 +32,7 @@ namespace tpc {
              * @param file_path the path to the file
              */
             static void add_file(FileType type, const std::string &cas_repo_location,
-                                         const std::string &literature, const std::string &file_path);
+                                 const std::string &literature, const std::string &file_path);
         };
     }
 }

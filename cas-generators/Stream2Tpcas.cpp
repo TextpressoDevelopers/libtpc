@@ -9,19 +9,16 @@
 
 #include "uima/xmiwriter.hpp"
 
-Stream2Tpcas::Stream2Tpcas(std::stringstream & streamin, std::string outfn, const char * cnfg,
-                           const std::string& filetime) {
+Stream2Tpcas::Stream2Tpcas(std::stringstream & streamin, std::string outfn, const char * cnfg) {
     m_streamin << streamin.rdbuf();
     m_outfn = outfn;
     m_cnfg = cnfg;
-    file_time = filetime;
 }
 
-Stream2Tpcas::Stream2Tpcas(std::string & stringin, std::string outfn, const char * cnfg, const std::string& filetime) {
+Stream2Tpcas::Stream2Tpcas(std::string & stringin, std::string outfn, const char * cnfg) {
     m_stringin = stringin;
     m_outfn = outfn;
     m_cnfg = cnfg;
-    file_time = filetime;
 }
 
 Stream2Tpcas::Stream2Tpcas(const Stream2Tpcas & orig) {
@@ -75,7 +72,7 @@ void Stream2Tpcas::processInputStream() {
         try {
             // Need to transfer filename to UIMA annotator. We do that by
             // putting is in front of the stream. Format:
-            // e integers # filename # file_time # rest of stream
+            // e integers # filename # rest of stream
             // where integers is the number of characters up to the the second hash
             // sign
             std::string auxname = m_outfn;
@@ -92,7 +89,7 @@ void Stream2Tpcas::processInputStream() {
                 auxname.erase(994, auxname.length());
             }
             std::stringstream inp;
-            inp << threeintegers << "#" << auxname << "#" << file_time << "#"
+            inp << threeintegers << "#" << auxname << "#"
                 << m_streamin.rdbuf();
 //            std::string inp = m_streamin.str();
             UnicodeString ustrInputText;
@@ -166,7 +163,7 @@ void Stream2Tpcas::processInputString() {
         try {
             // Need to transfer filename to UIMA annotator. We do that by
             // putting is in front of the stream. Format:
-            // e integers # filename # file_time # rest of stream
+            // e integers # filename # rest of stream
             // where integers is the number of characters up to the the second hash
             // sign
             std::string auxname = m_outfn;
@@ -183,7 +180,7 @@ void Stream2Tpcas::processInputString() {
                 auxname.erase(994, auxname.length());
             }
             std::stringstream aux;
-            aux << threeintegers << "#" << auxname << "#" << file_time << "#";
+            aux << threeintegers << "#" << auxname << "#";
             std::string inp = aux.str() + m_stringin;
             UnicodeString ustrInputText;
             ustrInputText.append(UnicodeString::fromUTF8(StringPiece(inp)));

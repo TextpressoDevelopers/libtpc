@@ -232,6 +232,10 @@ uima::TyErrorId Tpcas2Bib4Nxml::process(uima::CAS & tcas, uima::ResultSpecificat
     vector<std::string> bib_info;
     string filename = getFilename(tcas);
     string xml_text = getXMLstring(tcas);
+    if (xml_text == "") {
+        throw uima::Exception(uima::ErrorInfo());
+        //return (uima::TyErrorId) UIMA_ERR_ANNOTATOR_COULD_NOT_FIND;
+    }
     bib_info = GetBibFromXML(xml_text);
     bib_info.push_back(filename);
     WriteBib(bib_info);

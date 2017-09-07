@@ -41,7 +41,7 @@ ReadXml2Stream::ReadXml2Stream(const pugi::char_t * pszSource) {
     if (result) {
         //std::cerr << "XML [" << pszSource << "] parsed without errors.\n\n";
         doc.print(sout_);
-//        doc.print(std::cerr);
+        //        doc.print(std::cerr);
     } else {
         std::cerr << "XML [" << pszSource << "] parsed with errors.\n";
         std::cerr << "Error description: " << result.description() << "\n";
