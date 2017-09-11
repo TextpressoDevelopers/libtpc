@@ -6,5 +6,6 @@
 #define PGONTOLOGY "dbname=www-data"
 #define PGONTOLOGYTABLENAME "tpontology"
 #define STOPWORDTABLENAME "stopwords"
+#define PCRELATIONSTABLENAME "pcrelations"
 
 #endif

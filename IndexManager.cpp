@@ -616,13 +616,13 @@ void IndexManager::create_index_from_existing_cas_dir(const std::string &input_c
             }
         }
     }
-    remove(index_dir + "/subindex.config");
-    std::ofstream ofs;
-    ofs.open (index_dir + "/subindex.config", std::ofstream::out | std::ofstream::app);
-    for (const auto& subindex : available_subindices) {
-        ofs << subindex << endl;
-    }
-    ofs.close();
+    //remove(index_dir + "/subindex.config");
+    //std::ofstream ofs;
+    //ofs.open (index_dir + "/subindex.config", std::ofstream::out | std::ofstream::app);
+    //for (const auto& subindex : available_subindices) {
+    //    ofs << subindex << endl;
+    //}
+    //ofs.close();
 }
 
 void IndexManager::create_subindex_dir_structure(const string &index_path) {

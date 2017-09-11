@@ -33,11 +33,12 @@ void CASManager::add_file(FileType type, const string& cas_repo_location, const 
     file_name_tpcas = file_name_no_ext + ".tpcas";
     string foutname = cas_repo_location + "/" + literature + "/" + boost::filesystem::path(file_path).parent_path()
                                                                            .filename().string();
-    string fimageoutname = foutname + "/images";
+    string fimageoutname = foutname + "/images/" + boost::filesystem::path(file_path).parent_path().filename().string();
+    boost::filesystem::create_directories(foutname + "/images");
     foutname.append("/" + file_name_tpcas);
-    boost::filesystem::create_directories(fimageoutname);
     stringstream sout;
     string file_time = to_string(boost::filesystem::last_write_time(file_path));
+
     switch (type) {
         case FileType::pdf:
             try {

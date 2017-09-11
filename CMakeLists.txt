@@ -84,7 +84,9 @@ add_library(TpLexiconAnnotatorFromPg SHARED uima-annotators/TpLexiconAnnotatorFr
         uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconNode.h
         uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconNode.cpp
         uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconTrie.h
-        uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconTrie.cpp)
+        uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconTrie.cpp
+        uima-annotators/TpLexiconAnnotatorFromPg/AllMyParents.h
+        uima-annotators/TpLexiconAnnotatorFromPg/AllMyParents.cpp)
 target_link_libraries(TpLexiconAnnotatorFromPg pqxx TpTokenizer)
 
 add_library(TpLsa SHARED uima-annotators/TpLsa/cmdline.h uima-annotators/TpLsa/LsaTp.h uima-annotators/TpLsa/LsaTp.cpp
