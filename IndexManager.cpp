@@ -76,7 +76,11 @@ SearchResults IndexManager::search_documents(const Query& query, const set<strin
     String query_str = String(query.query_text.begin(), query.query_text.end());
     if (!doc_ids.empty()) {
         string joined_ids = boost::algorithm::join(doc_ids, " OR identifier:");
-        query_str += L" AND (identifier:" + String(joined_ids.begin(), joined_ids.end()) + L")";
+        if (query_str != "") {
+            query_str += L" AND (identifier:" + String(joined_ids.begin(), joined_ids.end()) + L")";
+        } else {
+            query_str += L"identifier:" + String(joined_ids.begin(), joined_ids.end());
+        }
     }
     QueryPtr luceneQuery = parser->parse(query_str);
     SearcherPtr searcher = newLucene<IndexSearcher>(multireader);
