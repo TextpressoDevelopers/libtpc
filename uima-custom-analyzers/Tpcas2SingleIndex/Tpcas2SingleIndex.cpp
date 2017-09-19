@@ -344,6 +344,7 @@ vector<String> Tpcas2SingleIndex::GetBib(string fullfilename)
         string field = items[0];
         string content  = items[1];
         boost::replace_all(content, "\377", "");
+        boost::replace_all(content, "\\377", "");
         // Process str
         if(field == "author")
         {
