@@ -342,42 +342,45 @@ vector<String> Tpcas2SingleIndex::GetBib(string fullfilename)
         vector<string> items;
         boost::split(items, str, boost::is_any_of("|"));
         string field = items[0];
-        string content  = items[1];
+        string content  = items[1].c_str();
         boost::replace_all(content, "\377", "");
         boost::replace_all(content, "\\377", "");
+        String content_conv = StringUtils::toString(content.c_str());
+        boost::replace_all(content_conv, "\377", "");
+        boost::replace_all(content_conv, "\\377", "");
         // Process str
         if(field == "author")
         {
-            bib_info.push_back(StringUtils::toString(content.c_str()));
+            bib_info.push_back(content_conv);
         }
         if(field == "accession")
         {
-            bib_info.push_back(StringUtils::toString(content.c_str()));
+            bib_info.push_back(content_conv);
         }
          if(field == "type")
         {
-            bib_info.push_back(StringUtils::toString(content.c_str()));
+            bib_info.push_back(content_conv);
         }
          if(field == "title")
         {
 
-            bib_info.push_back(StringUtils::toString(content.c_str()));
+            bib_info.push_back(content_conv);
         }
          if(field == "journal")
         {
-            bib_info.push_back(StringUtils::toString(content.c_str()));
+            bib_info.push_back(content_conv);
         }
          if(field == "citation")
         {
-            bib_info.push_back(StringUtils::toString(content.c_str()));
+            bib_info.push_back(content_conv);
         }
          if(field == "year")
         {
-            bib_info.push_back(StringUtils::toString(content.c_str()));
+            bib_info.push_back(content_conv);
         }
          if(field == "abstract")
         {
-            bib_info.push_back(StringUtils::toString(content.c_str()));
+            bib_info.push_back(content_conv);
         }
     }
     return bib_info;
