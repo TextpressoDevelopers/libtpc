@@ -343,6 +343,7 @@ vector<String> Tpcas2SingleIndex::GetBib(string fullfilename)
         boost::split(items, str, boost::is_any_of("|"));
         string field = items[0];
         string content  = items[1];
+        boost::replace_all(content, "\377", "");
         // Process str
         if(field == "author")
         {
@@ -358,6 +359,7 @@ vector<String> Tpcas2SingleIndex::GetBib(string fullfilename)
         }
          if(field == "title")
         {
+
             bib_info.push_back(StringUtils::toString(content.c_str()));
         }
          if(field == "journal")
