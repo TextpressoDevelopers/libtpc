@@ -169,6 +169,7 @@ namespace tpc {
             size_t total_num_sentences{0};
             double max_score{0};
             double min_score{DBL_MAX};
+            Lucene::Collection<Lucene::ScoreDocPtr> indexMatches{};
         };
 
         class index_exception : public std::exception {
@@ -244,10 +245,20 @@ namespace tpc {
              * @param query a query object
              * @param doc_ids limit the search to a set of document ids. This is useful for sentence queries to retrieve
              * the sentence ids for a set of documents obtained by a previous search without ids
+             * @param matches_only perform a partial search that returns a Lucene internal object representing the
+             * collection of matches. This object can be passed to a subsequent call to this method to continue the
+             * search and get the complete results. This is useful to get an initial estimate of the size of the
+             * complete search
+             * @param indexMatches a Lucene internal object containing the results of a previous partial search without
+             * scores. The search will be completed with the sentence or document scores starting from the provided
+             * matching documents
              * @return the list of the documents matching the query sorted by their scores and encapsulated in a
              * SearchResutl object
              */
-            SearchResults search_documents(const Query &query, const std::set<std::string> &doc_ids = {});
+            SearchResults search_documents(const Query &query, bool matches_only = false,
+                                           const std::set<std::string> &doc_ids = {},
+                                           const Lucene::Collection<Lucene::ScoreDocPtr>& indexMatches =
+                                           Lucene::Collection<Lucene::ScoreDocPtr>());
 
             /*!
              * @brief get detailed information about a document specified by a DocumentSummary object

@@ -61,47 +61,57 @@ IndexManager::IndexManager(const string& index_path, bool read_only) {
     readonly = read_only;
 }
 
-SearchResults IndexManager::search_documents(const Query& query, const set<string>& doc_ids)
+SearchResults IndexManager::search_documents(const Query& query, bool matches_only, const set<string>& doc_ids,
+                                             const Collection<ScoreDocPtr>& indexMatches)
 {
-    AnalyzerPtr analyzer;
-    if (query.case_sensitive) {
-        analyzer = newLucene<CaseSensitiveAnalyzer>(LuceneVersion::LUCENE_30);
-    } else {
-        analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_30);
-    }
+    Collection<ScoreDocPtr> matchesCollection;
     Collection<IndexReaderPtr> subReaders = get_subreaders(query.literatures, query.type, query.case_sensitive);
     MultiReaderPtr multireader = newLucene<MultiReader>(subReaders, false);
-    QueryParserPtr parser = newLucene<QueryParser>(
-            LuceneVersion::LUCENE_30, query.type == QueryType::document ? L"fulltext" : L"sentence", analyzer);
-    String query_str = String(query.query_text.begin(), query.query_text.end());
-    if (!doc_ids.empty()) {
-        string joined_ids = boost::algorithm::join(doc_ids, " OR identifier:");
-        if (query_str != "") {
-            query_str += L" AND (identifier:" + String(joined_ids.begin(), joined_ids.end()) + L")";
-        } else {
-            query_str += L"identifier:" + String(joined_ids.begin(), joined_ids.end());
-        }
-    }
-    QueryPtr luceneQuery = parser->parse(query_str);
     SearcherPtr searcher = newLucene<IndexSearcher>(multireader);
-    TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(maxHits, true);
-    searcher->search(luceneQuery, collector);
-    Collection<ScoreDocPtr> matchesCollection = collector->topDocs()->scoreDocs;
-    SearchResults result = SearchResults();
-    if (query.type == QueryType::document) {
-        result = read_documents_summaries(matchesCollection, subReaders, searcher);
-    } else if (query.type == QueryType::sentence_with_ids || query.type == QueryType::sentence_without_ids) {
-        result = read_sentences_summaries(matchesCollection, subReaders, searcher, query.sort_by_year,
-                                          query.type == QueryType::sentence_with_ids);
-        result.total_num_sentences = matchesCollection.size();
-    }
-    result.query = query;
-    if (query.sort_by_year) {
-        // sort by year (greater first) and by score (greater first)
-        sort(result.hit_documents.begin(), result.hit_documents.end(), document_year_score_gt);
+    if (!indexMatches || indexMatches.size() > 0) {
+        AnalyzerPtr analyzer;
+        if (query.case_sensitive) {
+            analyzer = newLucene<CaseSensitiveAnalyzer>(LuceneVersion::LUCENE_30);
+        } else {
+            analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_30);
+        }
+        QueryParserPtr parser = newLucene<QueryParser>(
+                LuceneVersion::LUCENE_30, query.type == QueryType::document ? L"fulltext" : L"sentence", analyzer);
+        String query_str = String(query.query_text.begin(), query.query_text.end());
+        if (!doc_ids.empty()) {
+            string joined_ids = boost::algorithm::join(doc_ids, " OR identifier:");
+            if (query_str != "") {
+                query_str += L" AND (identifier:" + String(joined_ids.begin(), joined_ids.end()) + L")";
+            } else {
+                query_str += L"identifier:" + String(joined_ids.begin(), joined_ids.end());
+            }
+        }
+        QueryPtr luceneQuery = parser->parse(query_str);
+        TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(maxHits, true);
+        searcher->search(luceneQuery, collector);
+        matchesCollection = collector->topDocs()->scoreDocs;
     } else {
-        // sort by score (greater first)
-        sort(result.hit_documents.begin(), result.hit_documents.end(), document_score_gt);
+        matchesCollection = indexMatches;
+    }
+    SearchResults result = SearchResults();
+    if (!matches_only) {
+        if (query.type == QueryType::document) {
+            result = read_documents_summaries(matchesCollection, subReaders, searcher);
+        } else if (query.type == QueryType::sentence_with_ids || query.type == QueryType::sentence_without_ids) {
+            result = read_sentences_summaries(matchesCollection, subReaders, searcher, query.sort_by_year,
+                                              query.type == QueryType::sentence_with_ids);
+            result.total_num_sentences = matchesCollection.size();
+        }
+        result.query = query;
+        if (query.sort_by_year) {
+            // sort by year (greater first) and by score (greater first)
+            sort(result.hit_documents.begin(), result.hit_documents.end(), document_year_score_gt);
+        } else {
+            // sort by score (greater first)
+            sort(result.hit_documents.begin(), result.hit_documents.end(), document_score_gt);
+        }
+    } else {
+        result.indexMatches = matchesCollection;
     }
     multireader->close();
     return result;
