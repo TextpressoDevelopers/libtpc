@@ -12,6 +12,7 @@
 #include <lucene++/targetver.h>
 #include <lucene++/LuceneHeaders.h>
 #include "../../lucene-custom/CaseSensitiveAnalyzer.h"
+#include "../../CASManager.h"
 
 using namespace uima;
 using namespace std;

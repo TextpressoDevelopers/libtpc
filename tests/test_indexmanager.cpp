@@ -110,7 +110,7 @@ namespace {
     TEST_F(IndexManagerTest, SearchSummaryAndDetailsHaveSameSize) {
         SearchResults results = indexManager.search_documents(query_document);
         std::vector<DocumentDetails> docDetails = indexManager.get_documents_details(
-                results.hit_documents, query_document.literatures, false, false);
+                results.hit_documents, false, false);
         ASSERT_EQ(results.hit_documents.size(), docDetails.size());
     }
 
@@ -125,12 +125,12 @@ namespace {
 
     TEST_F(IndexManagerTest, AddSingleDocumentsToIndexTest) {
         IndexManager indexManager1("/tmp/textpresso_test/index");
-        indexManager1.add_file_to_index(single_cas_files_dir + "/WBPaper00029298.tpcas.gz", "celegans");
+        indexManager1.add_file_to_index(single_cas_files_dir + "/WBPaper00029298.tpcas.gz");
     }
 
     TEST_F(IndexManagerTest, DeleteDocument) {
         IndexManager indexManager1("/tmp/textpresso_test/index", false);
-        indexManager1.remove_file_from_index("076e42e3e7ee32a9", "celegans");
+        indexManager1.remove_file_from_index("076e42e3e7ee32a9");
     }
 }
 

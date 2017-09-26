@@ -29,11 +29,14 @@
 #include <boost/algorithm/string.hpp>
 #include <codecvt>
 #include <chrono>
+#include <regex>
 #include "../../lucene-custom/CaseSensitiveAnalyzer.h"
+#include "../../CASManager.h"
 
 using namespace std;
 using namespace boost;
 using namespace std::chrono;
+using namespace tpc::cas;
 
 Tpcas2SingleIndex::Tpcas2SingleIndex() {
     root_dir = "/usr/local/textpresso/tpcas";
@@ -471,7 +474,7 @@ std::map<wstring, vector<wstring> > collectCategoryMapping(CAS& tcas) {
     return cat_map;
 }
 
-void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<String> bib_info,
+void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<String> bib_info, const string& corpora,
                     const IndexWriterPtr& sentencewriter) {
     std::hash<std::string> string_hash;
     size_t filenamehash = string_hash(getFilename(tcas));
@@ -575,6 +578,8 @@ void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<St
             sentencedoc->add(newLucene<Field>(L"journal", l_journal, Field::STORE_NO, Field::INDEX_ANALYZED));
             sentencedoc->add(newLucene<Field>(L"citation", l_citation, Field::STORE_NO, Field::INDEX_ANALYZED));
             sentencedoc->add(newLucene<Field>(L"year", l_year, Field::STORE_YES, Field::INDEX_ANALYZED));
+            sentencedoc->add(newLucene<Field>(L"corpus", String(corpora.begin(), corpora.end()), Field::STORE_NO,
+                                              Field::INDEX_ANALYZED));
             sentencewriter->addDocument(sentencedoc);
         }
         aait.moveToNext();
@@ -737,13 +742,27 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
     vector<String> bib_info;
     //string regex_wb = "WBPaper";
     string filename = getFilename(tcas);
-    //string filetime = to_string(boost::filesystem::last_write_time(root_dir + "/" + filename + ".gz"));
-    //boost::regex regex_to_match(regex_wb.c_str(), boost::regex::icase);
+    // if filename contains C. elegans or C. elegans supplemental, then set corpus according to filename, otherwise
+    // get subject and title from xml fulltext and classify according to regex
+    string corpora("BG");
+    if (getCASType(tcas) == "pdf") {
+        if (std::regex_match (filename, std::regex("^C\. elegans Supplementals\/(.*)"))) {
+            corpora.append("C. elegans SupplementalsED");
+        } else {
+            corpora.append("C. elegansED");
+        }
+    } else {
+        string xml_text;
+        usdocref.extractUTF8(xml_text);
+        BibInfo bibInfo = CASManager::get_bib_info_from_xml_text(xml_text);
+        vector<string> corpora_vec = CASManager::classify_article_into_corpora_from_bib_file(bibInfo);
+        corpora.append(boost::algorithm::join(corpora_vec, "ED BG"));
+        corpora.append("ED");
+    }
     bib_info = GetBib(filename);
     String l_filepath = StringUtils::toString(filename.c_str());
     vector<string> filepathSplit;
     boost::split(filepathSplit, filename, boost::is_any_of("/"));
-    String l_literature = StringUtils::toString(filepathSplit[0].c_str());
     bib_info.push_back(l_filepath);
     String l_author = fieldStartMark + bib_info[0] + fieldEndMark;
     String l_accession = bib_info[1];
@@ -814,16 +833,14 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
     fulltextdoc->add(newLucene<Field > (L"year", l_year, Field::STORE_YES, Field::INDEX_ANALYZED));
     fulltextdoc->add(newLucene<Field > (L"abstract_compressed", CompressionTools::compressString(l_abstract),
                                         Field::STORE_YES));
-    fulltextdoc->add(newLucene<Field > (L"literature_compressed", CompressionTools::compressString(l_literature),
-                                        Field::STORE_YES));
-    //fulltextdoc->add(newLucene<Field > (L"last_write_time", String(filetime.begin(), filetime.end()), Field::STORE_YES,
-    //                                    Field::INDEX_NO));
+    fulltextdoc->add(newLucene<Field > (L"corpus", String(corpora.begin(), corpora.end()), Field::STORE_YES,
+                                        Field::INDEX_ANALYZED));
     fulltextwriter->updateDocument(newLucene<Term> (L"identifier", l_filenamehash), fulltextdoc);
     fulltextwriter_casesens->updateDocument(newLucene<Term> (L"identifier", l_filenamehash), fulltextdoc);
     sentencewriter->deleteDocuments(newLucene<Term> (L"identifier", l_filenamehash));
     sentencewriter_casesens->deleteDocuments(newLucene<Term> (L"identifier", l_filenamehash));
-    IndexSentences(tcas, cat_map,bib_info, sentencewriter);
-    IndexSentences(tcas, cat_map,bib_info, sentencewriter_casesens);
+    IndexSentences(tcas, cat_map, bib_info, corpora, sentencewriter);
+    IndexSentences(tcas, cat_map, bib_info, corpora, sentencewriter_casesens);
     return (TyErrorId) UIMA_ERR_NONE;
 }
 

@@ -37,11 +37,11 @@ add_library(libtextpresso SHARED ${SOURCE_FILES} IndexManager.h IndexManager.cpp
         cas-generators/xml2tpcas/ReadXml2Stream.cpp cas-generators/xml2tpcas/ReadXml2Stream.h
         cas-generators/Stream2Tpcas.cpp cas-generators/Stream2Tpcas.h)
 target_link_libraries(libtextpresso lucene++ icuuc uima boost_iostreams boost_system boost_regex boost_filesystem
-        xerces-c podofo z ${CImg_SYSTEM_LIBS})
+        boost_serialization xerces-c podofo z ${CImg_SYSTEM_LIBS})
 
 add_executable(test_indexmanager ${SOURCE_FILES} IndexManager.h IndexManager.cpp tests/test_indexmanager.cpp)
 target_link_libraries(test_indexmanager gtest lucene++ pthread boost_system boost_iostreams boost_regex icuuc uima
-        boost_filesystem xerces-c)
+        boost_filesystem boost_serialization xerces-c)
 
 add_executable(test_casmanager ${SOURCE_FILES} CASManager.h CASManager.cpp tests/test_casmanager.cpp
         cas-generators/pdf2tpcas/ElementCluster.cpp

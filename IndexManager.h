@@ -13,29 +13,34 @@
 #include <string>
 #include <lucene++/LuceneHeaders.h>
 #include <cfloat>
+#include "CASManager.h"
 
 namespace tpc {
 
     namespace index {
 
-        static const std::string index_root_location("/usr/local/textpresso/luceneindex/");
-        static const std::string document_indexname("fulltext");
-        static const std::string sentence_indexname("sentence");
-        static const std::string document_indexname_cs("fulltext_cs");
-        static const std::string sentence_indexname_cs("sentence_cs");
+        static const std::string INDEX_ROOT_LOCATION("/usr/local/textpresso/luceneindex/");
+        static const std::string CORPUS_COUNTER_FILENAME("cc.cfg");
+        static const std::string DOCUMENT_INDEXNAME("fulltext");
+        static const std::string SENTENCE_INDEXNAME("sentence");
+        static const std::string DOCUMENT_INDEXNAME_CS("fulltext_cs");
+        static const std::string SENTENCE_INDEXNAME_CS("sentence_cs");
 
-        static const int maxHits(1000000);
-        static const int field_cache_min_hits(10000);
+        static const int MAX_HITS(1000000);
+        static const int FIELD_CACHE_MIN_HITS(10000);
 
-        static const int max_num_sentenceids_in_query(200);
-        static const int max_num_docids_in_query(200);
+        static const int MAX_NUM_SENTENCES_IN_QUERY(200);
+        static const int MAX_NUM_DOCIDS_IN_QUERY(200);
 
-        static const std::set<std::string> document_fields_detailed{"accession_compressed", "title_compressed",
+        static const std::set<std::string> INDEX_TYPES{DOCUMENT_INDEXNAME, SENTENCE_INDEXNAME, DOCUMENT_INDEXNAME_CS,
+                                                       SENTENCE_INDEXNAME_CS};
+        static const std::string SUBINDEX_NAME = "subindex";
+        static const std::set<std::string> DOCUMENTS_FIELDS_DETAILED{"accession_compressed", "title_compressed",
                                                                     "author_compressed", "journal_compressed", "year",
                                                                     "abstract_compressed", "filepath",
                                                                     "literature_compressed", "identifier",
                                                                     "fulltext_compressed", "fulltext_cat_compressed"};
-        static const std::set<std::string> sentence_fields_detailed{"sentence_id", "begin", "end",
+        static const std::set<std::string> SENTENCE_FIELDS_DETAILED{"sentence_id", "begin", "end",
                                                                     "sentence_compressed", "sentence_cat_compressed"};
 
         /*!
@@ -172,10 +177,10 @@ namespace tpc {
             Lucene::Collection<Lucene::ScoreDocPtr> indexMatches{};
         };
 
-        class index_exception : public std::exception {
-            const char *what() const throw() override {
-                return "index not found";
-            }
+        class tpc_exception : public std::runtime_error {
+        public:
+            explicit tpc_exception(char const* const message) throw(): std::runtime_error(message) { }
+            virtual char const* what() const throw() { return std::exception::what(); }
         };
 
         /*!
@@ -185,54 +190,61 @@ namespace tpc {
         public:
 
             IndexManager() = default;
-            explicit IndexManager(const std::string& index_path, bool read_only = true);
+            explicit IndexManager(const std::string& index_path, bool read_only = true):
+                    index_dir(index_path),
+                    readonly(read_only),
+                    readers_map(),
+                    corpus_doc_counter() { };
             ~IndexManager() {
-                for (auto &it : readers_vec_map) {
-                    for (const auto& reader : it.second) {
-                        reader->close();
-                    }
-                }
+                close();
             };
             IndexManager(const IndexManager& other) {
-                readers_vec_map = other.readers_vec_map;
                 readers_map = other.readers_map;
-                readersname_map = other.readersname_map;
                 index_dir = other.index_dir;
-                available_literatures = other.available_literatures;
-                available_subindices = other.available_subindices;
                 readonly = other.readonly;
+                corpus_doc_counter = other.corpus_doc_counter;
             };
             IndexManager& operator=(const IndexManager& other) {
-                readers_vec_map = other.readers_vec_map;
                 readers_map = other.readers_map;
-                readersname_map = other.readersname_map;
                 index_dir = other.index_dir;
-                available_literatures = other.available_literatures;
-                available_subindices = other.available_subindices;
                 readonly = other.readonly;
+                corpus_doc_counter = other.corpus_doc_counter;
             };
             IndexManager(IndexManager&& other) noexcept :
-                    readers_vec_map(std::move(other.readers_vec_map)),
                     readers_map(std::move(other.readers_map)),
-                    readersname_map(std::move(other.readersname_map)),
-                    readonly(other.readonly) {  };
+                    readonly(other.readonly),
+                    index_dir(std::move(other.index_dir)),
+                    corpus_doc_counter(std::move(other.corpus_doc_counter)) {  };
             IndexManager& operator=(IndexManager&& other) noexcept {
-                readers_vec_map = std::move(other.readers_vec_map);
                 readers_map = std::move(other.readers_map);
-                readersname_map = std::move(other.readersname_map);
                 index_dir = std::move(other.index_dir);
-                available_literatures = std::move(other.available_literatures);
-                available_subindices = std::move(other.available_subindices);
                 readonly = other.readonly;
+                corpus_doc_counter = std::move(other.corpus_doc_counter);
             };
 
             void close() {
-                for (auto &it : readers_vec_map) {
-                    for (const auto& reader : it.second) {
-                        reader->close();
-                    }
+                for (auto &it : readers_map) {
+                    it.second->close();
                 }
             }
+
+            /*!
+             * return the list of indexed corpora
+             * @return a vector of strings, representing the list of available corpora in the index
+             */
+            std::vector<std::string> get_available_corpora();
+
+            /*!
+             * return the number of articles indexed under a specific corpus
+             * @param corpus the value of the corpus
+             * @return the numbe of articles indexed under the specified corpus
+             */
+            int get_num_articles_in_corpus(const std::string& corpus);
+
+            /*!
+             * update the document counters for the index
+             */
+            void update_corpus_counter();
 
             /*!
              * @brief search the Textpresso index for documents matching the provided Lucene query and return summary
@@ -264,7 +276,6 @@ namespace tpc {
              * @brief get detailed information about a document specified by a DocumentSummary object
              *
              * @param doc_summary the DocumentSummary object that identifies the document
-             * @param literatures the list of subindices to search
              * @param include_sentences_details whether to retrieve the details of the matching sentences specified in the
              * DocumentSummary object
              * @param include_doc_fields the list of fields to retrieve for the document. Retrieve all fields if not
@@ -277,10 +288,9 @@ namespace tpc {
              * @return the detailed information of the document
              */
             DocumentDetails get_document_details(const DocumentSummary &doc_summary,
-                                                 const std::vector<std::string> &literatures,
                                                  bool include_sentences_details = true,
-                                                 std::set<std::string> include_doc_fields = document_fields_detailed,
-                                                 std::set<std::string> include_match_sentences_fields = sentence_fields_detailed,
+                                                 std::set<std::string> include_doc_fields = DOCUMENTS_FIELDS_DETAILED,
+                                                 std::set<std::string> include_match_sentences_fields = SENTENCE_FIELDS_DETAILED,
                                                  const std::set<std::string> &exclude_doc_fields = {},
                                                  const std::set<std::string> &exclude_match_sentences_fields = {});
 
@@ -290,7 +300,6 @@ namespace tpc {
              * @param doc_summaries a list of DocumentSummary object that identifies the documents to be searched and,
              * optionally, the list of sentences in the matching_sentences field of the document for which to retrieve
              * detailed information
-             * @param literatures the list of subindices to search
              * @param sort_by_year whether to sort the results by year
              * @param include_sentences_details whether to retrieve the details of the matching sentences specified in the
              * DocumentSummary object
@@ -304,11 +313,10 @@ namespace tpc {
              * @return the detailed information of the documents
              */
             std::vector<DocumentDetails> get_documents_details(const std::vector<DocumentSummary> &doc_summaries,
-                                                               const std::vector<std::string> &literatures,
                                                                bool sort_by_year,
                                                                bool include_sentences_details = true,
-                                                               std::set<std::string> include_doc_fields = document_fields_detailed,
-                                                               std::set<std::string> include_match_sentences_fields = sentence_fields_detailed,
+                                                               std::set<std::string> include_doc_fields = DOCUMENTS_FIELDS_DETAILED,
+                                                               std::set<std::string> include_match_sentences_fields = SENTENCE_FIELDS_DETAILED,
                                                                const std::set<std::string> &exclude_doc_fields = {},
                                                                const std::set<std::string> &exclude_match_sentences_fields = {});
 
@@ -334,26 +342,26 @@ namespace tpc {
             /*!
              * add a file to a textpresso index
              * @param file_path the path to a compressed cas file
-             * @param literature the literature to which the file have to be added
+             * @param literature the literature of the file
              * @param max_num_papers_per_subindex max number of papers per subindex
              */
-            void add_file_to_index(const std::string& file_path, const std::string& literature,
-                                   int max_num_papers_per_subindex = 50000);
+            void add_file_to_index(const std::string& file_path, int max_num_papers_per_subindex = 50000);
 
-            void remove_file_from_index(const std::string& identifier, const std::string& literature);
+            /*!
+             * remove a specific file from the index
+             * @param identifier the id of the file to remove
+             */
+            void remove_file_from_index(const std::string& identifier);
 
         private:
 
             /*!
              * create a collection of sub-readers with multiple Lucene indexes
-             * @param literatures the list of directory names for the indexed literatures
              * @param type the type of query to be performed by the subreaders
              * @param case_sensitive whether to get case sensitive subreaders
              * @return a collection of readers created from the Lucene indexes
              */
-            Lucene::Collection<Lucene::IndexReaderPtr> get_subreaders(const std::vector<std::string> &literatures,
-                                                                      QueryType type,
-                                                                      bool case_sensitive = false);
+            Lucene::Collection<Lucene::IndexReaderPtr> get_subreaders(QueryType type, bool case_sensitive = false);
 
             /*!
              * collect and return document basic information for a collection of matches obtained from a document search
@@ -458,16 +466,16 @@ namespace tpc {
              */
             bool process_single_file(const std::string &filepath, bool &first_paper, const TmpConf &tmp_conf);
 
-            void remove_document_from_specific_subindex(const std::string& identifier, const std::string& literature,
-                                                        QueryType type, bool case_sensitive);
+            void remove_document_from_index(const std::string& identifier, QueryType type, bool case_sensitive);
 
-            std::map<std::string, std::vector<Lucene::IndexReaderPtr>> readers_vec_map;
+            void save_corpus_counter();
+            void load_corpus_counter();
+            int get_num_docs_in_corpus_from_index(const std::string& corpus);
+
             std::map<std::string, Lucene::IndexReaderPtr> readers_map;
             std::string index_dir;
-            std::set<std::string> available_literatures;
-            std::set<std::string> available_subindices;
-            bool readonly;
-            std::map<std::string, std::vector<std::string>> readersname_map;
+            bool readonly{};
+            std::map<std::string, int> corpus_doc_counter;
         };
     }
 }
