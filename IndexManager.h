@@ -38,8 +38,9 @@ namespace tpc {
         static const std::set<std::string> DOCUMENTS_FIELDS_DETAILED{"accession_compressed", "title_compressed",
                                                                     "author_compressed", "journal_compressed", "year",
                                                                     "abstract_compressed", "filepath",
-                                                                    "literature_compressed", "identifier",
-                                                                    "fulltext_compressed", "fulltext_cat_compressed"};
+                                                                    "corpus", "identifier",
+                                                                    "fulltext_compressed", "type_compressed",
+                                                                     "fulltext_cat_compressed"};
         static const std::set<std::string> SENTENCE_FIELDS_DETAILED{"sentence_id", "begin", "end",
                                                                     "sentence_compressed", "sentence_cat_compressed"};
 
@@ -139,11 +140,12 @@ namespace tpc {
             std::string fulltext;
             std::string categories_string;
             std::string abstract;
-            std::string literature;
+            std::vector<std::string> corpora;
             std::string accession;
             std::string title;
             std::string author;
             std::string journal;
+            std::string type;
             std::vector<SentenceDetails> sentences_details;
         };
 
@@ -232,7 +234,7 @@ namespace tpc {
              * return the list of indexed corpora
              * @return a vector of strings, representing the list of available corpora in the index
              */
-            std::vector<std::string> get_available_corpora();
+            static std::vector<std::string> get_available_corpora();
 
             /*!
              * return the number of articles indexed under a specific corpus
@@ -245,6 +247,12 @@ namespace tpc {
              * update the document counters for the index
              */
             void update_corpus_counter();
+
+            /*!
+             * get the number of subindices used by the index
+             * @return the number of subindices
+             */
+            int get_num_subindices();
 
             /*!
              * @brief search the Textpresso index for documents matching the provided Lucene query and return summary

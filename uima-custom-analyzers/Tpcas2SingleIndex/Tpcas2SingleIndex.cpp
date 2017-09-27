@@ -745,6 +745,7 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
     // if filename contains C. elegans or C. elegans supplemental, then set corpus according to filename, otherwise
     // get subject and title from xml fulltext and classify according to regex
     string corpora("BG");
+    String l_article_type;
     if (getCASType(tcas) == "pdf") {
         if (std::regex_match (filename, std::regex("^C\. elegans Supplementals\/(.*)"))) {
             corpora.append("C. elegans SupplementalsED");
@@ -756,6 +757,9 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
         usdocref.extractUTF8(xml_text);
         BibInfo bibInfo = CASManager::get_bib_info_from_xml_text(xml_text);
         vector<string> corpora_vec = CASManager::classify_article_into_corpora_from_bib_file(bibInfo);
+        if (corpora_vec.empty()) {
+            corpora_vec.push_back(PMCOA_UNCLASSIFIED);
+        }
         corpora.append(boost::algorithm::join(corpora_vec, "ED BG"));
         corpora.append("ED");
     }

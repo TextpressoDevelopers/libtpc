@@ -126,7 +126,8 @@ Collection<IndexReaderPtr> IndexManager::get_subreaders(QueryType type, bool cas
     Collection<IndexReaderPtr> subReaders = Collection<IndexReaderPtr>::newInstance(0);
     directory_iterator enditr;
     for(directory_iterator itr(index_dir); itr != enditr; itr++) {
-        if (is_directory(itr->status()) && regex_match(itr->path().string(), regex(SUBINDEX_NAME + "_([0-9]+)"))) {
+        if (is_directory(itr->status()) && regex_match(itr->path().string(), regex(".*\/" + SUBINDEX_NAME +
+                                                                                           "\_[0-9]+"))) {
             string index_id(itr->path().string());
             index_id.append("/");
             index_id.append(index_type);
@@ -429,14 +430,19 @@ void IndexManager::update_document_details(DocumentDetails &doc_details, String 
         String abstract = CompressionTools::decompressString(
                 doc_ptr->getBinaryValue(StringUtils::toString("abstract_compressed")));
         doc_details.abstract = string(abstract.begin(), abstract.end());
-    } else if (field == L"literature_compressed") {
-        String literature = CompressionTools::decompressString(
-                doc_ptr->getBinaryValue(StringUtils::toString("literature_compressed")));
-        doc_details.literature = string(literature.begin(), literature.end());
+    } else if (field == L"corpus") {
+        String literature = doc_ptr->get(StringUtils::toString("corpus"));
+        string raw_lit = string(literature.begin(), literature.end());
+        raw_lit = raw_lit.substr(2, raw_lit.length() - 4);
+        boost::split_regex(doc_details.corpora, raw_lit, boost::regex("ED BG"));
     } else if (field == L"fulltext_compressed") {
         String fulltext = CompressionTools::decompressString(
                 doc_ptr->getBinaryValue(StringUtils::toString("fulltext_compressed")));
         doc_details.fulltext = string(fulltext.begin(), fulltext.end());
+    } else if (field == L"type_compressed") {
+        String type = CompressionTools::decompressString(
+                doc_ptr->getBinaryValue(StringUtils::toString("type_compressed")));
+        doc_details.type = string(type.begin(), type.end());
     } else if (field == L"fulltext_cat_compressed") {
         String fulltext_cat = CompressionTools::decompressString(
                 doc_ptr->getBinaryValue(StringUtils::toString("fulltext_cat_compressed")));
@@ -808,7 +814,7 @@ int IndexManager::get_num_articles_in_corpus(const string &corpus) {
 }
 
 void IndexManager::save_corpus_counter() {
-    std::ofstream ofs(INDEX_ROOT_LOCATION + "/" + CORPUS_COUNTER_FILENAME);
+    std::ofstream ofs(index_dir + "/" + CORPUS_COUNTER_FILENAME);
     {
         boost::archive::text_oarchive oa(ofs);
         oa << corpus_doc_counter;
@@ -816,7 +822,7 @@ void IndexManager::save_corpus_counter() {
 }
 
 void IndexManager::load_corpus_counter() {
-    std::ifstream ifs(INDEX_ROOT_LOCATION + "/" + CORPUS_COUNTER_FILENAME, std::ios::binary);
+    std::ifstream ifs(index_dir + "/" + CORPUS_COUNTER_FILENAME, std::ios::binary);
     boost::archive::text_iarchive ia(ifs);
     // read class state from archive
     ia >> corpus_doc_counter;
@@ -826,6 +832,8 @@ void IndexManager::update_corpus_counter() {
     for (const auto& corpus_regex : tpc::cas::PMCOA_CAT_REGEX) {
         corpus_doc_counter[corpus_regex.first] = get_num_docs_in_corpus_from_index(corpus_regex.first);
     }
+    corpus_doc_counter[tpc::cas::CELEGANS] = get_num_docs_in_corpus_from_index(tpc::cas::CELEGANS);
+    corpus_doc_counter[tpc::cas::CELEGANS_SUP] = get_num_docs_in_corpus_from_index(tpc::cas::CELEGANS_SUP);
 }
 
 int IndexManager::get_num_docs_in_corpus_from_index(const string& corpus) {
@@ -835,11 +843,23 @@ int IndexManager::get_num_docs_in_corpus_from_index(const string& corpus) {
     SearcherPtr searcher = newLucene<IndexSearcher>(multireader);
     AnalyzerPtr analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_30);
     QueryParserPtr parser = newLucene<QueryParser>(LuceneVersion::LUCENE_30, L"fulltext", analyzer);
-    String query_str = L"corpus:BG" + String(corpus.begin(), corpus.end()) + L"ED";
+    String query_str = L"corpus:\"BG" + String(corpus.begin(), corpus.end()) + L"ED\"";
     QueryPtr luceneQuery = parser->parse(query_str);
     TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
     searcher->search(luceneQuery, collector);
-    return collector->getTotalHits();
+    matchesCollection = collector->topDocs()->scoreDocs;
+    return matchesCollection.size();
+}
+
+int IndexManager::get_num_subindices() {
+    int subidx_counter(0);
+    directory_iterator enditr;
+    for(directory_iterator itr(index_dir); itr != enditr; itr++) {
+        if (is_directory(itr->status()) && regex_match(itr->path().string(), regex(SUBINDEX_NAME + "_([0-9]+)"))) {
+            ++subidx_counter;
+        }
+    }
+    return subidx_counter;
 }
 
 
