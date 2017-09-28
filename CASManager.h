@@ -10,6 +10,7 @@
 #define LIBTPC_TPCCASMANAGER_H
 
 #include <string>
+#include <vector>
 
 namespace tpc {
 
