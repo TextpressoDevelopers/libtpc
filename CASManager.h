@@ -11,13 +11,15 @@
 
 #include <string>
 #include <vector>
+#include "uima/xmiwriter.hpp"
 
 namespace tpc {
 
     namespace cas {
 
-        static const std::string pdf2tpcasdescriptor("/usr/local/uima_descriptors/TpTokenizer.xml");
-        static const std::string xml2tpcasdescriptor("/usr/local/uima_descriptors/TxTokenizer.xml");
+        static const std::string PDF2TPCAS_DESCRIPTOR("/usr/local/uima_descriptors/TpTokenizer.xml");
+        static const std::string XML2TPCAS_DESCRIPTOR("/usr/local/uima_descriptors/TxTokenizer.xml");
+        static const std::string TPCAS1_2_TPCAS2_DESCRIPTOR("/usr/local/uima-descriptors/TpLexiconAnnotatorFromPg.xml");
 
         static const std::vector<std::pair<std::string, std::string>> PMCOA_CAT_REGEX{
                 {"PMCOA Biology", ".*[Bb]io.*"}, {"PMCOA Neuroscience", ".*[Nn]euro.*"}, {"PMCOA Oncology", ".*([Cc]anc|[Oo]nc).*"},
@@ -70,14 +72,21 @@ namespace tpc {
         class CASManager {
         public:
             /*!
-             * add an article in pdf or xml format to the Textpresso repository, transforming it in cas1 format
+             * convert a pdf or xml article to cas1 format and save it to the specified location
+             * @param file_path the path to the raw file
              * @param type the type of file
-             * @param cas_repo_location the location of the cas repository
-             * @param sub_location the name of the subdirectory (usually representing a corpus) where to add the file
-             * @param file_path the path to the file
+             * @param out_dir the location where to save the new cas file
              */
-            static void add_file(FileType type, const std::string &cas_repo_location,
-                                 const std::string &sub_location, const std::string &file_path);
+            static void convert_raw_file_to_cas1(const std::string &file_path, FileType type,
+                                                 const std::string &out_dir, bool use_parent_dir_as_outname = false);
+
+            /*!
+             * convert a cas1 file to cas2 format and save it to the specified location
+             * @param file_path the path to the cas1 file
+             * @param out_dir the location where to save the new cas file
+             * @return 1 if the conversion succeded, 0 otherwise
+             */
+            static int convert_cas1_to_cas2(const std::string& file_path, const std::string& out_dir);
 
             /*!
              * extract bib information from the xml fulltext of an article
@@ -86,7 +95,16 @@ namespace tpc {
              */
             static BibInfo get_bib_info_from_xml_text(const std::string& xml_text);
 
+            /*!
+             * get the list of corpora to which the article belongs through classification performed on bibliographic
+             * information
+             * @param bib_info object containing the bibliographic information of the article
+             */
             static std::vector<std::string> classify_article_into_corpora_from_bib_file(const BibInfo& bib_info);
+
+        private:
+
+            static void writeXmi(uima::CAS &outCas, int num, std::string outfn);
         };
     }
 }

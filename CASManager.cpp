@@ -15,12 +15,17 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/regex.hpp>
 #include <regex>
+#include <xercesc/util/XMLString.hpp>
+#include <xercesc/framework/LocalFileInputSource.hpp>
+#include <uima/xmideserializer.hpp>
+#include "uima/xmiwriter.hpp"
+#include "Utils.h"
 
 using namespace tpc::cas;
 using namespace std;
 
-void CASManager::add_file(FileType type, const string& cas_repo_location, const string& sub_location,
-                             const string& file_path)
+void CASManager::convert_raw_file_to_cas1(const string& file_path, FileType type, const string& out_dir,
+                                          bool use_parent_dir_as_outname)
 {
     // get rid of overwhelming messages from podofo library
     PoDoFo::PdfError::EnableDebug(false);
@@ -33,20 +38,25 @@ void CASManager::add_file(FileType type, const string& cas_repo_location, const 
         file_name_no_ext.erase(extPos);
     }
     file_name_tpcas = file_name_no_ext + ".tpcas";
-    string foutname = cas_repo_location + "/" + sub_location + "/" + boost::filesystem::path(file_path).parent_path()
-                                                                           .filename().string();
-    string fimageoutname = foutname + "/images/" + boost::filesystem::path(file_path).parent_path().filename().string();
+    string foutname;
+    string fimageoutname;
+    if (use_parent_dir_as_outname) {
+        foutname = out_dir + "/" + boost::filesystem::path(file_path).parent_path().filename().string();
+        fimageoutname = foutname + "/images/" + boost::filesystem::path(file_path).parent_path().filename().string();
+    } else {
+        foutname = out_dir + "/" + boost::filesystem::path(file_path).stem().string();
+        fimageoutname = foutname + "/images/" + boost::filesystem::path(file_path).stem().string();
+    }
     boost::filesystem::create_directories(foutname + "/images");
     foutname.append("/" + file_name_tpcas);
     stringstream sout;
-    string file_time = to_string(boost::filesystem::last_write_time(file_path));
 
     switch (type) {
         case FileType::pdf:
             try {
                 PdfInfo myInfo(file_path, fimageoutname);
                 myInfo.StreamAll(sout);
-                const char *descriptor = pdf2tpcasdescriptor.c_str();
+                const char *descriptor = PDF2TPCAS_DESCRIPTOR.c_str();
                 Stream2Tpcas stp(sout, foutname, descriptor);
                 stp.processInputStream();
             } catch (PoDoFo::PdfError &e) {
@@ -59,11 +69,94 @@ void CASManager::add_file(FileType type, const string& cas_repo_location, const 
             ReadXml2Stream rs(file_path.c_str());
             std::stringstream sout;
             rs.GetStream(sout);
-            const char *descriptor = xml2tpcasdescriptor.c_str();
+            const char *descriptor = XML2TPCAS_DESCRIPTOR.c_str();
             Stream2Tpcas stp(sout, foutname, descriptor);
             stp.processInputStream();
             break;
     }
+}
+
+int CASManager::convert_cas1_to_cas2(const string &file_path, const std::string &out_dir)
+{
+    string foutname = out_dir + "/" + boost::filesystem::path(file_path).parent_path().filename().string();
+    string temp_dir_path = boost::filesystem::temp_directory_path().string();
+    string tpcasfile = Utils::decompress_gzip(file_path, temp_dir_path);
+    try {
+        /* Create/link up to a UIMACPP resource manager instance (singleton) */
+        (void) uima::ResourceManager::createInstance("TPCAS2LINDEXAE");
+        uima::ErrorInfo errorInfo;
+        const char* descriptor = TPCAS1_2_TPCAS2_DESCRIPTOR.c_str();
+        uima::AnalysisEngine * pEngine
+                = uima::Framework::createAnalysisEngine(descriptor, errorInfo);
+        if (errorInfo.getErrorId() != UIMA_ERR_NONE) {
+            std::cerr << std::endl
+                      << "  Error string  : "
+                      << uima::AnalysisEngine::getErrorIdAsCString(errorInfo.getErrorId())
+                      << std::endl
+                      << "  UIMACPP Error info:" << std::endl
+                      << errorInfo << std::endl;
+            exit((int) errorInfo.getErrorId());
+        }
+        uima::TyErrorId utErrorId; // Variable to store UIMACPP return codes
+        /* Get a new CAS */
+        uima::CAS* cas = pEngine->newCAS();
+        if (cas == nullptr) {
+            std::cerr << "pEngine->newCAS() failed." << std::endl;
+            exit(1);
+        }
+        /* process input / cas */
+        try {
+            /* initialize from an xmicas */
+            XMLCh* native = XMLString::transcode(tpcasfile.c_str());
+            LocalFileInputSource fileIS(native);
+            XMLString::release(&native);
+            uima::XmiDeserializer::deserialize(fileIS, *cas, true);
+            std::string filename(tpcasfile);
+            string filehash = Utils::gettpfnvHash(*cas);
+            /* process the CAS */
+            auto text = Utils::getFulltext(*cas);
+            if (text.length() > 0) {
+                ((uima::AnalysisEngine *) pEngine)->process(*cas);
+            } else {
+                cout << "Skip file." << endl;
+            }
+        } catch (uima::Exception e) {
+            uima::ErrorInfo errInfo = e.getErrorInfo();
+            std::cerr << "Error " << errInfo.getErrorId() << " " << errInfo.getMessage() << std::endl;
+            std::cerr << errInfo << std::endl;
+        }
+        /* call collectionProcessComplete */
+        utErrorId = pEngine->collectionProcessComplete();
+        /* Free annotator */
+        utErrorId = pEngine->destroy();
+        delete cas;
+        delete pEngine;
+        std::remove(tpcasfile.c_str()); //delete uncompressed temp casfile
+        return 1;
+    } catch (uima::Exception e) {
+        std::cerr << "Exception: " << e << std::endl;
+        return 0;
+    }
+}
+
+void CASManager::writeXmi(uima::CAS & outCas, int num, std::string outfn) {
+    std::string ofn;
+    ofn.append(outfn);
+    ofn.append("_seg_");
+    std::stringstream s;
+    s << num;
+    ofn.append(s.str());
+    //open a file stream for output xmi
+    std::ofstream file;
+    file.open(ofn.c_str(), std::ios::out | std::ios::binary);
+    if (!file) {
+        std::cerr << "Error opening output xmi: " << ofn.c_str() << std::endl;
+        exit(99);
+    }
+    //serialize the cas
+    uima::XmiWriter writer(outCas, true);
+    writer.write(file);
+    file.close();
 }
 
 BibInfo CASManager::get_bib_info_from_xml_text(const std::string &xml_text) {

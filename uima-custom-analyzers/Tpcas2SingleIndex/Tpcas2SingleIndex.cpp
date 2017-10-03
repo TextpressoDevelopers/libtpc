@@ -30,8 +30,13 @@
 #include <codecvt>
 #include <chrono>
 #include <regex>
+#include <boost/archive/text_iarchive.hpp>
 #include "../../lucene-custom/CaseSensitiveAnalyzer.h"
 #include "../../CASManager.h"
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/set.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 using namespace std;
 using namespace boost;
@@ -746,22 +751,39 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
     // get subject and title from xml fulltext and classify according to regex
     string corpora("BG");
     String l_article_type;
-    if (getCASType(tcas) == "pdf") {
-        if (std::regex_match (filename, std::regex("^C\. elegans Supplementals\/(.*)"))) {
-            corpora.append("C. elegans SupplementalsED");
-        } else {
-            corpora.append("C. elegansED");
+    if (std::regex_match (filename, std::regex("useruploads\/(.*)"))) {
+        std::regex rgx("useruploads\/([^\/]+)\/([^\/]+)\/.*");
+        std::smatch matches;
+        std::regex_search(filename, matches, rgx);
+        string username = matches[1];
+        string fn = matches[2];
+        map<string, set<string>> papers_lit_map;
+        std::ifstream ifs("/usr/local/textpresso/useruploads/" + username + "/uploadedfiles/lit.cfg", std::ios::binary);
+        if (ifs) {
+            boost::archive::text_iarchive ia(ifs);
+            // read class state from archive
+            ia >> papers_lit_map;
         }
-    } else {
-        string xml_text;
-        usdocref.extractUTF8(xml_text);
-        BibInfo bibInfo = CASManager::get_bib_info_from_xml_text(xml_text);
-        vector<string> corpora_vec = CASManager::classify_article_into_corpora_from_bib_file(bibInfo);
-        if (corpora_vec.empty()) {
-            corpora_vec.push_back(PMCOA_UNCLASSIFIED);
-        }
-        corpora.append(boost::algorithm::join(corpora_vec, "ED BG"));
+        corpora.append(boost::join(papers_lit_map[fn], "ED BG"));
         corpora.append("ED");
+    } else {
+        if (getCASType(tcas) == "pdf") {
+            if (std::regex_match(filename, std::regex("^C\. elegans Supplementals\/(.*)"))) {
+                corpora.append("C. elegans SupplementalsED");
+            } else {
+                corpora.append("C. elegansED");
+            }
+        } else {
+            string xml_text;
+            usdocref.extractUTF8(xml_text);
+            BibInfo bibInfo = CASManager::get_bib_info_from_xml_text(xml_text);
+            vector<string> corpora_vec = CASManager::classify_article_into_corpora_from_bib_file(bibInfo);
+            if (corpora_vec.empty()) {
+                corpora_vec.push_back(PMCOA_UNCLASSIFIED);
+            }
+            corpora.append(boost::algorithm::join(corpora_vec, "ED BG"));
+            corpora.append("ED");
+        }
     }
     bib_info = GetBib(filename);
     String l_filepath = StringUtils::toString(filename.c_str());

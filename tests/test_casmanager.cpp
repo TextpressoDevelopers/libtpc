@@ -40,7 +40,7 @@ namespace {
     void convert_dir_recursively(const string& inputDir, const string& outputDir, const string& literature) {
         for (directory_iterator dit(inputDir); dit != directory_iterator(); ++dit) {
             if (is_regular_file(*dit)) {
-                CASManager::add_file(FileType::pdf, outputDir, literature, dit->path().string());
+                CASManager::convert_raw_file_to_cas1(dit->path().string(), FileType::pdf, outputDir);
             } else if (is_directory(*dit)){
                 convert_dir_recursively(dit->path().string(), outputDir, literature);
             }

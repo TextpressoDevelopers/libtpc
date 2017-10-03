@@ -27,7 +27,7 @@ namespace tpc {
         static const std::string SENTENCE_INDEXNAME_CS("sentence_cs");
 
         static const int MAX_HITS(1000000);
-        static const int FIELD_CACHE_MIN_HITS(10000);
+        static const int FIELD_CACHE_MIN_HITS(100000);
 
         static const int MAX_NUM_SENTENCES_IN_QUERY(200);
         static const int MAX_NUM_DOCIDS_IN_QUERY(200);
@@ -192,11 +192,14 @@ namespace tpc {
         public:
 
             IndexManager() = default;
-            explicit IndexManager(const std::string& index_path, bool read_only = true):
+            explicit IndexManager(const std::string& index_path, bool read_only = true, bool external = false):
                     index_dir(index_path),
                     readonly(read_only),
+                    external(external),
                     readers_map(),
-                    corpus_doc_counter() { };
+                    corpus_doc_counter(),
+                    extra_index_dirs(),
+                    external_corpus_doc_counter_map() { };
             ~IndexManager() {
                 close();
             };
@@ -204,24 +207,36 @@ namespace tpc {
                 readers_map = other.readers_map;
                 index_dir = other.index_dir;
                 readonly = other.readonly;
+                external = other.external;
                 corpus_doc_counter = other.corpus_doc_counter;
+                extra_index_dirs = other.extra_index_dirs;
+                external_corpus_doc_counter_map = other.external_corpus_doc_counter_map;
             };
             IndexManager& operator=(const IndexManager& other) {
                 readers_map = other.readers_map;
                 index_dir = other.index_dir;
                 readonly = other.readonly;
+                external = other.external;
                 corpus_doc_counter = other.corpus_doc_counter;
+                extra_index_dirs = other.extra_index_dirs;
+                external_corpus_doc_counter_map = other.external_corpus_doc_counter_map;
             };
             IndexManager(IndexManager&& other) noexcept :
                     readers_map(std::move(other.readers_map)),
                     readonly(other.readonly),
+                    external(other.external),
                     index_dir(std::move(other.index_dir)),
-                    corpus_doc_counter(std::move(other.corpus_doc_counter)) {  };
+                    corpus_doc_counter(std::move(other.corpus_doc_counter)),
+                    extra_index_dirs(std::move(other.extra_index_dirs)),
+                    external_corpus_doc_counter_map(std::move(other.external_corpus_doc_counter_map)) {  };
             IndexManager& operator=(IndexManager&& other) noexcept {
                 readers_map = std::move(other.readers_map);
                 index_dir = std::move(other.index_dir);
                 readonly = other.readonly;
+                external = other.external;
                 corpus_doc_counter = std::move(other.corpus_doc_counter);
+                extra_index_dirs = std::move(other.extra_index_dirs);
+                external_corpus_doc_counter_map = std::move(other.external_corpus_doc_counter_map);
             };
 
             void close() {
@@ -232,16 +247,26 @@ namespace tpc {
 
             /*!
              * return the list of indexed corpora
+             * information. If not specified, the list of corpora for the main index are returned
              * @return a vector of strings, representing the list of available corpora in the index
              */
             static std::vector<std::string> get_available_corpora();
 
             /*!
+             * return the list of indexed corpora for an external index linked to the main one
+             * @param external_idx_location the location of the external index
+             * @return a vector of strings, representing the list of available corpora in the external index
+             */
+            std::vector<std::string> get_corpora_for_external_index(const std::string& external_idx_location);
+
+            /*!
              * return the number of articles indexed under a specific corpus
              * @param corpus the value of the corpus
+             * @param external_idx_location ptional parameter to specify the external index where to read corpora
+             * information. If not specified, the list of corpora for the main index are returned
              * @return the numbe of articles indexed under the specified corpus
              */
-            int get_num_articles_in_corpus(const std::string& corpus);
+            int get_num_articles_in_corpus(const std::string& corpus, const std::string& extrenal_idx_location = {});
 
             /*!
              * update the document counters for the index
@@ -361,6 +386,26 @@ namespace tpc {
              */
             void remove_file_from_index(const std::string& identifier);
 
+            /*!
+             * add an external lucene index to the index manager. It will be combined to the existing index with a
+             * multireader object. Note that the specified directory must contain a set of sub-directories with the
+             * actual indices used in tpc, for example fulltext, fulltext_cs, sentence, and sentence_cs
+             * @param index_dir the directory containing the index
+             */
+            void add_external_index(const std::string& index_dir);
+
+            /*!
+             * remove the external index at the specified location, if present
+             * @param index_dir the location of the index in the filesystem
+             */
+            void remove_external_index(const std::string& index_dir);
+
+            /*!
+             * remove all external indices
+             */
+            void remove_all_external_indices();
+
+
         private:
 
             /*!
@@ -477,13 +522,21 @@ namespace tpc {
             void remove_document_from_index(const std::string& identifier, QueryType type, bool case_sensitive);
 
             void save_corpus_counter();
-            void load_corpus_counter();
+
+            /*!
+             * load information about the number of documents indexed per corpus from file
+             * @param external_idx_location optional parameter to load information related to external indices
+             */
+            void load_corpus_counter(const std::string& external_idx_location = {});
             int get_num_docs_in_corpus_from_index(const std::string& corpus);
 
             std::map<std::string, Lucene::IndexReaderPtr> readers_map;
             std::string index_dir;
-            bool readonly{};
+            bool readonly;
+            bool external;
             std::map<std::string, int> corpus_doc_counter;
+            std::map<std::string, std::map<std::string, int>> external_corpus_doc_counter_map;
+            std::set<std::string> extra_index_dirs;
         };
     }
 }

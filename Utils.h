@@ -10,6 +10,7 @@
 #define LIBTPC_UTILS_H
 
 #include <string>
+#include <uima/api.hpp>
 
 class Utils {
 public:
@@ -33,6 +34,10 @@ public:
      * @return the file path of the decompressed file
      */
     static std::string decompress_gzip(const std::string & gz_file, const std::string& tmp_dir);
+
+    static std::string gettpfnvHash(uima::CAS& tcas);
+
+    static std::wstring getFulltext(uima::CAS& tcas);
 };
 
 

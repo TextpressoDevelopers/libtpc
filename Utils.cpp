@@ -13,9 +13,11 @@
 #include <boost/iostreams/copy.hpp>
 #include <boost/iostreams/filtering_streambuf.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
+#include <uima/api.hpp>
 
 using namespace std;
 using namespace boost::posix_time;
+using namespace uima;
 
 string Utils::get_temp_dir_path()
 {
@@ -45,6 +47,33 @@ string Utils::decompress_gzip(const string& gz_file, const string& tmp_dir) {
     boost::iostreams::copy(in, out);
     out.close();
     return tempFile;
+}
+
+wstring Utils::getFulltext(CAS& tcas) {
+    UnicodeStringRef usdocref = tcas.getDocumentText();
+    wstring ws;
+    UnicodeString wd;
+    usdocref.extract(0, usdocref.length(), wd);
+    for (int i = 0; i < wd.length(); ++i)
+        ws += static_cast<wchar_t> (wd[i]);
+    return ws;
+}
+
+string Utils::gettpfnvHash(CAS& tcas) {
+    ANIndex allannindex = tcas.getAnnotationIndex();
+    ANIterator aait = allannindex.iterator();
+    aait.moveToFirst();
+    while (aait.isValid()) {
+        Type currentType = aait.get().getType();
+        UnicodeStringRef tnameref = currentType.getName();
+        string annType = tnameref.asUTF8();
+        if (annType == "org.apache.uima.textpresso.tpfnvhash") {
+            Feature fcontent = currentType.getFeatureByBaseName("content");
+            UnicodeStringRef ucontent = aait.get().getStringValue(fcontent);
+            return ucontent.asUTF8();
+        }
+        aait.moveToNext();
+    }
 }
 
 void Utils::write_index_descriptor(const std::string& index_path, const std::string& descriptor_path,

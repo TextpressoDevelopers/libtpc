@@ -28,6 +28,7 @@
 #include <regex>
 #include "CASManager.h"
 #include <boost/serialization/map.hpp>
+#include <boost/serialization/set.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 
@@ -65,8 +66,8 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
                 query_str += L"identifier:" + String(joined_ids.begin(), joined_ids.end());
             }
         }
-        string joined_lit = boost::algorithm::join(query.literatures, "ED OR corpus:BG");
-        query_str = L"(corpus:BG" +  String(joined_lit.begin(), joined_lit.end()) + L"ED) AND (" + query_str + L")";
+        string joined_lit = boost::algorithm::join(query.literatures, "ED\" OR corpus:\"BG");
+        query_str = L"(corpus:\"BG" +  String(joined_lit.begin(), joined_lit.end()) + L"ED\") AND (" + query_str + L")";
         QueryPtr luceneQuery = parser->parse(query_str);
         TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
         searcher->search(luceneQuery, collector);
@@ -125,19 +126,38 @@ Collection<IndexReaderPtr> IndexManager::get_subreaders(QueryType type, bool cas
     }
     Collection<IndexReaderPtr> subReaders = Collection<IndexReaderPtr>::newInstance(0);
     directory_iterator enditr;
+    // add subindices for main index
     for(directory_iterator itr(index_dir); itr != enditr; itr++) {
-        if (is_directory(itr->status()) && regex_match(itr->path().string(), regex(".*\/" + SUBINDEX_NAME +
-                                                                                           "\_[0-9]+"))) {
+        if (is_directory(itr->status()) && regex_match(itr->path().string(), regex(".*\\/" + SUBINDEX_NAME +
+                                                                                           "\\_[0-9]+"))) {
             string index_id(itr->path().string());
             index_id.append("/");
             index_id.append(index_type);
-            if (readers_map.find(itr->path().string() + "_" + index_type) == readers_map.end()) {
+            if (readers_map.find(itr->path().string() + "/" + index_type) == readers_map.end()) {
                 if (exists(path(index_id + "/segments.gen"))) {
                     readers_map[index_id] = IndexReader::open(FSDirectory::open(String(index_id.begin(),
                                                                                        index_id.end())), readonly);
                 }
             }
             subReaders.add(readers_map[index_id]);
+        }
+    }
+    // add subindices for external indices
+    for (const auto& extra_idx_dir : extra_index_dirs) {
+        for (directory_iterator itr(extra_idx_dir); itr != enditr; itr++) {
+            if (is_directory(itr->status()) && regex_match(itr->path().string(), regex(".*\\/" + SUBINDEX_NAME +
+                                                                                       "\\_[0-9]+"))) {
+                string index_id(itr->path().string());
+                index_id.append("/");
+                index_id.append(index_type);
+                if (readers_map.find(itr->path().string() + "/" + index_type) == readers_map.end()) {
+                    if (exists(path(index_id + "/segments.gen"))) {
+                        readers_map[index_id] = IndexReader::open(FSDirectory::open(String(index_id.begin(),
+                                                                                           index_id.end())), readonly);
+                    }
+                }
+                subReaders.add(readers_map[index_id]);
+            }
         }
     }
     return subReaders;
@@ -799,7 +819,7 @@ void IndexManager::remove_document_from_index(const string& identifier, QueryTyp
 
 std::vector<std::string> IndexManager::get_available_corpora() {
     vector<string> corpora_vec;
-    for (const auto& cat_regex : tpc::cas::PMCOA_CAT_REGEX) {
+    for (const auto &cat_regex : tpc::cas::PMCOA_CAT_REGEX) {
         corpora_vec.push_back(cat_regex.first);
     }
     corpora_vec.push_back(tpc::cas::PMCOA_UNCLASSIFIED);
@@ -808,9 +828,23 @@ std::vector<std::string> IndexManager::get_available_corpora() {
     return corpora_vec;
 }
 
-int IndexManager::get_num_articles_in_corpus(const string &corpus) {
-    load_corpus_counter();
-    return corpus_doc_counter[corpus];
+std::vector<std::string> IndexManager::get_corpora_for_external_index(const std::string &external_idx_location) {
+    vector<string> corpora_vec;
+    load_corpus_counter(external_idx_location);
+    for (const auto& cd_conter_map : external_corpus_doc_counter_map[external_idx_location]) {
+        corpora_vec.push_back(cd_conter_map.first);
+    }
+    return corpora_vec;
+}
+
+int IndexManager::get_num_articles_in_corpus(const string &corpus, const string& external_idx_location) {
+    if (external_idx_location.empty()) {
+        load_corpus_counter();
+        return corpus_doc_counter[corpus];
+    } else {
+        load_corpus_counter(external_idx_location);
+        return external_corpus_doc_counter_map[external_idx_location][corpus];
+    }
 }
 
 void IndexManager::save_corpus_counter() {
@@ -821,19 +855,40 @@ void IndexManager::save_corpus_counter() {
     }
 }
 
-void IndexManager::load_corpus_counter() {
-    std::ifstream ifs(index_dir + "/" + CORPUS_COUNTER_FILENAME, std::ios::binary);
-    boost::archive::text_iarchive ia(ifs);
-    // read class state from archive
-    ia >> corpus_doc_counter;
+void IndexManager::load_corpus_counter(const string& external_idx_location) {
+    if (external_idx_location.empty()) {
+        std::ifstream ifs(index_dir + "/" + CORPUS_COUNTER_FILENAME, std::ios::binary);
+        if (ifs) {
+            boost::archive::text_iarchive ia(ifs);
+            ia >> corpus_doc_counter;
+        }
+    } else {
+        std::ifstream ifs(external_idx_location + "/" + CORPUS_COUNTER_FILENAME, std::ios::binary);
+        if (ifs) {
+            boost::archive::text_iarchive ia(ifs);
+            ia >> external_corpus_doc_counter_map[external_idx_location];
+        }
+    }
 }
 
 void IndexManager::update_corpus_counter() {
-    for (const auto& corpus_regex : tpc::cas::PMCOA_CAT_REGEX) {
-        corpus_doc_counter[corpus_regex.first] = get_num_docs_in_corpus_from_index(corpus_regex.first);
+    if (!external) {
+        for (const auto &corpus_regex : tpc::cas::PMCOA_CAT_REGEX) {
+            corpus_doc_counter[corpus_regex.first] = get_num_docs_in_corpus_from_index(corpus_regex.first);
+        }
+        corpus_doc_counter[tpc::cas::CELEGANS] = get_num_docs_in_corpus_from_index(tpc::cas::CELEGANS);
+        corpus_doc_counter[tpc::cas::CELEGANS_SUP] = get_num_docs_in_corpus_from_index(tpc::cas::CELEGANS_SUP);
+    } else {
+        map<string, set<string>> external_paper_lit_map;
+        std::ifstream ifs(index_dir + "/../uploadedfiles/lit.cfg", std::ios::binary);
+        if (ifs) {
+            boost::archive::text_iarchive ia(ifs);
+            ia >> external_paper_lit_map;
+        }
+        for (const auto& lit : external_paper_lit_map["__all_literatures__"]) {
+            corpus_doc_counter[lit] = get_num_docs_in_corpus_from_index(lit);
+        }
     }
-    corpus_doc_counter[tpc::cas::CELEGANS] = get_num_docs_in_corpus_from_index(tpc::cas::CELEGANS);
-    corpus_doc_counter[tpc::cas::CELEGANS_SUP] = get_num_docs_in_corpus_from_index(tpc::cas::CELEGANS_SUP);
 }
 
 int IndexManager::get_num_docs_in_corpus_from_index(const string& corpus) {
@@ -859,7 +914,28 @@ int IndexManager::get_num_subindices() {
             ++subidx_counter;
         }
     }
+    for (const auto& external_idx_dir : extra_index_dirs) {
+        for(directory_iterator itr(external_idx_dir); itr != enditr; itr++) {
+            if (is_directory(itr->status()) && regex_match(itr->path().string(), regex(SUBINDEX_NAME + "_([0-9]+)"))) {
+                ++subidx_counter;
+            }
+        }
+    }
     return subidx_counter;
+}
+
+void IndexManager::add_external_index(const std::string &index_dir) {
+    extra_index_dirs.insert(index_dir);
+}
+
+void IndexManager::remove_external_index(const std::string &index_dir) {
+    extra_index_dirs.erase(index_dir);
+}
+
+void IndexManager::remove_all_external_indices() {
+    for (auto& index_loc : extra_index_dirs) {
+        remove_external_index(index_loc);
+    }
 }
 
 
