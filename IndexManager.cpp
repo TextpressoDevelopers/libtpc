@@ -59,11 +59,11 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
                 LuceneVersion::LUCENE_30, query.type == QueryType::document ? L"fulltext" : L"sentence", analyzer);
         String query_str = String(query.query_text.begin(), query.query_text.end());
         if (!doc_ids.empty()) {
-            string joined_ids = boost::algorithm::join(doc_ids, " OR identifier:");
+            string joined_ids = boost::algorithm::join(doc_ids, " OR doc_id:");
             if (query_str != "") {
-                query_str += L" AND (identifier:" + String(joined_ids.begin(), joined_ids.end()) + L")";
+                query_str += L" AND (doc_id:" + String(joined_ids.begin(), joined_ids.end()) + L")";
             } else {
-                query_str += L"identifier:" + String(joined_ids.begin(), joined_ids.end());
+                query_str += L"doc_id:" + String(joined_ids.begin(), joined_ids.end());
             }
         }
         string joined_lit = boost::algorithm::join(query.literatures, "ED\" OR corpus:\"BG");
@@ -172,15 +172,15 @@ SearchResults IndexManager::read_documents_summaries(
     if (matches_collection.size() < FIELD_CACHE_MIN_HITS) {
         set<String> fields;
         if (sort_by_year) {
-            fields = {L"identifier", L"year"};
+            fields = {L"doc_id", L"year"};
         } else {
-            fields = {L"identifier"};
+            fields = {L"doc_id"};
         }
         FieldSelectorPtr fsel = newLucene<LazySelector>(fields);
         for (const auto& scoredoc : matches_collection) {
             DocumentSummary document;
             DocumentPtr docPtr = searcher->doc(scoredoc->doc, fsel);
-            String identifier = docPtr->get(L"identifier");
+            String identifier = docPtr->get(L"doc_id");
             document.identifier = string(identifier.begin(), identifier.end());
             document.score = scoredoc->score;
             if (sort_by_year) {
@@ -198,7 +198,7 @@ SearchResults IndexManager::read_documents_summaries(
         }
         sort(docids.begin(), docids.end());
         int readerIndex = 0;
-        Collection<String> fieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"identifier");
+        Collection<String> fieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"doc_id");
         Collection<String> yearFieldCache;
         if (sort_by_year) {
             yearFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"year");
@@ -208,7 +208,7 @@ SearchResults IndexManager::read_documents_summaries(
             while ((docid - offset) >= fieldCache.size()) {
                 offset += fieldCache.size();
                 FieldCache::DEFAULT()->purge(subreaders[readerIndex]);
-                fieldCache = FieldCache::DEFAULT()->getStrings(subreaders[++readerIndex], L"identifier");
+                fieldCache = FieldCache::DEFAULT()->getStrings(subreaders[++readerIndex], L"doc_id");
                 if (sort_by_year) {
                     yearFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"year");
                 }
@@ -250,7 +250,7 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
     doc_map.reserve(100000);
     // for small searches, read the fields with a lazy loader
     if (matches_collection.size() < FIELD_CACHE_MIN_HITS) {
-        set<String> fields =  {L"identifier"};
+        set<String> fields =  {L"doc_id"};
         if (sort_by_year) {
             fields.insert(L"year");
         }
@@ -260,7 +260,7 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
         FieldSelectorPtr fsel = newLucene<LazySelector>(fields);
         for (const auto& scoredoc : matches_collection) {
             DocumentPtr docPtr = searcher->doc(scoredoc->doc, fsel);
-            String identifier = docPtr->get(L"identifier");
+            String identifier = docPtr->get(L"doc_id");
             string identifier_str = string(identifier.begin(), identifier.end());
             if (doc_map.find(string(identifier.begin(), identifier.end())) == doc_map.end()) {
                 DocumentSummary document;
@@ -295,7 +295,7 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
         //sort(docids.begin(), docids.end());
         int readerIndex = 0;
         Collection<String> docIdFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex],
-                                                                               L"identifier");
+                                                                               L"doc_id");
         Collection<int> sentIdFieldCache;
         if (return_match_sentences_ids) {
             sentIdFieldCache = FieldCache::DEFAULT()->getInts(subreaders[readerIndex], L"sentence_id");
@@ -311,7 +311,7 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
                 offset += docIdFieldCache.size();
                 FieldCache::DEFAULT()->purge(subreaders[readerIndex]);
                 ++readerIndex;
-                docIdFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"identifier");
+                docIdFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"doc_id");
                 if (return_match_sentences_ids) {
                     sentIdFieldCache = FieldCache::DEFAULT()->getInts(subreaders[readerIndex], L"sentence_id");
                 }
@@ -426,8 +426,8 @@ DocumentDetails IndexManager::get_document_details(const DocumentSummary& doc_su
 }
 
 void IndexManager::update_document_details(DocumentDetails &doc_details, String field, DocumentPtr doc_ptr) {
-    if (field == L"identifier") {
-        String identifier = doc_ptr->get(StringUtils::toString("identifier"));
+    if (field == L"doc_id") {
+        String identifier = doc_ptr->get(StringUtils::toString("doc_id"));
         doc_details.identifier = string(identifier.begin(), identifier.end());
     } else if (field == L"year") {
         String year = doc_ptr->get(StringUtils::toString("year"));
@@ -481,7 +481,7 @@ DocumentDetails IndexManager::read_document_details(const DocumentSummary &doc_s
                                                       FieldSelectorPtr fsel,
                                                       const set<String> &fields)
 {
-    string doc_query_str = "identifier:" + doc_summary.identifier;
+    string doc_query_str = "doc_id:" + doc_summary.identifier;
     QueryPtr luceneQuery = doc_parser->parse(String(doc_query_str.begin(), doc_query_str.end()));
     TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
     searcher->search(luceneQuery, collector);
@@ -513,9 +513,9 @@ vector<DocumentDetails> IndexManager::read_documents_details(const vector<Docume
     while (identifiersItEnd != identifiers.end()) {
         identifiersItEnd = distance(identifiersItBegin, identifiers.end()) <= MAX_NUM_DOCIDS_IN_QUERY ?
                            identifiers.end() : identifiersItBegin + MAX_NUM_DOCIDS_IN_QUERY;
-        string doc_query_str = "identifier:" + boost::algorithm::join(vector<string>(identifiersItBegin,
+        string doc_query_str = "doc_id:" + boost::algorithm::join(vector<string>(identifiersItBegin,
                                                                                      identifiersItEnd),
-                                                                      " OR identifier:");
+                                                                      " OR doc_id:");
         QueryPtr luceneQuery = doc_parser->parse(String(doc_query_str.begin(), doc_query_str.end()));
         TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
         searcher->search(luceneQuery, collector);
@@ -555,7 +555,7 @@ void IndexManager::update_sentences_details_for_document(const DocumentSummary &
     while (sentencesIdsItEnd != sentencesIds.end()) {
         sentencesIdsItEnd = distance(sentencesIdsItBegin, sentencesIds.end())  <= MAX_NUM_SENTENCES_IN_QUERY ?
                             sentencesIds.end() : sentencesIdsItBegin + MAX_NUM_SENTENCES_IN_QUERY;
-        string sent_query_str = "identifier:" + doc_summary.identifier + " AND (sentence_id:" +
+        string sent_query_str = "doc_id:" + doc_summary.identifier + " AND (sentence_id:" +
                                 boost::algorithm::join(vector<string>(sentencesIdsItBegin, sentencesIdsItEnd),
                                                        " OR sentence_id:") + ")";
         QueryPtr luceneQuery = sent_parser->parse(String(sent_query_str.begin(), sent_query_str.end()));
@@ -809,8 +809,8 @@ void IndexManager::remove_document_from_index(const string& identifier, QueryTyp
     } else {
         analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_30);
     }
-    QueryParserPtr parser = newLucene<QueryParser>(LuceneVersion::LUCENE_30, L"identifier", analyzer);
-    String query_str = L"identifier:" + String(identifier.begin(), identifier.end());
+    QueryParserPtr parser = newLucene<QueryParser>(LuceneVersion::LUCENE_30, L"filepath", analyzer);
+    String query_str = L"filepath:" + String(identifier.begin(), identifier.end());
     QueryPtr luceneQuery = parser->parse(query_str);
     SearcherPtr searcher = newLucene<IndexSearcher>(multireader);
     TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);

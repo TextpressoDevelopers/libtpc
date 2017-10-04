@@ -38,7 +38,7 @@ namespace tpc {
         static const std::set<std::string> DOCUMENTS_FIELDS_DETAILED{"accession_compressed", "title_compressed",
                                                                     "author_compressed", "journal_compressed", "year",
                                                                     "abstract_compressed", "filepath",
-                                                                    "corpus", "identifier",
+                                                                    "corpus", "doc_id",
                                                                     "fulltext_compressed", "type_compressed",
                                                                      "fulltext_cat_compressed"};
         static const std::set<std::string> SENTENCE_FIELDS_DETAILED{"sentence_id", "begin", "end",

@@ -479,12 +479,9 @@ std::map<wstring, vector<wstring> > collectCategoryMapping(CAS& tcas) {
     return cat_map;
 }
 
-void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<String> bib_info, const string& corpora,
+void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<String> bib_info, const string& corpora, int doc_id,
                     const IndexWriterPtr& sentencewriter) {
     std::hash<std::string> string_hash;
-    size_t filenamehash = string_hash(getFilename(tcas));
-    //string filenamehash = gettpfnvHash(tcas);
-    String l_filenamehash = StringUtils::toString(to_string(filenamehash).c_str());
     String l_author = fieldStartMark + bib_info[0] + fieldEndMark;
     String l_accession = bib_info[1];
     String l_type = bib_info[2];
@@ -557,7 +554,7 @@ void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<St
             DocumentPtr sentencedoc = newLucene<Document>();
             sentencedoc->add(newLucene<Field>(L"sentence_id", StringUtils::toString(sentence_id_str.c_str()),
                                               Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
-            sentencedoc->add(newLucene<Field>(L"identifier", l_filenamehash, Field::STORE_YES,
+            sentencedoc->add(newLucene<Field>(L"doc_id", StringUtils::toString(to_string(doc_id).c_str()), Field::STORE_YES,
                                               Field::INDEX_NOT_ANALYZED));
             sentencedoc->add(newLucene<Field>(L"sentence",
                                               StringUtils::toString<wstring>(w_sentence),
@@ -734,10 +731,22 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
     string pid = tpfnv(usdocref);
     wstring w_cleanText = getCleanText(tcas);
 
-    std::hash<std::string> string_hash;
-    size_t filenamehash = string_hash(getFilename(tcas));
-    //string filenamehash = gettpfnvHash(tcas);
-    String l_filenamehash = StringUtils::toString(to_string(filenamehash).c_str());
+    int global_doc_counter(0);
+    // read global doc counter from file
+    std::ifstream ifs("/usr/local/textpresso/luceneindex/counter.dat", std::ios::binary);
+    if (ifs) {
+        boost::archive::text_iarchive ia(ifs);
+        // read class state from archive
+        ia >> global_doc_counter;
+    }
+    // increment global doc counter to get the doc_id for the new document to add
+    ++global_doc_counter;
+    // save the new value back to file
+    std::ofstream ofs("/usr/local/textpresso/luceneindex/counter.dat");
+    {
+        boost::archive::text_oarchive oa(ofs);
+        oa << global_doc_counter;
+    }
 
     // collecting and indexing categories
     auto cat_map = collectCategoryMapping(tcas);
@@ -823,8 +832,9 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
         l_title = L"Not available";
     }
     DocumentPtr fulltextdoc = newLucene<Document > ();
-    fulltextdoc->add(newLucene<Field > (L"identifier", l_filenamehash, Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
-    fulltextdoc->add(newLucene<Field > (L"filepath", l_filepath, Field::STORE_YES, Field::INDEX_NO));
+    fulltextdoc->add(newLucene<Field > (L"doc_id", StringUtils::toString(to_string(global_doc_counter).c_str()),
+                                        Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
+    fulltextdoc->add(newLucene<Field > (L"filepath", l_filepath, Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
     fulltextdoc->add(newLucene<Field > (L"fulltext", StringUtils::toString<wstring>(w_cleanText), Field::STORE_NO, Field::INDEX_ANALYZED));
     fulltextdoc->add(newLucene<Field > (L"fulltext_compressed",
                                         CompressionTools::compressString(StringUtils::toString<wstring>(w_cleanText)),
@@ -861,12 +871,10 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
                                         Field::STORE_YES));
     fulltextdoc->add(newLucene<Field > (L"corpus", String(corpora.begin(), corpora.end()), Field::STORE_YES,
                                         Field::INDEX_ANALYZED));
-    fulltextwriter->updateDocument(newLucene<Term> (L"identifier", l_filenamehash), fulltextdoc);
-    fulltextwriter_casesens->updateDocument(newLucene<Term> (L"identifier", l_filenamehash), fulltextdoc);
-    sentencewriter->deleteDocuments(newLucene<Term> (L"identifier", l_filenamehash));
-    sentencewriter_casesens->deleteDocuments(newLucene<Term> (L"identifier", l_filenamehash));
-    IndexSentences(tcas, cat_map, bib_info, corpora, sentencewriter);
-    IndexSentences(tcas, cat_map, bib_info, corpora, sentencewriter_casesens);
+    fulltextwriter->addDocument(fulltextdoc);
+    fulltextwriter_casesens->addDocument(fulltextdoc);
+    IndexSentences(tcas, cat_map, bib_info, corpora, global_doc_counter, sentencewriter);
+    IndexSentences(tcas, cat_map, bib_info, corpora, global_doc_counter, sentencewriter_casesens);
     return (TyErrorId) UIMA_ERR_NONE;
 }
 
