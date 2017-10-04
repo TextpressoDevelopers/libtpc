@@ -553,9 +553,9 @@ void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<St
             //testing w_cat_string and w_positions matches and retrieve words from w_cleanText
             DocumentPtr sentencedoc = newLucene<Document>();
             sentencedoc->add(newLucene<Field>(L"sentence_id", StringUtils::toString(sentence_id_str.c_str()),
-                                              Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
+                                              Field::STORE_YES, Field::INDEX_NOT_ANALYZED_NO_NORMS));
             sentencedoc->add(newLucene<Field>(L"doc_id", StringUtils::toString(doc_id.c_str()), Field::STORE_YES,
-                                              Field::INDEX_NOT_ANALYZED));
+                                              Field::INDEX_NOT_ANALYZED_NO_NORMS));
             sentencedoc->add(newLucene<Field>(L"sentence",
                                               StringUtils::toString<wstring>(w_sentence),
                                               Field::STORE_NO, Field::INDEX_ANALYZED_NO_NORMS));
@@ -840,7 +840,7 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
     }
     DocumentPtr fulltextdoc = newLucene<Document > ();
     fulltextdoc->add(newLucene<Field > (L"doc_id", StringUtils::toString(base64_id.c_str()),
-                                        Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
+                                        Field::STORE_YES, Field::INDEX_NOT_ANALYZED_NO_NORMS));
     fulltextdoc->add(newLucene<Field > (L"filepath", l_filepath, Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
     fulltextdoc->add(newLucene<Field > (L"fulltext", StringUtils::toString<wstring>(w_cleanText), Field::STORE_NO, Field::INDEX_ANALYZED));
     fulltextdoc->add(newLucene<Field > (L"fulltext_compressed",

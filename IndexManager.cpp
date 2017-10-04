@@ -367,7 +367,7 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
     vector<DocumentDetails> results;
     set<String> doc_f = compose_field_set(include_doc_fields, exclude_doc_fields, {"year"});
     FieldSelectorPtr doc_fsel = newLucene<LazySelector>(doc_f);
-    AnalyzerPtr analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_30);
+    AnalyzerPtr analyzer = newLucene<KeywordAnalyzer>();
     Collection<IndexReaderPtr> docSubReaders = get_subreaders(QueryType::document);
     MultiReaderPtr docMultireader = newLucene<MultiReader>(docSubReaders, false);
     QueryParserPtr docParser = newLucene<QueryParser>(LuceneVersion::LUCENE_30,
@@ -513,9 +513,10 @@ vector<DocumentDetails> IndexManager::read_documents_details(const vector<Docume
     while (identifiersItEnd != identifiers.end()) {
         identifiersItEnd = distance(identifiersItBegin, identifiers.end()) <= MAX_NUM_DOCIDS_IN_QUERY ?
                            identifiers.end() : identifiersItBegin + MAX_NUM_DOCIDS_IN_QUERY;
-        string doc_query_str = "doc_id:" + boost::algorithm::join(vector<string>(identifiersItBegin,
+        string doc_query_str = "doc_id:\"" + boost::algorithm::join(vector<string>(identifiersItBegin,
                                                                                      identifiersItEnd),
-                                                                      " OR doc_id:");
+                                                                      "\" OR doc_id:\"");
+        doc_query_str.append("\"");
         QueryPtr luceneQuery = doc_parser->parse(String(doc_query_str.begin(), doc_query_str.end()));
         TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
         searcher->search(luceneQuery, collector);
@@ -555,9 +556,9 @@ void IndexManager::update_sentences_details_for_document(const DocumentSummary &
     while (sentencesIdsItEnd != sentencesIds.end()) {
         sentencesIdsItEnd = distance(sentencesIdsItBegin, sentencesIds.end())  <= MAX_NUM_SENTENCES_IN_QUERY ?
                             sentencesIds.end() : sentencesIdsItBegin + MAX_NUM_SENTENCES_IN_QUERY;
-        string sent_query_str = "doc_id:" + doc_summary.identifier + " AND (sentence_id:" +
+        string sent_query_str = "doc_id:\"" + doc_summary.identifier + "\" AND (sentence_id:\"" +
                                 boost::algorithm::join(vector<string>(sentencesIdsItBegin, sentencesIdsItEnd),
-                                                       " OR sentence_id:") + ")";
+                                                       "\" OR sentence_id:\"") + "\")";
         QueryPtr luceneQuery = sent_parser->parse(String(sent_query_str.begin(), sent_query_str.end()));
         collector = TopScoreDocCollector::create(MAX_HITS, true);
         searcher->search(luceneQuery, collector);
