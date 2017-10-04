@@ -30,20 +30,14 @@ namespace {
         // and cleaning up each test, you can define the following methods:
 
         void SetUp() override {
-            query_sentence_woids.sort_by_year = false;
-            query_sentence_woids.type = QueryType::sentence_without_ids;
-            query_sentence_woids.query_text = "sentence:al";
-            query_sentence_woids.case_sensitive = false;
-            query_sentence_woids.literatures = literatures;
-
-            query_sentence_wids.sort_by_year = false;
-            query_sentence_wids.type = QueryType::sentence_with_ids;
-            query_sentence_wids.query_text = "sentence:al";
-            query_sentence_wids.case_sensitive = false;
-            query_sentence_wids.literatures = literatures;
+            query_sentence.sort_by_year = false;
+            query_sentence.type = QueryType::sentence;
+            query_sentence.query_text = "sentence:al";
+            query_sentence.case_sensitive = false;
+            query_sentence.literatures = literatures;
 
             query_sentence_year.sort_by_year = true;
-            query_sentence_year.type = QueryType::sentence_without_ids;
+            query_sentence_year.type = QueryType::sentence;
             query_sentence_year.query_text = "sentence:al";
             query_sentence_year.case_sensitive = false;
             query_sentence_year.literatures = literatures;
@@ -60,8 +54,7 @@ namespace {
 
         std::string index_root_dir;
         std::vector<std::string> literatures;
-        Query query_sentence_woids;
-        Query query_sentence_wids;
+        Query query_sentence;
         Query query_sentence_year;
         Query query_document;
 
@@ -75,14 +68,8 @@ namespace {
         ASSERT_TRUE(indexManager.search_documents(query_document).query.type == QueryType::document);
     }
 
-    TEST_F(IndexManagerTest, SearchReturnsCorrectTypeForSentWoIds) {
-        ASSERT_TRUE(indexManager.search_documents(query_sentence_woids).query.type ==
-                            QueryType::sentence_without_ids);
-    }
-
-    TEST_F(IndexManagerTest, SearchReturnsCorrectTypeForSentWIds) {
-        ASSERT_TRUE(indexManager.search_documents(query_sentence_wids).query.type ==
-                            QueryType::sentence_with_ids);
+    TEST_F(IndexManagerTest, SearchReturnsCorrectTypeForSent) {
+        ASSERT_TRUE(indexManager.search_documents(query_sentence).query.type == QueryType::sentence);
     }
 
     TEST_F(IndexManagerTest, SearchReturnsExpectedNumberOfHitsDocumentSearch) {
@@ -90,11 +77,11 @@ namespace {
     }
 
     TEST_F(IndexManagerTest, SearchReturnsExpectedNumberOfHitsSentenceSearch) {
-        ASSERT_GT(indexManager.search_documents(query_sentence_woids).hit_documents.size(), 0);
+        ASSERT_GT(indexManager.search_documents(query_sentence).hit_documents.size(), 0);
     }
 
     TEST_F(IndexManagerTest, SearchReturnsNumSentencesGt0SentenceSearch) {
-        ASSERT_GT(indexManager.search_documents(query_sentence_woids).total_num_sentences, 0);
+        ASSERT_GT(indexManager.search_documents(query_sentence).total_num_sentences, 0);
     }
 
     TEST_F(IndexManagerTest, SearchReturnsResultsOrderedByYear) {

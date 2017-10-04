@@ -63,7 +63,7 @@ namespace tpc {
          * @brief the type of query to perform on the index
          */
         enum class QueryType {
-            document = 1, sentence_without_ids = 2, sentence_with_ids = 3
+            document = 1, sentence = 2
         };
 
         /*!
@@ -438,7 +438,7 @@ namespace tpc {
              */
             SearchResults read_sentences_summaries(const Lucene::Collection<Lucene::ScoreDocPtr> &matches_collection,
                                                    const Lucene::Collection<Lucene::IndexReaderPtr> &subreaders,
-                                                   Lucene::SearcherPtr searcher, bool sort_by_year = false, bool return_match_sentences_ids = false);
+                                                   Lucene::SearcherPtr searcher, bool sort_by_year = false);
 
             /*!
              * get detailed information for a document specified by a DocumentSummary object

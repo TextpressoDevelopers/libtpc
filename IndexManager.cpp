@@ -58,19 +58,26 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
         QueryParserPtr parser = newLucene<QueryParser>(
                 LuceneVersion::LUCENE_30, query.type == QueryType::document ? L"fulltext" : L"sentence", analyzer);
         String query_str = String(query.query_text.begin(), query.query_text.end());
-        if (!doc_ids.empty()) {
-            string joined_ids = boost::algorithm::join(doc_ids, " OR doc_id:");
-            if (query_str != "") {
-                query_str += L" AND (doc_id:" + String(joined_ids.begin(), joined_ids.end()) + L")";
-            } else {
-                query_str += L"doc_id:" + String(joined_ids.begin(), joined_ids.end());
-            }
-        }
         string joined_lit = boost::algorithm::join(query.literatures, "ED\" OR corpus:\"BG");
         query_str = L"(corpus:\"BG" +  String(joined_lit.begin(), joined_lit.end()) + L"ED\") AND (" + query_str + L")";
         QueryPtr luceneQuery = parser->parse(query_str);
+        String key_query_str;
         TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
-        searcher->search(luceneQuery, collector);
+        if (!doc_ids.empty()) {
+            AnalyzerPtr keyword_analyzer = newLucene<KeywordAnalyzer>();
+            QueryParserPtr keyword_parser = newLucene<QueryParser>(
+                    LuceneVersion::LUCENE_30, query.type == QueryType::document ? L"fulltext" : L"sentence",
+                    keyword_analyzer);
+            string joined_ids = boost::algorithm::join(doc_ids, " OR doc_id:");
+            key_query_str += L" doc_id:" + String(joined_ids.begin(), joined_ids.end());
+            BooleanQueryPtr booleanQuery = newLucene<BooleanQuery>();
+            QueryPtr key_luceneQuery = keyword_parser->parse(key_query_str);
+            booleanQuery->add(luceneQuery, BooleanClause::MUST);
+            booleanQuery->add(key_luceneQuery, BooleanClause::MUST);
+            searcher->search(booleanQuery, collector);
+        } else {
+            searcher->search(luceneQuery, collector);
+        }
         matchesCollection = collector->topDocs()->scoreDocs;
     } else {
         matchesCollection = indexMatches;
@@ -79,9 +86,8 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
     if (!matches_only) {
         if (query.type == QueryType::document) {
             result = read_documents_summaries(matchesCollection, subReaders, searcher);
-        } else if (query.type == QueryType::sentence_with_ids || query.type == QueryType::sentence_without_ids) {
-            result = read_sentences_summaries(matchesCollection, subReaders, searcher, query.sort_by_year,
-                                              query.type == QueryType::sentence_with_ids);
+        } else if (query.type == QueryType::sentence) {
+            result = read_sentences_summaries(matchesCollection, subReaders, searcher, query.sort_by_year);
             result.total_num_sentences = matchesCollection.size();
         }
         result.query = query;
@@ -121,7 +127,7 @@ Collection<IndexReaderPtr> IndexManager::get_subreaders(QueryType type, bool cas
     string index_type;
     if (type == QueryType::document) {
         index_type = case_sensitive ? DOCUMENT_INDEXNAME_CS : DOCUMENT_INDEXNAME;
-    } else if (type == QueryType::sentence_with_ids || type == QueryType::sentence_without_ids) {
+    } else if (type == QueryType::sentence) {
         index_type = case_sensitive ? SENTENCE_INDEXNAME_CS : SENTENCE_INDEXNAME;
     }
     Collection<IndexReaderPtr> subReaders = Collection<IndexReaderPtr>::newInstance(0);
@@ -242,20 +248,16 @@ SearchResults IndexManager::read_documents_summaries(
 
 SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPtr> &matches_collection,
                                                        const Collection<IndexReaderPtr> &subreaders,
-                                                       SearcherPtr searcher, bool sort_by_year,
-                                                       bool return_match_sentences_ids)
+                                                       SearcherPtr searcher, bool sort_by_year)
 {
     SearchResults result = SearchResults();
     unordered_map<string, DocumentSummary> doc_map;
     doc_map.reserve(100000);
     // for small searches, read the fields with a lazy loader
     if (matches_collection.size() < FIELD_CACHE_MIN_HITS) {
-        set<String> fields =  {L"doc_id"};
+        set<String> fields =  {L"doc_id", L"sentence_id"};
         if (sort_by_year) {
             fields.insert(L"year");
-        }
-        if (return_match_sentences_ids) {
-            fields.insert(L"sentence_id");
         }
         FieldSelectorPtr fsel = newLucene<LazySelector>(fields);
         for (const auto& scoredoc : matches_collection) {
@@ -274,9 +276,7 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
             }
             doc_map[identifier_str].score += scoredoc->score;
             SentenceSummary sentence;
-            if (return_match_sentences_ids) {
-                sentence.sentence_id = StringUtils::toInt(docPtr->get(L"sentence_id"));
-            }
+            sentence.sentence_id = StringUtils::toInt(docPtr->get(L"sentence_id"));
             sentence.score = scoredoc->score;
             doc_map[identifier_str].matching_sentences.push_back(sentence);
         }
@@ -297,9 +297,7 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
         Collection<String> docIdFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex],
                                                                                L"doc_id");
         Collection<int> sentIdFieldCache;
-        if (return_match_sentences_ids) {
-            sentIdFieldCache = FieldCache::DEFAULT()->getInts(subreaders[readerIndex], L"sentence_id");
-        }
+        sentIdFieldCache = FieldCache::DEFAULT()->getInts(subreaders[readerIndex], L"sentence_id");
         Collection<String> yearFieldCache;
         if (sort_by_year) {
             yearFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"year");
@@ -312,9 +310,7 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
                 FieldCache::DEFAULT()->purge(subreaders[readerIndex]);
                 ++readerIndex;
                 docIdFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"doc_id");
-                if (return_match_sentences_ids) {
-                    sentIdFieldCache = FieldCache::DEFAULT()->getInts(subreaders[readerIndex], L"sentence_id");
-                }
+                sentIdFieldCache = FieldCache::DEFAULT()->getInts(subreaders[readerIndex], L"sentence_id");
                 if (sort_by_year) {
                     yearFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"year");
                 }
@@ -333,9 +329,7 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
             }
             doc_map[identifier_str].score += scores[idx];
             SentenceSummary sentence;
-            if (return_match_sentences_ids) {
-                sentence.sentence_id = sentIdFieldCache[docid - offset];
-            }
+            sentence.sentence_id = sentIdFieldCache[docid - offset];
             sentence.score = scores[idx];
             doc_map[identifier_str].matching_sentences.push_back(sentence);
         }
@@ -383,7 +377,7 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
     if (include_sentences) {
         sent_f = compose_field_set(include_match_sentences_fields, exclude_match_sentences_fields);
         sent_fsel = newLucene<LazySelector>(sent_f);
-        sentSubReaders = get_subreaders(QueryType::sentence_without_ids);
+        sentSubReaders = get_subreaders(QueryType::sentence);
         sentMultireader = newLucene<MultiReader>(sentSubReaders, false);
         sentParser = newLucene<QueryParser>(LuceneVersion::LUCENE_30,
                                             String(SENTENCE_INDEXNAME.begin(), SENTENCE_INDEXNAME.end()),
@@ -795,9 +789,9 @@ void IndexManager::remove_file_from_index(const std::string &identifier) {
     // document - case sensitive index
     remove_document_from_index(identifier, QueryType::document, true);
     // sentence - case insensitive index
-    remove_document_from_index(identifier, QueryType::sentence_with_ids, false);
+    remove_document_from_index(identifier, QueryType::sentence, false);
     // sentence - case sensitive index
-    remove_document_from_index(identifier, QueryType::sentence_with_ids, true);
+    remove_document_from_index(identifier, QueryType::sentence, true);
 }
 
 void IndexManager::remove_document_from_index(const string& identifier, QueryType type, bool case_sensitive)
