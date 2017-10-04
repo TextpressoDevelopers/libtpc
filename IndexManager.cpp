@@ -198,7 +198,6 @@ SearchResults IndexManager::read_documents_summaries(
         }
         sort(docids.begin(), docids.end());
         int readerIndex = 0;
-        FieldCache::DEFAULT()->purgeAllCaches();
         Collection<String> fieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"identifier");
         Collection<String> yearFieldCache;
         if (sort_by_year) {
@@ -208,7 +207,7 @@ SearchResults IndexManager::read_documents_summaries(
         for (auto docid : docids) {
             while ((docid - offset) >= fieldCache.size()) {
                 offset += fieldCache.size();
-                FieldCache::DEFAULT()->purgeAllCaches();
+                FieldCache::DEFAULT()->purge(subreaders[readerIndex]);
                 fieldCache = FieldCache::DEFAULT()->getStrings(subreaders[++readerIndex], L"identifier");
                 if (sort_by_year) {
                     yearFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"year");
@@ -224,7 +223,11 @@ SearchResults IndexManager::read_documents_summaries(
             }
             result.hit_documents.push_back(document);
         }
-        FieldCache::DEFAULT()->purgeAllCaches();
+        for (auto& reader : readers_map) {
+            FieldCache::DEFAULT()->purge(reader.second);
+        }
+        docids.clear();
+        scores.clear();
     }
     // check and update max and min scores for result
     for (const DocumentSummary& doc : result.hit_documents) {
@@ -291,8 +294,8 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
         std::sort(idx_vec.begin(), idx_vec.end(), comparator);
         //sort(docids.begin(), docids.end());
         int readerIndex = 0;
-        FieldCache::DEFAULT()->purgeAllCaches();
-        Collection<String> docIdFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"identifier");
+        Collection<String> docIdFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex],
+                                                                               L"identifier");
         Collection<int> sentIdFieldCache;
         if (return_match_sentences_ids) {
             sentIdFieldCache = FieldCache::DEFAULT()->getInts(subreaders[readerIndex], L"sentence_id");
@@ -306,8 +309,8 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
             int docid = docids[idx];
             while ((docid - offset) >= docIdFieldCache.size()) {
                 offset += docIdFieldCache.size();
+                FieldCache::DEFAULT()->purge(subreaders[readerIndex]);
                 ++readerIndex;
-                FieldCache::DEFAULT()->purgeAllCaches();
                 docIdFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"identifier");
                 if (return_match_sentences_ids) {
                     sentIdFieldCache = FieldCache::DEFAULT()->getInts(subreaders[readerIndex], L"sentence_id");
@@ -336,7 +339,9 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
             sentence.score = scores[idx];
             doc_map[identifier_str].matching_sentences.push_back(sentence);
         }
-        FieldCache::DEFAULT()->purgeAllCaches();
+        for (auto& reader : readers_map) {
+            FieldCache::DEFAULT()->purge(reader.second);
+        }
     }
     std::transform(doc_map.begin(), doc_map.end(), std::back_inserter(result.hit_documents),
                    boost::bind(&map<string, DocumentSummary>::value_type::second, _1));
