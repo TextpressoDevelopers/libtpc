@@ -27,7 +27,7 @@ namespace tpc {
         static const std::string SENTENCE_INDEXNAME_CS("sentence_cs");
 
         static const int MAX_HITS(1000000);
-        static const int FIELD_CACHE_MIN_HITS(100000);
+        static const int FIELD_CACHE_MIN_HITS(30000);
 
         static const int MAX_NUM_SENTENCES_IN_QUERY(200);
         static const int MAX_NUM_DOCIDS_IN_QUERY(200);

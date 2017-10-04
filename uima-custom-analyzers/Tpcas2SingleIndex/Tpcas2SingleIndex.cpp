@@ -479,8 +479,8 @@ std::map<wstring, vector<wstring> > collectCategoryMapping(CAS& tcas) {
     return cat_map;
 }
 
-void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<String> bib_info, const string& corpora, int doc_id,
-                    const IndexWriterPtr& sentencewriter) {
+void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<String> bib_info, const string& corpora,
+                    const string& doc_id, const IndexWriterPtr& sentencewriter) {
     std::hash<std::string> string_hash;
     String l_author = fieldStartMark + bib_info[0] + fieldEndMark;
     String l_accession = bib_info[1];
@@ -554,7 +554,7 @@ void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<St
             DocumentPtr sentencedoc = newLucene<Document>();
             sentencedoc->add(newLucene<Field>(L"sentence_id", StringUtils::toString(sentence_id_str.c_str()),
                                               Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
-            sentencedoc->add(newLucene<Field>(L"doc_id", StringUtils::toString(to_string(doc_id).c_str()), Field::STORE_YES,
+            sentencedoc->add(newLucene<Field>(L"doc_id", StringUtils::toString(doc_id.c_str()), Field::STORE_YES,
                                               Field::INDEX_NOT_ANALYZED));
             sentencedoc->add(newLucene<Field>(L"sentence",
                                               StringUtils::toString<wstring>(w_sentence),
@@ -747,6 +747,13 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
         boost::archive::text_oarchive oa(ofs);
         oa << global_doc_counter;
     }
+    int victim = global_doc_counter;
+    string base64_id;
+    static const std::string base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#@";
+    do {
+        base64_id.insert(0, 1, base64_chars[victim % 64]);
+        victim /= 64;
+    } while (victim > 0);
 
     // collecting and indexing categories
     auto cat_map = collectCategoryMapping(tcas);
@@ -832,7 +839,7 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
         l_title = L"Not available";
     }
     DocumentPtr fulltextdoc = newLucene<Document > ();
-    fulltextdoc->add(newLucene<Field > (L"doc_id", StringUtils::toString(to_string(global_doc_counter).c_str()),
+    fulltextdoc->add(newLucene<Field > (L"doc_id", StringUtils::toString(base64_id.c_str()),
                                         Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
     fulltextdoc->add(newLucene<Field > (L"filepath", l_filepath, Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
     fulltextdoc->add(newLucene<Field > (L"fulltext", StringUtils::toString<wstring>(w_cleanText), Field::STORE_NO, Field::INDEX_ANALYZED));
@@ -873,8 +880,8 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
                                         Field::INDEX_ANALYZED));
     fulltextwriter->addDocument(fulltextdoc);
     fulltextwriter_casesens->addDocument(fulltextdoc);
-    IndexSentences(tcas, cat_map, bib_info, corpora, global_doc_counter, sentencewriter);
-    IndexSentences(tcas, cat_map, bib_info, corpora, global_doc_counter, sentencewriter_casesens);
+    IndexSentences(tcas, cat_map, bib_info, corpora, base64_id, sentencewriter);
+    IndexSentences(tcas, cat_map, bib_info, corpora, base64_id, sentencewriter_casesens);
     return (TyErrorId) UIMA_ERR_NONE;
 }
 
