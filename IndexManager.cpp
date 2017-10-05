@@ -45,7 +45,7 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
     Collection<IndexReaderPtr> subReaders = get_subreaders(query.type, query.case_sensitive);
     MultiReaderPtr multireader = newLucene<MultiReader>(subReaders, false);
     SearcherPtr searcher = newLucene<IndexSearcher>(multireader);
-    if (!indexMatches || indexMatches.size() > 0) {
+    if (!indexMatches || indexMatches.size() == 0) {
         if (query.literatures.empty()) {
             throw tpc_exception("no literature information provided in the query object");
         }
