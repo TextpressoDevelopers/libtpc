@@ -192,6 +192,13 @@ namespace tpc {
         public:
 
             IndexManager() = default;
+
+            /*!
+             * create a new index manager object
+             * @param index_path the path to the index
+             * @param read_only whether the index should be opened in read-only mode
+             * @param external whether the index external, and standalone
+             */
             explicit IndexManager(const std::string& index_path, bool read_only = true, bool external = false):
                     index_dir(index_path),
                     readonly(read_only),
