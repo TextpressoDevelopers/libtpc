@@ -587,7 +587,8 @@ void IndexManager::update_sentences_details_for_document(const DocumentSummary &
     }
 }
 
-void IndexManager::create_index_from_existing_cas_dir(const std::string &input_cas_dir, int max_num_papers_per_subindex)
+void IndexManager::create_index_from_existing_cas_dir(const string &input_cas_dir, const set<string>& file_list,
+                                                      int max_num_papers_per_subindex)
 {
     path input_cas_dir_path(input_cas_dir);
     string out_dir = index_dir + "/" + SUBINDEX_NAME;
@@ -609,7 +610,7 @@ void IndexManager::create_index_from_existing_cas_dir(const std::string &input_c
             }
             create_subindex_dir_structure(subindex_dir);
         }
-        if (is_regular_file(dir_it->status())) {
+        if (is_regular_file(dir_it->status()) && file_list.find(dir_it->path().filename().string()) != file_list.end()) {
             std::string filepath(dir_it->path().string());
             if (!process_single_file(filepath, first_paper, tmp_conf)) {
                 continue;
@@ -936,6 +937,11 @@ void IndexManager::remove_all_external_indices() {
     for (auto& index_loc : extra_index_dirs) {
         remove_external_index(index_loc);
     }
+}
+
+void IndexManager::calculate_and_save_corpus_counter() {
+    update_corpus_counter();
+    save_corpus_counter();
 }
 
 

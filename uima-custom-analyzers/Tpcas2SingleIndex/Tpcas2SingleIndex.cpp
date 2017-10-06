@@ -733,7 +733,12 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
 
     int global_doc_counter(0);
     // read global doc counter from file
-    std::ifstream ifs("/usr/local/textpresso/luceneindex/counter.dat", std::ios::binary);
+    std::ifstream ifs;
+    if(const char* env_p = std::getenv("INDEX_PATH")) {
+        ifs.open(string(env_p) + "/counter.dat", std::ios::binary);
+    } else {
+        ifs.open("/usr/local/textpresso/luceneindex/counter.dat", std::ios::binary);
+    }
     if (ifs) {
         boost::archive::text_iarchive ia(ifs);
         // read class state from archive
@@ -742,7 +747,12 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
     // increment global doc counter to get the doc_id for the new document to add
     ++global_doc_counter;
     // save the new value back to file
-    std::ofstream ofs("/usr/local/textpresso/luceneindex/counter.dat");
+    std::ofstream ofs;
+    if(const char* env_p = std::getenv("INDEX_PATH")) {
+        ofs.open(string(env_p) + "/counter.dat");
+    } else {
+        ofs.open("/usr/local/textpresso/luceneindex/counter.dat");
+    }
     {
         boost::archive::text_oarchive oa(ofs);
         oa << global_doc_counter;

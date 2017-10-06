@@ -269,11 +269,6 @@ namespace tpc {
             int get_num_articles_in_corpus(const std::string& corpus, const std::string& extrenal_idx_location = {});
 
             /*!
-             * update the document counters for the index
-             */
-            void update_corpus_counter();
-
-            /*!
              * get the number of subindices used by the index
              * @return the number of subindices
              */
@@ -370,6 +365,7 @@ namespace tpc {
              * @param max_num_papers_per_subindex max number of papers per subindex
              */
             void create_index_from_existing_cas_dir(const std::string &input_cas_dir,
+                                                    const std::set<std::string>& file_list = {},
                                                     int max_num_papers_per_subindex = 50000);
 
             /*!
@@ -405,6 +401,10 @@ namespace tpc {
              */
             void remove_all_external_indices();
 
+            /*!
+             * update the document counters for the index and save them to file
+             */
+            void calculate_and_save_corpus_counter();
 
         private:
 
@@ -522,6 +522,8 @@ namespace tpc {
             void remove_document_from_index(const std::string& identifier, QueryType type, bool case_sensitive);
 
             void save_corpus_counter();
+
+            void update_corpus_counter();
 
             /*!
              * load information about the number of documents indexed per corpus from file
