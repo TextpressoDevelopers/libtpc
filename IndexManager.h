@@ -413,6 +413,10 @@ namespace tpc {
              */
             void calculate_and_save_corpus_counter();
 
+            void save_all_doc_ids_for_sentences_to_db();
+
+            std::string get_doc_id_for_sentence_from_db(int sent_id);
+
         private:
 
             /*!

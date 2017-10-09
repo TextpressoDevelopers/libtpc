@@ -31,6 +31,8 @@
 #include <boost/serialization/set.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+#include <db_cxx.h>
+#include <dbstl_map.h>
 
 using namespace std;
 using namespace tpc::index;
@@ -252,91 +254,115 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
 {
     SearchResults result = SearchResults();
     unordered_map<string, DocumentSummary> doc_map;
-    doc_map.reserve(100000);
+    //doc_map.reserve(100000);
     // for small searches, read the fields with a lazy loader
-    if (matches_collection.size() < FIELD_CACHE_MIN_HITS) {
-        set<String> fields =  {L"doc_id", L"sentence_id"};
-        if (sort_by_year) {
-            fields.insert(L"year");
-        }
-        FieldSelectorPtr fsel = newLucene<LazySelector>(fields);
-        for (const auto& scoredoc : matches_collection) {
-            DocumentPtr docPtr = searcher->doc(scoredoc->doc, fsel);
-            String identifier = docPtr->get(L"doc_id");
-            string identifier_str = string(identifier.begin(), identifier.end());
-            if (doc_map.find(string(identifier.begin(), identifier.end())) == doc_map.end()) {
-                DocumentSummary document;
-                document.identifier = identifier_str;
-                if (sort_by_year) {
-                    String year = docPtr->get(L"year");
-                    document.year = string(year.begin(), year.end());
-                }
-                document.score = 0;
-                doc_map.insert({document.identifier, document});
+//    if (matches_collection.size() < FIELD_CACHE_MIN_HITS) {
+//        set<String> fields =  {L"doc_id", L"sentence_id"};
+//        if (sort_by_year) {
+//            fields.insert(L"year");
+//        }
+//        FieldSelectorPtr fsel = newLucene<LazySelector>(fields);
+//        for (const auto& scoredoc : matches_collection) {
+//            DocumentPtr docPtr = searcher->doc(scoredoc->doc, fsel);
+//            String identifier = docPtr->get(L"doc_id");
+//            string identifier_str = string(identifier.begin(), identifier.end());
+//            if (doc_map.find(string(identifier.begin(), identifier.end())) == doc_map.end()) {
+//                DocumentSummary document;
+//                document.identifier = identifier_str;
+//                if (sort_by_year) {
+//                    String year = docPtr->get(L"year");
+//                    document.year = string(year.begin(), year.end());
+//                }
+//                document.score = 0;
+//                doc_map.insert({document.identifier, document});
+//            }
+//            doc_map[identifier_str].score += scoredoc->score;
+//            SentenceSummary sentence;
+//            sentence.sentence_id = StringUtils::toInt(docPtr->get(L"sentence_id"));
+//            sentence.score = scoredoc->score;
+//            doc_map[identifier_str].matching_sentences.push_back(sentence);
+//        }
+//    } else { // for big searches, read the fields from the fieldcaches
+        DbEnv env(DB_CXX_NO_EXCEPTIONS);
+        Db* pdb;
+        try {
+            env.set_error_stream(&cerr);
+            env.open((index_dir + "/db").c_str(), DB_CREATE | DB_INIT_MPOOL, 0);
+            pdb = new Db(&env, DB_CXX_NO_EXCEPTIONS);
+            pdb->open(NULL, "idmap.db", NULL, DB_BTREE, DB_RDONLY, 0);
+            typedef dbstl::db_map<int, string> HugeMap;
+            HugeMap huge_map(pdb, &env);
+
+            vector<int> docids;
+            vector<double> scores;
+            for (const auto& scoredoc : matches_collection) {
+                docids.push_back(scoredoc->doc);
+                scores.push_back(scoredoc->score);
             }
-            doc_map[identifier_str].score += scoredoc->score;
-            SentenceSummary sentence;
-            sentence.sentence_id = StringUtils::toInt(docPtr->get(L"sentence_id"));
-            sentence.score = scoredoc->score;
-            doc_map[identifier_str].matching_sentences.push_back(sentence);
-        }
-    } else { // for big searches, read the fields from the fieldcaches
-        vector<int> docids;
-        vector<double> scores;
-        for (const auto& scoredoc : matches_collection) {
-            docids.push_back(scoredoc->doc);
-            scores.push_back(scoredoc->score);
-        }
-        //map<int, double> scores;
-        std::vector<int> idx_vec(docids.size());
-        std::iota(idx_vec.begin(), idx_vec.end(), 0);
-        auto comparator = [&docids](int a, int b){ return docids[a] < docids[b]; };
-        std::sort(idx_vec.begin(), idx_vec.end(), comparator);
-        //sort(docids.begin(), docids.end());
-        int readerIndex = 0;
-        Collection<String> docIdFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex],
-                                                                               L"doc_id");
-        Collection<int> sentIdFieldCache;
-        sentIdFieldCache = FieldCache::DEFAULT()->getInts(subreaders[readerIndex], L"sentence_id");
-        Collection<String> yearFieldCache;
-        if (sort_by_year) {
-            yearFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"year");
-        }
-        int offset = 0;
-        for (int idx : idx_vec) {
-            int docid = docids[idx];
-            while ((docid - offset) >= docIdFieldCache.size()) {
-                offset += docIdFieldCache.size();
-                FieldCache::DEFAULT()->purge(subreaders[readerIndex]);
-                ++readerIndex;
-                docIdFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"doc_id");
-                sentIdFieldCache = FieldCache::DEFAULT()->getInts(subreaders[readerIndex], L"sentence_id");
-                if (sort_by_year) {
-                    yearFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"year");
-                }
+            //map<int, double> scores;
+            std::vector<int> idx_vec(docids.size());
+            std::iota(idx_vec.begin(), idx_vec.end(), 0);
+            auto comparator = [&docids](int a, int b){ return docids[a] < docids[b]; };
+            std::sort(idx_vec.begin(), idx_vec.end(), comparator);
+            //sort(docids.begin(), docids.end());
+            int readerIndex = 0;
+            //Collection<String> docIdFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex],
+            //                                                                       L"doc_id");
+            Collection<int> sentIdFieldCache;
+            sentIdFieldCache = FieldCache::DEFAULT()->getInts(subreaders[readerIndex], L"sentence_id");
+            Collection<String> yearFieldCache;
+            if (sort_by_year) {
+                yearFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"year");
             }
-            String docIdentifier = docIdFieldCache[docid - offset];
-            string identifier_str = string(docIdentifier.begin(), docIdentifier.end());
-            if (doc_map.find(identifier_str) == doc_map.end()) {
-                DocumentSummary document;
-                document.identifier = identifier_str;
-                if (sort_by_year) {
-                    String year = yearFieldCache[docid - offset];
-                    document.year = string(year.begin(), year.end());
+            int offset = 0;
+            for (int idx : idx_vec) {
+                int docid = docids[idx];
+                while ((docid - offset) >= sentIdFieldCache.size()) {
+                    offset += sentIdFieldCache.size();
+                    FieldCache::DEFAULT()->purge(subreaders[readerIndex]);
+                    ++readerIndex;
+                    //docIdFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"doc_id");
+                    sentIdFieldCache = FieldCache::DEFAULT()->getInts(subreaders[readerIndex], L"sentence_id");
+                    if (sort_by_year) {
+                        yearFieldCache = FieldCache::DEFAULT()->getStrings(subreaders[readerIndex], L"year");
+                    }
                 }
-                document.score = 0;
-                doc_map.insert({identifier_str, document});
+                //String docIdentifier = docIdFieldCache[docid - offset];
+                string doc_id_str = huge_map[docid];
+                String docIdentifier = StringUtils::toString(doc_id_str);
+                string identifier_str = string(docIdentifier.begin(), docIdentifier.end());
+                if (doc_map.find(identifier_str) == doc_map.end()) {
+                    DocumentSummary document;
+                    document.identifier = identifier_str;
+                    if (sort_by_year) {
+                        String year = yearFieldCache[docid - offset];
+                        document.year = string(year.begin(), year.end());
+                    }
+                    document.score = 0;
+                    doc_map.insert({identifier_str, document});
+                }
+                doc_map[identifier_str].score += scores[idx];
+                SentenceSummary sentence;
+                sentence.sentence_id = sentIdFieldCache[docid - offset];
+                sentence.score = scores[idx];
+                doc_map[identifier_str].matching_sentences.push_back(sentence);
             }
-            doc_map[identifier_str].score += scores[idx];
-            SentenceSummary sentence;
-            sentence.sentence_id = sentIdFieldCache[docid - offset];
-            sentence.score = scores[idx];
-            doc_map[identifier_str].matching_sentences.push_back(sentence);
+            for (auto& reader : readers_map) {
+                FieldCache::DEFAULT()->purge(reader.second);
+            }
+            if (pdb != NULL) {
+                pdb->close(0);
+                delete pdb;
+            }
+            env.close(0);
+        } catch (DbException& e) {
+            cerr << "DbException: " << e.what() << endl;
+            exit(EXIT_FAILURE);
+        } catch (std::exception& e) {
+            cerr << e.what() << endl;
+            exit(EXIT_FAILURE);
         }
-        for (auto& reader : readers_map) {
-            FieldCache::DEFAULT()->purge(reader.second);
-        }
-    }
+   // }
     std::transform(doc_map.begin(), doc_map.end(), std::back_inserter(result.hit_documents),
                    boost::bind(&map<string, DocumentSummary>::value_type::second, _1));
     // check and update max and min scores for result
@@ -610,7 +636,7 @@ void IndexManager::create_index_from_existing_cas_dir(const string &input_cas_di
             }
             create_subindex_dir_structure(subindex_dir);
         }
-        if (is_regular_file(dir_it->status()) && file_list.find(dir_it->path().filename().string()) != file_list.end()) {
+        if (is_regular_file(dir_it->status()) && file_list.find(dir_it->path().parent_path().filename().string()) != file_list.end()) {
             std::string filepath(dir_it->path().string());
             if (!process_single_file(filepath, first_paper, tmp_conf)) {
                 continue;
@@ -942,6 +968,40 @@ void IndexManager::remove_all_external_indices() {
 void IndexManager::calculate_and_save_corpus_counter() {
     update_corpus_counter();
     save_corpus_counter();
+}
+
+void IndexManager::save_all_doc_ids_for_sentences_to_db() {
+    DbEnv env(DB_CXX_NO_EXCEPTIONS);
+    Db* pdb;
+
+    try {
+        env.set_error_stream(&cerr);
+        env.open((index_dir + "/db").c_str(), DB_CREATE | DB_INIT_MPOOL, 0);
+        pdb = new Db(&env, DB_CXX_NO_EXCEPTIONS);
+        pdb->open(NULL, "idmap.db", NULL, DB_BTREE, DB_CREATE, 0);
+        typedef dbstl::db_map<int, string> HugeMap;
+        HugeMap huge_map(pdb, &env);
+        Collection<IndexReaderPtr> subReaders = get_subreaders(QueryType::sentence, false);
+        MultiReaderPtr multireader = newLucene<MultiReader>(subReaders, false);
+        FieldSelectorPtr fsel = newLucene<LazySelector>(set<String>({L"doc_id"}));
+        for (int i = 0; i < multireader->maxDoc(); i++) {
+            String doc_id = multireader->document(i, fsel)->get(L"doc_id");
+            huge_map[i] = string(doc_id.begin(), doc_id.end());
+        }
+        if (pdb != NULL) {
+            pdb->close(0);
+            delete pdb;
+        }
+        env.close(0);
+    } catch (DbException& e) {
+        cerr << "DbException: " << e.what() << endl;
+    } catch (std::exception& e) {
+        cerr << e.what() << endl;
+    }
+}
+
+string IndexManager::get_doc_id_for_sentence_from_db(int sent_id) {
+    return string();
 }
 
 
