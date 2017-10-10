@@ -511,12 +511,17 @@ void IndexManager::update_sentences_details_for_document(const DocumentSummary &
     while (sentencesIdsItEnd != sentencesIds.end()) {
         sentencesIdsItEnd = distance(sentencesIdsItBegin, sentencesIds.end())  <= MAX_NUM_SENTENCES_IN_QUERY ?
                             sentencesIds.end() : sentencesIdsItBegin + MAX_NUM_SENTENCES_IN_QUERY;
-        string sent_query_str = "doc_id:\"" + doc_summary.identifier + "\" AND (sentence_id:\"" +
-                                boost::algorithm::join(vector<string>(sentencesIdsItBegin, sentencesIdsItEnd),
-                                                       "\" OR sentence_id:\"") + "\")";
+        string sent_query_str = "sentence_id:\"" +
+                boost::algorithm::join(vector<string>(sentencesIdsItBegin, sentencesIdsItEnd),
+                                       "\" OR sentence_id:\"") + "\"";
+        string docid_query_str = "doc_id:\"" + doc_details.identifier + "\"";
+        BooleanQueryPtr booleanQuery = newLucene<BooleanQuery>();
+        QueryPtr key_luceneQuery = sent_parser->parse(String(docid_query_str.begin(), docid_query_str.end()));
         QueryPtr luceneQuery = sent_parser->parse(String(sent_query_str.begin(), sent_query_str.end()));
+        booleanQuery->add(luceneQuery, BooleanClause::MUST);
+        booleanQuery->add(key_luceneQuery, BooleanClause::MUST);
         collector = TopScoreDocCollector::create(MAX_HITS, true);
-        searcher->search(luceneQuery, collector);
+        searcher->search(booleanQuery, collector);
         Collection<ScoreDocPtr> matchesCollection = collector->topDocs()->scoreDocs;
         for (const auto &sentscoredoc : matchesCollection) {
             SentenceDetails sentenceDetails = SentenceDetails();
