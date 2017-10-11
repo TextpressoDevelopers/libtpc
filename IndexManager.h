@@ -76,6 +76,7 @@ namespace tpc {
          */
         struct SentenceSummary {
             int sentence_id{-1};
+            int lucene_internal_id{-1};
             double score{0};
         };
 
@@ -415,8 +416,6 @@ namespace tpc {
 
             void save_all_doc_ids_for_sentences_to_db();
 
-            std::string get_doc_id_for_sentence_from_db(int sent_id);
-
         private:
 
             /*!
@@ -436,8 +435,7 @@ namespace tpc {
              * SearchResult object
              */
             SearchResults read_documents_summaries(const Lucene::Collection<Lucene::ScoreDocPtr> &matches_collection,
-                                                   const Lucene::Collection<Lucene::IndexReaderPtr> &subreaders,
-                                                   Lucene::SearcherPtr searcher, bool sort_by_year = false);
+                                                   bool sort_by_year = false);
 
             /*!
              * collect and return document information for a collection of matches obtained from a sentence search
@@ -448,8 +446,7 @@ namespace tpc {
              * documents, encapsulated in a SearchResult object
              */
             SearchResults read_sentences_summaries(const Lucene::Collection<Lucene::ScoreDocPtr> &matches_collection,
-                                                   const Lucene::Collection<Lucene::IndexReaderPtr> &subreaders,
-                                                   Lucene::SearcherPtr searcher, bool sort_by_year = false);
+                                                   bool sort_by_year = false);
 
             /*!
              * get detailed information for a document specified by a DocumentSummary object
@@ -484,7 +481,9 @@ namespace tpc {
                                                        Lucene::QueryParserPtr sent_parser,
                                                        Lucene::SearcherPtr searcher,
                                                        Lucene::FieldSelectorPtr fsel,
-                                                       const std::set<Lucene::String> &fields);
+                                                       const std::set<Lucene::String> &fields,
+                                                       bool use_lucene_internal_ids,
+                                                       Lucene::MultiReaderPtr sent_reader);
 
             static std::set<Lucene::String> compose_field_set(const std::set<std::string> &include_fields,
                                                               const std::set<std::string> &exclude_fields,
