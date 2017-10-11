@@ -110,6 +110,7 @@ namespace tpc {
             std::string identifier;
             double score{0};
             std::string year;
+            int lucene_internal_id{-1};
         };
 
         /*!
@@ -321,6 +322,7 @@ namespace tpc {
              * @param exclude_doc_fields the list of fields to exclude for the document
              * @param exclude_match_sentences_fields the list of fields to exclude for the matching sentences specified in
              * the DocumentSummary object
+             * @param use_lucene_internal_ids use the field lucene_internal_id to identify documents from doc_summary
              * @return the detailed information of the document
              */
             DocumentDetails get_document_details(const DocumentSummary &doc_summary,
@@ -328,7 +330,8 @@ namespace tpc {
                                                  std::set<std::string> include_doc_fields = DOCUMENTS_FIELDS_DETAILED,
                                                  std::set<std::string> include_match_sentences_fields = SENTENCE_FIELDS_DETAILED,
                                                  const std::set<std::string> &exclude_doc_fields = {},
-                                                 const std::set<std::string> &exclude_match_sentences_fields = {});
+                                                 const std::set<std::string> &exclude_match_sentences_fields = {},
+                                                 bool use_lucene_internal_ids = true);
 
             /*!
              * @brief get detailed information for a set of documents specified by a list of DocumentSummary objects
@@ -346,6 +349,7 @@ namespace tpc {
              * @param exclude_doc_fields the list of fields to exclude for the document
              * @param exclude_match_sentences_fields the list of fields to exclude for the matching sentences specified in
              * the DocumentSummary object
+             * @param use_lucene_internal_ids use the field lucene_internal_id to identify documents from doc_summary
              * @return the detailed information of the documents
              */
             std::vector<DocumentDetails> get_documents_details(const std::vector<DocumentSummary> &doc_summaries,
@@ -354,7 +358,8 @@ namespace tpc {
                                                                std::set<std::string> include_doc_fields = DOCUMENTS_FIELDS_DETAILED,
                                                                std::set<std::string> include_match_sentences_fields = SENTENCE_FIELDS_DETAILED,
                                                                const std::set<std::string> &exclude_doc_fields = {},
-                                                               const std::set<std::string> &exclude_match_sentences_fields = {});
+                                                               const std::set<std::string> &exclude_match_sentences_fields = {},
+                                                               bool use_lucene_internal_ids = true);
 
             // comparators for reverse sorting of documents and sentence objects
             static bool document_score_gt(const Document &a, const Document &b) { return a.score > b.score; }
@@ -449,22 +454,6 @@ namespace tpc {
                                                    bool sort_by_year = false);
 
             /*!
-             * get detailed information for a document specified by a DocumentSummary object
-             * @param doc_summary a DocumentSummary object that identifies a document
-             * @param doc_parser a Lucene query parser
-             * @param searcher a Lucene searcher
-             * @param fsel a Lucene field selector
-             * @param fields the set of fields to be retrieved for the document
-             * @return the details of the document
-             */
-
-            DocumentDetails read_document_details(const DocumentSummary &doc_summary,
-                                                  Lucene::QueryParserPtr doc_parser,
-                                                  Lucene::SearcherPtr searcher,
-                                                  Lucene::FieldSelectorPtr fsel,
-                                                  const std::set<Lucene::String> &fields);
-
-            /*!
              * get detailed information for the sentences of a document specifed by a DocumentSummary object and update the
              * respective information in the provided DocumentDetails object
              * @param doc_summary a DocumentSummary object that identifies a document
@@ -496,7 +485,9 @@ namespace tpc {
                                                                 Lucene::QueryParserPtr doc_parser,
                                                                 Lucene::SearcherPtr searcher,
                                                                 Lucene::FieldSelectorPtr fsel,
-                                                                const std::set<Lucene::String> &fields);
+                                                                const std::set<Lucene::String> &fields,
+                                                                bool use_lucene_internal_ids,
+                                                                Lucene::MultiReaderPtr doc_reader);
 
             /*!
              * write the temporary conf files for a subindex with the UIMA files needed

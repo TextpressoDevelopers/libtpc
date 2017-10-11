@@ -177,33 +177,25 @@ SearchResults IndexManager::read_documents_summaries(const Collection<ScoreDocPt
 {
     SearchResults result = SearchResults();
     DbEnv env(DB_CXX_NO_EXCEPTIONS);
-    Db* pdb;
-    Db* pdb_y;
+    Db* pdb_y = NULL;
     try {
         env.set_error_stream(&cerr);
         env.open((index_dir + "/db").c_str(), DB_INIT_MPOOL, 0);
-        pdb = new Db(&env, DB_CXX_NO_EXCEPTIONS);
-        pdb->open(NULL, "idmap.db", NULL, DB_BTREE, DB_RDONLY, 0);
         typedef dbstl::db_map<int, string> HugeMap;
-        HugeMap huge_map(pdb, &env);
         HugeMap huge_map_year;
         if (sort_by_year) {
             pdb_y = new Db(&env, DB_CXX_NO_EXCEPTIONS);
             pdb_y->open(NULL, "yearmap.db", NULL, DB_BTREE, DB_RDONLY, 0);
-            huge_map_year = HugeMap(pdb, &env);
+            huge_map_year = HugeMap(pdb_y, &env);
         }
         for (const auto& docresult : matches_collection) {
             DocumentSummary document;
-            document.identifier = huge_map[docresult->doc];
+            document.lucene_internal_id = docresult->doc;
             document.score = docresult->score;
             if (sort_by_year) {
                 document.year = huge_map_year[docresult->doc];
             }
             result.hit_documents.push_back(document);
-        }
-        if (pdb != NULL) {
-            pdb->close(0);
-            delete pdb;
         }
         if (pdb_y != NULL) {
             pdb_y->close(0);
@@ -247,7 +239,7 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
         if (sort_by_year) {
             pdb_y = new Db(&env, DB_CXX_NO_EXCEPTIONS);
             pdb_y->open(NULL, "yearmap.db", NULL, DB_BTREE, DB_RDONLY, 0);
-            huge_map_year = HugeMap(pdb, &env);
+            huge_map_year = HugeMap(pdb_y, &env);
         }
         for (const auto& scoredoc : matches_collection) {
             string identifier_str = huge_map[scoredoc->doc];
@@ -301,7 +293,8 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
                                                             set<string> include_doc_fields,
                                                             set<string> include_match_sentences_fields,
                                                             const set<string> &exclude_doc_fields,
-                                                            const set<string> &exclude_match_sentences_fields)
+                                                            const set<string> &exclude_match_sentences_fields,
+                                                            bool use_lucene_internal_ids)
 {
     vector<DocumentDetails> results;
     set<String> doc_f = compose_field_set(include_doc_fields, exclude_doc_fields, {"year"});
@@ -329,15 +322,29 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
                                             analyzer);
         sent_searcher = newLucene<IndexSearcher>(sentMultireader);
     }
-    results = read_documents_details(doc_summaries, docParser, searcher, doc_fsel, doc_f);
+    results = read_documents_details(doc_summaries, docParser, searcher, doc_fsel, doc_f, use_lucene_internal_ids,
+                                     docMultireader);
     map<string, DocumentSummary> doc_summaries_map;
-    for (const auto& doc_summary : doc_summaries) {
-        doc_summaries_map[doc_summary.identifier] = doc_summary;
+    for (const auto &doc_summary : doc_summaries) {
+        if (use_lucene_internal_ids) {
+            doc_summaries_map[to_string(doc_summary.lucene_internal_id)] = doc_summary;
+        } else {
+            doc_summaries_map[doc_summary.identifier] = doc_summary;
+        }
     }
     if (include_sentences) {
-        for (DocumentDetails& docDetails : results ) {
-            update_sentences_details_for_document(doc_summaries_map[docDetails.identifier], docDetails, sentParser,
-                                                  sent_searcher, sent_fsel, sent_f, true, sentMultireader);
+        for (DocumentDetails &docDetails : results) {
+            if (use_lucene_internal_ids) {
+                update_sentences_details_for_document(doc_summaries_map[to_string(docDetails.lucene_internal_id)],
+                                                      docDetails, sentParser,
+                                                      sent_searcher, sent_fsel, sent_f, use_lucene_internal_ids,
+                                                      sentMultireader);
+            } else {
+                update_sentences_details_for_document(doc_summaries_map[docDetails.identifier],
+                                                      docDetails, sentParser,
+                                                      sent_searcher, sent_fsel, sent_f, use_lucene_internal_ids,
+                                                      sentMultireader);
+            }
         }
     }
     docMultireader->close();
@@ -353,15 +360,16 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
 }
 
 DocumentDetails IndexManager::get_document_details(const DocumentSummary& doc_summary,
-                                                     bool include_sentences,
-                                                     set<string> include_doc_fields,
-                                                     set<string> include_match_sentences_fields,
-                                                     const set<string>& exclude_doc_fields,
-                                                     const set<string>& exclude_match_sentences_fields)
+                                                   bool include_sentences,
+                                                   set<string> include_doc_fields,
+                                                   set<string> include_match_sentences_fields,
+                                                   const set<string>& exclude_doc_fields,
+                                                   const set<string>& exclude_match_sentences_fields,
+                                                   bool use_lucene_internal_ids)
 {
     return get_documents_details({doc_summary}, false, include_sentences,
                                  include_doc_fields, include_match_sentences_fields, exclude_doc_fields,
-                                 exclude_match_sentences_fields)[0];
+                                 exclude_match_sentences_fields, use_lucene_internal_ids)[0];
 }
 
 void IndexManager::update_document_details(DocumentDetails &doc_details, String field, DocumentPtr doc_ptr) {
@@ -414,62 +422,55 @@ void IndexManager::update_document_details(DocumentDetails &doc_details, String 
     }
 }
 
-DocumentDetails IndexManager::read_document_details(const DocumentSummary &doc_summary,
-                                                      QueryParserPtr doc_parser,
-                                                      SearcherPtr searcher,
-                                                      FieldSelectorPtr fsel,
-                                                      const set<String> &fields)
-{
-    string doc_query_str = "doc_id:" + doc_summary.identifier;
-    QueryPtr luceneQuery = doc_parser->parse(String(doc_query_str.begin(), doc_query_str.end()));
-    TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
-    searcher->search(luceneQuery, collector);
-    Collection<ScoreDocPtr> matchesCollection = collector->topDocs()->scoreDocs;
-    auto scoredoc = matchesCollection[0];
-    DocumentDetails documentDetails = DocumentDetails();
-    DocumentPtr docPtr = searcher->doc(scoredoc->doc, fsel);
-    for (const auto& f : fields) {
-        update_document_details(documentDetails, f, docPtr);
-    }
-    return documentDetails;
-}
-
 vector<DocumentDetails> IndexManager::read_documents_details(const vector<DocumentSummary> &doc_summaries,
-                                                               QueryParserPtr doc_parser,
-                                                               SearcherPtr searcher,
-                                                               FieldSelectorPtr fsel,
-                                                               const set<String> &fields)
+                                                             QueryParserPtr doc_parser,
+                                                             SearcherPtr searcher,
+                                                             FieldSelectorPtr fsel,
+                                                             const set<String> &fields, bool use_lucene_internal_ids,
+                                                             MultiReaderPtr doc_reader)
 {
     vector<DocumentDetails> results;
-    vector<string> identifiers;
-    map<string, double> scoremap;
-    for (const auto& docSummary : doc_summaries) {
-        identifiers.push_back(docSummary.identifier);
-        scoremap[docSummary.identifier] = docSummary.score;
-    }
-    auto identifiersItBegin = identifiers.begin();
-    auto identifiersItEnd = identifiers.begin();
-    while (identifiersItEnd != identifiers.end()) {
-        identifiersItEnd = distance(identifiersItBegin, identifiers.end()) <= MAX_NUM_DOCIDS_IN_QUERY ?
-                           identifiers.end() : identifiersItBegin + MAX_NUM_DOCIDS_IN_QUERY;
-        string doc_query_str = "doc_id:\"" + boost::algorithm::join(vector<string>(identifiersItBegin,
-                                                                                     identifiersItEnd),
-                                                                      "\" OR doc_id:\"");
-        doc_query_str.append("\"");
-        QueryPtr luceneQuery = doc_parser->parse(String(doc_query_str.begin(), doc_query_str.end()));
-        TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
-        searcher->search(luceneQuery, collector);
-        Collection<ScoreDocPtr> matchesCollection = collector->topDocs()->scoreDocs;
-        for (const auto &scoredoc : matchesCollection) {
+    if (use_lucene_internal_ids) {
+        for (const auto &docSummary : doc_summaries) {
             DocumentDetails documentDetails = DocumentDetails();
-            DocumentPtr docPtr = searcher->doc(scoredoc->doc, fsel);
+            DocumentPtr docPtr = doc_reader->document(docSummary.lucene_internal_id, fsel);
             for (const auto &f : fields) {
                 update_document_details(documentDetails, f, docPtr);
             }
-            documentDetails.score = scoremap[documentDetails.identifier];
+            documentDetails.score = docSummary.score;
             results.push_back(documentDetails);
         }
-        identifiersItBegin = identifiersItEnd;
+    } else {
+        vector<string> identifiers;
+        map<string, double> scoremap;
+        for (const auto &docSummary : doc_summaries) {
+            identifiers.push_back(docSummary.identifier);
+            scoremap[docSummary.identifier] = docSummary.score;
+        }
+        auto identifiersItBegin = identifiers.begin();
+        auto identifiersItEnd = identifiers.begin();
+        while (identifiersItEnd != identifiers.end()) {
+            identifiersItEnd = distance(identifiersItBegin, identifiers.end()) <= MAX_NUM_DOCIDS_IN_QUERY ?
+                               identifiers.end() : identifiersItBegin + MAX_NUM_DOCIDS_IN_QUERY;
+            string doc_query_str = "doc_id:\"" + boost::algorithm::join(vector<string>(identifiersItBegin,
+                                                                                       identifiersItEnd),
+                                                                        "\" OR doc_id:\"");
+            doc_query_str.append("\"");
+            QueryPtr luceneQuery = doc_parser->parse(String(doc_query_str.begin(), doc_query_str.end()));
+            TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
+            searcher->search(luceneQuery, collector);
+            Collection<ScoreDocPtr> matchesCollection = collector->topDocs()->scoreDocs;
+            for (const auto &scoredoc : matchesCollection) {
+                DocumentDetails documentDetails = DocumentDetails();
+                DocumentPtr docPtr = searcher->doc(scoredoc->doc, fsel);
+                for (const auto &f : fields) {
+                    update_document_details(documentDetails, f, docPtr);
+                }
+                documentDetails.score = scoremap[documentDetails.identifier];
+                results.push_back(documentDetails);
+            }
+            identifiersItBegin = identifiersItEnd;
+        }
     }
     sort(results.begin(), results.end(), document_score_gt);
     return results;
