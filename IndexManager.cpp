@@ -337,12 +337,12 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
             if (use_lucene_internal_ids) {
                 update_sentences_details_for_document(doc_summaries_map[to_string(docDetails.lucene_internal_id)],
                                                       docDetails, sentParser,
-                                                      sent_searcher, sent_fsel, sent_f, use_lucene_internal_ids,
+                                                      sent_searcher, sent_fsel, sent_f, true,
                                                       sentMultireader);
             } else {
                 update_sentences_details_for_document(doc_summaries_map[docDetails.identifier],
                                                       docDetails, sentParser,
-                                                      sent_searcher, sent_fsel, sent_f, use_lucene_internal_ids,
+                                                      sent_searcher, sent_fsel, sent_f, true,
                                                       sentMultireader);
             }
         }
