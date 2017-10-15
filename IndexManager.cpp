@@ -593,7 +593,10 @@ void IndexManager::create_index_from_existing_cas_dir(const string &input_cas_di
             }
             create_subindex_dir_structure(subindex_dir);
         }
-        if (is_regular_file(dir_it->status()) && file_list.find(dir_it->path().parent_path().filename().string()) != file_list.end()) {
+        string file_id = dir_it->path().parent_path().parent_path().filename().string()
+                         + "/" + dir_it->path().parent_path().filename().string();
+        if (is_regular_file(dir_it->status()) && boost::algorithm::ends_with(
+                dir_it->path().filename().string(), ".tpcas.gz") && file_list.find(file_id) != file_list.end()) {
             std::string filepath(dir_it->path().string());
             if (!process_single_file(filepath, first_paper, tmp_conf)) {
                 continue;
