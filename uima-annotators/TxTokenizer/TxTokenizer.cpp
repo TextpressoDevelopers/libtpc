@@ -19,7 +19,7 @@ static const uint64_t InitialFNV = 14695981039346656037U;
 static const uint64_t FNVMultiple = 1099511628211;
 
 int32_t TxTokenizer::FindStartTag(const UnicodeString docstring, const UnicodeString name, int32_t pos) {
-    int32_t annb;
+    int32_t annb(0);
     UnicodeString s("<" + name);
     pos = docstring.indexOf(s, pos + 1);
     if (pos > 0) {
@@ -154,8 +154,6 @@ void TxTokenizer::TraverseTree(pugi::xml_node pnode, UnicodeString docstring,
             TraverseTree(*it, docstring, pos, tcas, t1, f1, f2, f3);
             int tagchecksum = 1;
             while (tagchecksum > 0) {
-                string test;
-                docstring.toUTF8String(test);
                 int32_t poss = FindStartTag(docstring, name, pos);
                 pos = FindEndTag(docstring, name, pos);
                 tagchecksum -= 1;
