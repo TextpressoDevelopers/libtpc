@@ -391,7 +391,8 @@ namespace tpc {
 
             /*!
              * remove a specific file from the index
-             * @param identifier the id of the file to remove
+             * @param identifier the id of the file to remove, currently represented by the filepath field stored in
+             * lucene
              */
             void remove_file_from_index(const std::string& identifier);
 
@@ -520,7 +521,8 @@ namespace tpc {
              */
             bool process_single_file(const std::string &filepath, bool &first_paper, const TmpConf &tmp_conf);
 
-            void remove_document_from_index(const std::string& identifier, QueryType type, bool case_sensitive);
+            std::string remove_document_from_index(const std::string& identifier, bool case_sensitive);
+            void remove_sentences_for_document(const std::string& doc_id, bool case_sensitive);
 
             void save_corpus_counter();
 

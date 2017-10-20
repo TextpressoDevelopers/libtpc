@@ -772,18 +772,18 @@ void IndexManager::add_file_to_index(const std::string &file_path, int max_num_p
 
 void IndexManager::remove_file_from_index(const std::string &identifier) {
     // document - case insensitive index
-    remove_document_from_index(identifier, QueryType::document, false);
+    string doc_id = remove_document_from_index(identifier, false);
     // document - case sensitive index
-    remove_document_from_index(identifier, QueryType::document, true);
+    remove_document_from_index(identifier, true);
     // sentence - case insensitive index
-    remove_document_from_index(identifier, QueryType::sentence, false);
+    remove_sentences_for_document(doc_id, false);
     // sentence - case sensitive index
-    remove_document_from_index(identifier, QueryType::sentence, true);
+    remove_sentences_for_document(doc_id, true);
 }
 
-void IndexManager::remove_document_from_index(const string& identifier, QueryType type, bool case_sensitive)
+string IndexManager::remove_document_from_index(const string& identifier, bool case_sensitive)
 {
-    Collection<IndexReaderPtr> subreaders = get_subreaders(type, case_sensitive);
+    Collection<IndexReaderPtr> subreaders = get_subreaders(QueryType::document, case_sensitive);
     MultiReaderPtr multireader = newLucene<MultiReader>(subreaders, false);
     AnalyzerPtr analyzer;
     if (case_sensitive) {
@@ -798,6 +798,33 @@ void IndexManager::remove_document_from_index(const string& identifier, QueryTyp
     TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
     searcher->search(luceneQuery, collector);
     Collection<ScoreDocPtr> matchesCollection = collector->topDocs()->scoreDocs;
+    FieldSelectorPtr fsel = newLucene<LazySelector>(set<String>({L"doc_id"}));
+    String raw_doc_id = multireader->document(matchesCollection[0]->doc, fsel)->get(L"doc_id");
+    string doc_id(raw_doc_id.begin(), raw_doc_id.end());
+    for (const auto& document : matchesCollection) {
+        multireader->deleteDocument(document->doc);
+    }
+    multireader->close();
+    return doc_id;
+}
+
+void IndexManager::remove_sentences_for_document(const std::string &doc_id, bool case_sensitive) {
+    Collection<IndexReaderPtr> subreaders = get_subreaders(QueryType::sentence, case_sensitive);
+    MultiReaderPtr multireader = newLucene<MultiReader>(subreaders, false);
+    AnalyzerPtr analyzer;
+    if (case_sensitive) {
+        analyzer = newLucene<CaseSensitiveAnalyzer>(LuceneVersion::LUCENE_30);
+    } else {
+        analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_30);
+    }
+    QueryParserPtr parser = newLucene<QueryParser>(LuceneVersion::LUCENE_30, L"doc_id", analyzer);
+    String query_str = L"doc_id:" + String(doc_id.begin(), doc_id.end());
+    QueryPtr luceneQuery = parser->parse(query_str);
+    SearcherPtr searcher = newLucene<IndexSearcher>(multireader);
+    TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
+    searcher->search(luceneQuery, collector);
+    Collection<ScoreDocPtr> matchesCollection = collector->topDocs()->scoreDocs;
+    FieldSelectorPtr fsel = newLucene<LazySelector>(set<String>({L"doc_id"}));
     for (const auto& document : matchesCollection) {
         multireader->deleteDocument(document->doc);
     }
