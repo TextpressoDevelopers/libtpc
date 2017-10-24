@@ -848,6 +848,9 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
     if (l_title.size() == 0) {
         l_title = L"Not available";
     }
+    if (w_cleanText.empty()) {
+        w_cleanText = L"not available";
+    }
     DocumentPtr fulltextdoc = newLucene<Document > ();
     fulltextdoc->add(newLucene<Field > (L"doc_id", StringUtils::toString(base64_id.c_str()),
                                         Field::STORE_YES, Field::INDEX_NOT_ANALYZED_NO_NORMS));
