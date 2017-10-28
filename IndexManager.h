@@ -66,6 +66,10 @@ namespace tpc {
             document = 1, sentence = 2
         };
 
+        enum class DocumentType {
+            main = 1, external = 2
+        };
+
         /*!
          * @struct SentenceSummary
          * @brief data structure that contains summary information related to a sentence as the result of a search
@@ -105,12 +109,14 @@ namespace tpc {
          * @var <b>identifier</b> the identifier of the document
          * @var <b>score</b> the score of the document returned by a search
          * @var <b>year</b> the publication date, used to sort documents
+         * @var <b>documentType</b> whether the document comes from main or external index
          */
         struct Document {
             std::string identifier;
             double score{0};
             std::string year;
             int lucene_internal_id{-1};
+            DocumentType documentType{DocumentType::main};
         };
 
         /*!
@@ -171,6 +177,8 @@ namespace tpc {
          * @var <b>total_num_sentences</b> number of sentences in the document
          * @var <b>max_score</b> documents highest score
          * @var <b>min_score</b> documents lowest score
+         * @var <b>indexMatches</b> results of partial search
+         * @var <b>externalMatches</b> results of partial search on external index
          */
         struct SearchResults {
             Query query;
@@ -179,6 +187,9 @@ namespace tpc {
             double max_score{0};
             double min_score{DBL_MAX};
             Lucene::Collection<Lucene::ScoreDocPtr> indexMatches{};
+            Lucene::Collection<Lucene::ScoreDocPtr> externalMatches{};
+
+            void update(const SearchResults& other);
         };
 
         class tpc_exception : public std::runtime_error {
@@ -207,8 +218,7 @@ namespace tpc {
                     external(external),
                     readers_map(),
                     corpus_doc_counter(),
-                    extra_index_dirs(),
-                    external_corpus_doc_counter_map() { };
+                    externalIndexManager() { };
             ~IndexManager() {
                 close();
             };
@@ -218,8 +228,7 @@ namespace tpc {
                 readonly = other.readonly;
                 external = other.external;
                 corpus_doc_counter = other.corpus_doc_counter;
-                extra_index_dirs = other.extra_index_dirs;
-                external_corpus_doc_counter_map = other.external_corpus_doc_counter_map;
+                externalIndexManager = other.externalIndexManager;
             };
             IndexManager& operator=(const IndexManager& other) {
                 readers_map = other.readers_map;
@@ -227,8 +236,7 @@ namespace tpc {
                 readonly = other.readonly;
                 external = other.external;
                 corpus_doc_counter = other.corpus_doc_counter;
-                extra_index_dirs = other.extra_index_dirs;
-                external_corpus_doc_counter_map = other.external_corpus_doc_counter_map;
+                externalIndexManager = other.externalIndexManager;
             };
             IndexManager(IndexManager&& other) noexcept :
                     readers_map(std::move(other.readers_map)),
@@ -236,16 +244,14 @@ namespace tpc {
                     external(other.external),
                     index_dir(std::move(other.index_dir)),
                     corpus_doc_counter(std::move(other.corpus_doc_counter)),
-                    extra_index_dirs(std::move(other.extra_index_dirs)),
-                    external_corpus_doc_counter_map(std::move(other.external_corpus_doc_counter_map)) {  };
+                    externalIndexManager(std::move(other.externalIndexManager)) {}
             IndexManager& operator=(IndexManager&& other) noexcept {
                 readers_map = std::move(other.readers_map);
                 index_dir = std::move(other.index_dir);
                 readonly = other.readonly;
                 external = other.external;
                 corpus_doc_counter = std::move(other.corpus_doc_counter);
-                extra_index_dirs = std::move(other.extra_index_dirs);
-                external_corpus_doc_counter_map = std::move(other.external_corpus_doc_counter_map);
+                externalIndexManager = std::move(other.externalIndexManager);
             };
 
             void close() {
@@ -256,32 +262,23 @@ namespace tpc {
 
             /*!
              * return the list of indexed corpora
-             * information. If not specified, the list of corpora for the main index are returned
              * @return a vector of strings, representing the list of available corpora in the index
              */
             static std::vector<std::string> get_available_corpora();
 
             /*!
-             * return the list of indexed corpora for an external index linked to the main one
-             * @param external_idx_location the location of the external index
-             * @return a vector of strings, representing the list of available corpora in the external index
+             * return the list of additional corpora
+             * @return a vector of strings, representing the list of additional corpora in the index
              */
-            std::vector<std::string> get_corpora_for_external_index(const std::string& external_idx_location);
+            std::vector<std::string> get_additional_corpora();
 
             /*!
              * return the number of articles indexed under a specific corpus
              * @param corpus the value of the corpus
-             * @param external_idx_location ptional parameter to specify the external index where to read corpora
-             * information. If not specified, the list of corpora for the main index are returned
+             * @param external whether to retrieve the number of articles per corpus from the external index
              * @return the numbe of articles indexed under the specified corpus
              */
-            int get_num_articles_in_corpus(const std::string& corpus, const std::string& extrenal_idx_location = {});
-
-            /*!
-             * get the number of subindices used by the index
-             * @return the number of subindices
-             */
-            int get_num_subindices();
+            int get_num_articles_in_corpus(const std::string& corpus, bool external = false);
 
             /*!
              * @brief search the Textpresso index for documents matching the provided Lucene query and return summary
@@ -298,16 +295,14 @@ namespace tpc {
              * collection of matches. This object can be passed to a subsequent call to this method to continue the
              * search and get the complete results. This is useful to get an initial estimate of the size of the
              * complete search
-             * @param indexMatches a Lucene internal object containing the results of a previous partial search without
-             * scores. The search will be completed with the sentence or document scores starting from the provided
-             * matching documents
+             * @param partialResults the results of a previous partial search. The search will be completed with the
+             * sentence or document scores starting from the provided matching documents
              * @return the list of the documents matching the query sorted by their scores and encapsulated in a
              * SearchResutl object
              */
             SearchResults search_documents(const Query &query, bool matches_only = false,
                                            const std::set<std::string> &doc_ids = {},
-                                           const Lucene::Collection<Lucene::ScoreDocPtr>& indexMatches =
-                                           Lucene::Collection<Lucene::ScoreDocPtr>());
+                                           const SearchResults& partialResults = SearchResults());
 
             /*!
              * @brief get detailed information about a document specified by a DocumentSummary object
@@ -397,30 +392,34 @@ namespace tpc {
             void remove_file_from_index(const std::string& identifier);
 
             /*!
-             * add an external lucene index to the index manager. It will be combined to the existing index with a
-             * multireader object. Note that the specified directory must contain a set of sub-directories with the
-             * actual indices used in tpc, for example fulltext, fulltext_cs, sentence, and sentence_cs
-             * @param index_dir the directory containing the index
-             */
-            void add_external_index(const std::string& index_dir);
-
-            /*!
-             * remove the external index at the specified location, if present
-             * @param index_dir the location of the index in the filesystem
-             */
-            void remove_external_index(const std::string& index_dir);
-
-            /*!
-             * remove all external indices
-             */
-            void remove_all_external_indices();
-
-            /*!
              * update the document counters for the index and save them to file
              */
             void calculate_and_save_corpus_counter();
 
             void save_all_doc_ids_for_sentences_to_db();
+
+            /*!
+             * whether the index has an external index attached
+             * @return true if the index has an external index attached, false otherwise
+             */
+            bool has_external_index();
+
+            /*!
+             * add an external index to the main one
+             * @param external_idx_path the path to the external index
+             */
+            void set_external_index(std::string external_idx_path);
+
+            /*!
+             * remove the external index
+             */
+            void remove_external_index();
+
+            /*!
+             * get the list of additional corpora available from the external index
+             * @return the list of additional corpora od the external index
+             */
+            std::vector<std::string> get_external_corpora();
 
         private:
 
@@ -530,9 +529,8 @@ namespace tpc {
 
             /*!
              * load information about the number of documents indexed per corpus from file
-             * @param external_idx_location optional parameter to load information related to external indices
              */
-            void load_corpus_counter(const std::string& external_idx_location = {});
+            void load_corpus_counter();
             int get_num_docs_in_corpus_from_index(const std::string& corpus);
 
             std::map<std::string, Lucene::IndexReaderPtr> readers_map;
@@ -540,8 +538,7 @@ namespace tpc {
             bool readonly;
             bool external;
             std::map<std::string, int> corpus_doc_counter;
-            std::map<std::string, std::map<std::string, int>> external_corpus_doc_counter_map;
-            std::set<std::string> extra_index_dirs;
+            IndexManager* externalIndexManager;
         };
     }
 }

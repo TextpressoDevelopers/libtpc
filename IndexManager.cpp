@@ -42,13 +42,15 @@ using namespace xercesc;
 using namespace boost::filesystem;
 
 SearchResults IndexManager::search_documents(const Query& query, bool matches_only, const set<string>& doc_ids,
-                                             const Collection<ScoreDocPtr>& indexMatches)
+                                             const SearchResults& partialResults)
 {
     Collection<ScoreDocPtr> matchesCollection;
+    Collection<ScoreDocPtr> externalMatchesCollection;
     Collection<IndexReaderPtr> subReaders = get_subreaders(query.type, query.case_sensitive);
     MultiReaderPtr multireader = newLucene<MultiReader>(subReaders, false);
     SearcherPtr searcher = newLucene<IndexSearcher>(multireader);
-    if (!indexMatches || indexMatches.size() == 0) {
+    if ((!partialResults.indexMatches || partialResults.indexMatches.empty()) && (!partialResults.externalMatches ||
+            partialResults.externalMatches.empty())) {
         if (query.literatures.empty()) {
             throw tpc_exception("no literature information provided in the query object");
         }
@@ -83,15 +85,31 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
         }
         matchesCollection = collector->topDocs()->scoreDocs;
     } else {
-        matchesCollection = indexMatches;
+        matchesCollection = partialResults.indexMatches;
+        if (has_external_index()) {
+            externalMatchesCollection = partialResults.externalMatches;
+        }
     }
     SearchResults result = SearchResults();
+    SearchResults externalResults = SearchResults();
     if (!matches_only) {
         if (query.type == QueryType::document) {
             result = read_documents_summaries(matchesCollection, query.sort_by_year);
+            if (has_external_index()) {
+                externalResults = externalIndexManager->read_documents_summaries(externalMatchesCollection,
+                                                                                query.sort_by_year);
+                result.update(externalResults);
+            }
         } else if (query.type == QueryType::sentence) {
             result = read_sentences_summaries(matchesCollection, query.sort_by_year);
+            result.query = query;
             result.total_num_sentences = matchesCollection.size();
+            if (has_external_index()) {
+                externalResults = externalIndexManager->read_sentences_summaries(externalMatchesCollection,
+                                                                                 query.sort_by_year);
+                externalResults.total_num_sentences = externalMatchesCollection.size();
+                result.update(externalResults);
+            }
         }
         result.query = query;
         if (query.sort_by_year) {
@@ -103,6 +121,9 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
         }
     } else {
         result.indexMatches = matchesCollection;
+        if (has_external_index()) {
+            result.externalMatches = externalIndexManager->search_documents(query, true, doc_ids).indexMatches;
+        }
     }
     multireader->close();
     return result;
@@ -151,24 +172,6 @@ Collection<IndexReaderPtr> IndexManager::get_subreaders(QueryType type, bool cas
             subReaders.add(readers_map[index_id]);
         }
     }
-    // add subindices for external indices
-    for (const auto& extra_idx_dir : extra_index_dirs) {
-        for (directory_iterator itr(extra_idx_dir); itr != enditr; itr++) {
-            if (is_directory(itr->status()) && regex_match(itr->path().string(), regex(".*\\/" + SUBINDEX_NAME +
-                                                                                       "\\_[0-9]+"))) {
-                string index_id(itr->path().string());
-                index_id.append("/");
-                index_id.append(index_type);
-                if (readers_map.find(itr->path().string() + "/" + index_type) == readers_map.end()) {
-                    if (exists(path(index_id + "/segments.gen"))) {
-                        readers_map[index_id] = IndexReader::open(FSDirectory::open(String(index_id.begin(),
-                                                                                           index_id.end())), readonly);
-                    }
-                }
-                subReaders.add(readers_map[index_id]);
-            }
-        }
-    }
     return subReaders;
 }
 
@@ -190,6 +193,9 @@ SearchResults IndexManager::read_documents_summaries(const Collection<ScoreDocPt
         }
         for (const auto& docresult : matches_collection) {
             DocumentSummary document;
+            if (external) {
+                document.documentType = DocumentType::external;
+            }
             document.lucene_internal_id = docresult->doc;
             document.score = docresult->score;
             if (sort_by_year) {
@@ -245,6 +251,9 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
             string identifier_str = huge_map[scoredoc->doc];
             if (doc_map.find(identifier_str) == doc_map.end()) {
                 DocumentSummary document;
+                if (external) {
+                    document.documentType = DocumentType::external;
+                }
                 document.identifier = identifier_str;
                 if (sort_by_year) {
                     document.year = huge_map_year[scoredoc->doc];
@@ -296,6 +305,10 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
                                                             const set<string> &exclude_match_sentences_fields,
                                                             bool use_lucene_internal_ids)
 {
+    vector<DocumentSummary> summaries;
+    copy_if(doc_summaries.begin(), doc_summaries.end(), back_inserter(summaries), [this](DocumentSummary doc) {
+        return (external && doc.documentType == DocumentType::main);
+    });
     vector<DocumentDetails> results;
     set<String> doc_f = compose_field_set(include_doc_fields, exclude_doc_fields, {"year"});
     FieldSelectorPtr doc_fsel = newLucene<LazySelector>(doc_f);
@@ -350,6 +363,15 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
     docMultireader->close();
     if (include_sentences) {
         sentMultireader->close();
+    }
+    if (!external && has_external_index()) {
+        auto externalResults = externalIndexManager->get_documents_details(doc_summaries, sort_by_year,
+                                                                           include_sentences, include_doc_fields,
+                                                                           include_match_sentences_fields,
+                                                                           exclude_doc_fields,
+                                                                           exclude_match_sentences_fields,
+                                                                           use_lucene_internal_ids);
+        move(externalResults.begin(), externalResults.end(), back_inserter(results));
     }
     if (sort_by_year) {
         sort(results.begin(), results.end(), document_year_score_gt);
@@ -433,6 +455,9 @@ vector<DocumentDetails> IndexManager::read_documents_details(const vector<Docume
     if (use_lucene_internal_ids) {
         for (const auto &docSummary : doc_summaries) {
             DocumentDetails documentDetails = DocumentDetails();
+            if (external) {
+                documentDetails.documentType = DocumentType::external;
+            }
             DocumentPtr docPtr = doc_reader->document(docSummary.lucene_internal_id, fsel);
             for (const auto &f : fields) {
                 update_document_details(documentDetails, f, docPtr);
@@ -462,6 +487,9 @@ vector<DocumentDetails> IndexManager::read_documents_details(const vector<Docume
             Collection<ScoreDocPtr> matchesCollection = collector->topDocs()->scoreDocs;
             for (const auto &scoredoc : matchesCollection) {
                 DocumentDetails documentDetails = DocumentDetails();
+                if (external) {
+                    documentDetails.documentType = DocumentType::external;
+                }
                 DocumentPtr docPtr = searcher->doc(scoredoc->doc, fsel);
                 for (const auto &f : fields) {
                     update_document_details(documentDetails, f, docPtr);
@@ -843,22 +871,31 @@ std::vector<std::string> IndexManager::get_available_corpora() {
     return corpora_vec;
 }
 
-std::vector<std::string> IndexManager::get_corpora_for_external_index(const std::string &external_idx_location) {
+std::vector<std::string> IndexManager::get_additional_corpora() {
     vector<string> corpora_vec;
-    load_corpus_counter(external_idx_location);
-    for (const auto& cd_conter_map : external_corpus_doc_counter_map[external_idx_location]) {
+    load_corpus_counter();
+    for (const auto& cd_conter_map : corpus_doc_counter) {
         corpora_vec.push_back(cd_conter_map.first);
     }
     return corpora_vec;
 }
 
-int IndexManager::get_num_articles_in_corpus(const string &corpus, const string& external_idx_location) {
-    if (external_idx_location.empty()) {
+vector<string> IndexManager::get_external_corpora() {
+    if (has_external_index()) {
+        return externalIndexManager->get_additional_corpora();
+    }
+}
+
+int IndexManager::get_num_articles_in_corpus(const string &corpus, bool external) {
+    if (external) {
+        if (has_external_index()) {
+            return externalIndexManager->get_num_articles_in_corpus(corpus);
+        } else {
+            return 0;
+        }
+    } else {
         load_corpus_counter();
         return corpus_doc_counter[corpus];
-    } else {
-        load_corpus_counter(external_idx_location);
-        return external_corpus_doc_counter_map[external_idx_location][corpus];
     }
 }
 
@@ -870,19 +907,11 @@ void IndexManager::save_corpus_counter() {
     }
 }
 
-void IndexManager::load_corpus_counter(const string& external_idx_location) {
-    if (external_idx_location.empty()) {
-        std::ifstream ifs(index_dir + "/" + CORPUS_COUNTER_FILENAME, std::ios::binary);
-        if (ifs) {
-            boost::archive::text_iarchive ia(ifs);
-            ia >> corpus_doc_counter;
-        }
-    } else {
-        std::ifstream ifs(external_idx_location + "/" + CORPUS_COUNTER_FILENAME, std::ios::binary);
-        if (ifs) {
-            boost::archive::text_iarchive ia(ifs);
-            ia >> external_corpus_doc_counter_map[external_idx_location];
-        }
+void IndexManager::load_corpus_counter() {
+    std::ifstream ifs(index_dir + "/" + CORPUS_COUNTER_FILENAME, std::ios::binary);
+    if (ifs) {
+        boost::archive::text_iarchive ia(ifs);
+        ia >> corpus_doc_counter;
     }
 }
 
@@ -919,38 +948,6 @@ int IndexManager::get_num_docs_in_corpus_from_index(const string& corpus) {
     searcher->search(luceneQuery, collector);
     matchesCollection = collector->topDocs()->scoreDocs;
     return matchesCollection.size();
-}
-
-int IndexManager::get_num_subindices() {
-    int subidx_counter(0);
-    directory_iterator enditr;
-    for(directory_iterator itr(index_dir); itr != enditr; itr++) {
-        if (is_directory(itr->status()) && regex_match(itr->path().string(), regex(SUBINDEX_NAME + "_([0-9]+)"))) {
-            ++subidx_counter;
-        }
-    }
-    for (const auto& external_idx_dir : extra_index_dirs) {
-        for(directory_iterator itr(external_idx_dir); itr != enditr; itr++) {
-            if (is_directory(itr->status()) && regex_match(itr->path().string(), regex(SUBINDEX_NAME + "_([0-9]+)"))) {
-                ++subidx_counter;
-            }
-        }
-    }
-    return subidx_counter;
-}
-
-void IndexManager::add_external_index(const std::string &index_dir) {
-    extra_index_dirs.insert(index_dir);
-}
-
-void IndexManager::remove_external_index(const std::string &index_dir) {
-    extra_index_dirs.erase(index_dir);
-}
-
-void IndexManager::remove_all_external_indices() {
-    for (auto& index_loc : extra_index_dirs) {
-        remove_external_index(index_loc);
-    }
 }
 
 void IndexManager::calculate_and_save_corpus_counter() {
@@ -997,7 +994,24 @@ void IndexManager::save_all_doc_ids_for_sentences_to_db() {
     }
 }
 
+void IndexManager::set_external_index(std::string external_idx_path) {
+    externalIndexManager = new IndexManager(external_idx_path, true, true);
+}
+
+void IndexManager::remove_external_index() {
+    delete externalIndexManager;
+}
+
+bool IndexManager::has_external_index() {
+    return externalIndexManager != nullptr;
+}
 
 
-
-
+void SearchResults::update(const SearchResults& other) {
+    copy(other.hit_documents.begin(), other.hit_documents.end(), back_inserter(hit_documents));
+    if (query.type == QueryType::sentence) {
+        total_num_sentences += other.total_num_sentences;
+    }
+    max_score = max(max_score, other.max_score);
+    min_score = min(min_score, other.min_score);
+}
