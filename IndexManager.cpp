@@ -34,6 +34,7 @@
 #include <db_cxx.h>
 #include <dbstl_map.h>
 #include <dbstl_vector.h>
+#include "DataStructures.h"
 
 using namespace std;
 using namespace tpc::index;
@@ -62,7 +63,8 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
         }
         QueryParserPtr parser = newLucene<QueryParser>(
                 LuceneVersion::LUCENE_30, query.type == QueryType::document ? L"fulltext" : L"sentence", analyzer);
-        String query_str = String(query.query_text.begin(), query.query_text.end());
+        string query_text = query.get_query_text();
+        String query_str = String(query_text.begin(), query_text.end());
         string joined_lit = boost::algorithm::join(query.literatures, "ED\" OR corpus:\"BG");
         query_str = L"(corpus:\"BG" +  String(joined_lit.begin(), joined_lit.end()) + L"ED\") AND (" + query_str + L")";
         QueryPtr luceneQuery = parser->parse(query_str);
@@ -1017,12 +1019,3 @@ bool IndexManager::has_external_index() {
     return externalIndexManager != nullptr;
 }
 
-
-void SearchResults::update(const SearchResults& other) {
-    copy(other.hit_documents.begin(), other.hit_documents.end(), back_inserter(hit_documents));
-    if (query.type == QueryType::sentence) {
-        total_num_sentences += other.total_num_sentences;
-    }
-    max_score = max(max_score, other.max_score);
-    min_score = min(min_score, other.min_score);
-}

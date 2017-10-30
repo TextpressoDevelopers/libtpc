@@ -24,7 +24,7 @@ include_directories(${CImg_INCLUDE_DIRS})
 
 set(SOURCE_FILES Utils.h Utils.cpp lucene-custom/CaseSensitiveAnalyzer.h
         lucene-custom/CaseSensitiveAnalyzer.cpp uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.h
-        uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.cpp)
+        uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.cpp DataStructures.cpp DataStructures.h)
 add_library(libtextpresso SHARED ${SOURCE_FILES} IndexManager.h IndexManager.cpp CASManager.h CASManager.cpp
         cas-generators/pdf2tpcas/ElementCluster.cpp
         cas-generators/pdf2tpcas/ElementCluster.h cas-generators/pdf2tpcas/PdfInfo.cpp
