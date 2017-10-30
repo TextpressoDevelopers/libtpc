@@ -95,7 +95,7 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
     if (!matches_only) {
         if (query.type == QueryType::document) {
             result = read_documents_summaries(matchesCollection, query.sort_by_year);
-            if (has_external_index()) {
+            if (has_external_index() && externalMatchesCollection) {
                 externalResults = externalIndexManager->read_documents_summaries(externalMatchesCollection,
                                                                                 query.sort_by_year);
                 result.update(externalResults);
@@ -104,7 +104,7 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
             result = read_sentences_summaries(matchesCollection, query.sort_by_year);
             result.query = query;
             result.total_num_sentences = matchesCollection.size();
-            if (has_external_index()) {
+            if (has_external_index() && externalMatchesCollection) {
                 externalResults = externalIndexManager->read_sentences_summaries(externalMatchesCollection,
                                                                                  query.sort_by_year);
                 externalResults.total_num_sentences = externalMatchesCollection.size();
