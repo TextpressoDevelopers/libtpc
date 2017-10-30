@@ -995,11 +995,12 @@ void IndexManager::save_all_doc_ids_for_sentences_to_db() {
 }
 
 void IndexManager::set_external_index(std::string external_idx_path) {
-    externalIndexManager = new IndexManager(external_idx_path, true, true);
+    externalIndexManager = make_shared<IndexManager>(external_idx_path, true, true);
 }
 
 void IndexManager::remove_external_index() {
-    delete externalIndexManager;
+    externalIndexManager.reset();
+
 }
 
 bool IndexManager::has_external_index() {

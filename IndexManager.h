@@ -538,7 +538,7 @@ namespace tpc {
             bool readonly;
             bool external;
             std::map<std::string, int> corpus_doc_counter;
-            IndexManager* externalIndexManager;
+            std::shared_ptr<IndexManager> externalIndexManager;
         };
     }
 }
