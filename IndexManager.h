@@ -156,12 +156,12 @@ namespace tpc {
              * Note that while the documents are sorted by score, their matched sentences, in case of sentence searches,
              * are not sorted in order to obtain better performances
              * @param query a query object
-             * @param doc_ids limit the search to a set of document ids. This is useful for sentence queries to retrieve
-             * the sentence ids for a set of documents obtained by a previous search without ids
              * @param matches_only perform a partial search that returns a Lucene internal object representing the
              * collection of matches. This object can be passed to a subsequent call to this method to continue the
              * search and get the complete results. This is useful to get an initial estimate of the size of the
              * complete search
+             * @param doc_ids limit the search to a set of document ids. This is useful for sentence queries to retrieve
+             * the sentence ids for a set of documents obtained by a previous search without ids
              * @param partialResults the results of a previous partial search. The search will be completed with the
              * sentence or document scores starting from the provided matching documents
              * @return the list of the documents matching the query sorted by their scores and encapsulated in a
@@ -184,7 +184,6 @@ namespace tpc {
              * @param exclude_doc_fields the list of fields to exclude for the document
              * @param exclude_match_sentences_fields the list of fields to exclude for the matching sentences specified in
              * the DocumentSummary object
-             * @param use_lucene_internal_ids use the field lucene_internal_id to identify documents from doc_summary
              * @return the detailed information of the document
              */
             DocumentDetails get_document_details(const DocumentSummary &doc_summary,
@@ -192,8 +191,7 @@ namespace tpc {
                                                  std::set<std::string> include_doc_fields = DOCUMENTS_FIELDS_DETAILED,
                                                  std::set<std::string> include_match_sentences_fields = SENTENCE_FIELDS_DETAILED,
                                                  const std::set<std::string> &exclude_doc_fields = {},
-                                                 const std::set<std::string> &exclude_match_sentences_fields = {},
-                                                 bool use_lucene_internal_ids = true);
+                                                 const std::set<std::string> &exclude_match_sentences_fields = {});
 
             /*!
              * @brief get detailed information for a set of documents specified by a list of DocumentSummary objects
@@ -211,7 +209,6 @@ namespace tpc {
              * @param exclude_doc_fields the list of fields to exclude for the document
              * @param exclude_match_sentences_fields the list of fields to exclude for the matching sentences specified in
              * the DocumentSummary object
-             * @param use_lucene_internal_ids use the field lucene_internal_id to identify documents from doc_summary
              * @return the detailed information of the documents
              */
             std::vector<DocumentDetails> get_documents_details(const std::vector<DocumentSummary> &doc_summaries,
@@ -220,8 +217,7 @@ namespace tpc {
                                                                std::set<std::string> include_doc_fields = DOCUMENTS_FIELDS_DETAILED,
                                                                std::set<std::string> include_match_sentences_fields = SENTENCE_FIELDS_DETAILED,
                                                                const std::set<std::string> &exclude_doc_fields = {},
-                                                               const std::set<std::string> &exclude_match_sentences_fields = {},
-                                                               bool use_lucene_internal_ids = true);
+                                                               const std::set<std::string> &exclude_match_sentences_fields = {});
 
             // comparators for reverse sorting of documents and sentence objects
             static bool document_score_gt(const Document &a, const Document &b) { return a.score > b.score; }

@@ -50,8 +50,8 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
     Collection<IndexReaderPtr> subReaders = get_subreaders(query.type, query.case_sensitive);
     MultiReaderPtr multireader = newLucene<MultiReader>(subReaders, false);
     SearcherPtr searcher = newLucene<IndexSearcher>(multireader);
-    if ((!partialResults.indexMatches || partialResults.indexMatches.empty()) && (!partialResults.externalMatches ||
-            partialResults.externalMatches.empty())) {
+    if ((!partialResults.partialIndexMatches || partialResults.partialIndexMatches.empty()) && (!partialResults.partialExternalMatches ||
+            partialResults.partialExternalMatches.empty())) {
         if (query.literatures.empty()) {
             throw tpc_exception("no literature information provided in the query object");
         }
@@ -87,9 +87,9 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
         }
         matchesCollection = collector->topDocs()->scoreDocs;
     } else {
-        matchesCollection = partialResults.indexMatches;
+        matchesCollection = partialResults.partialIndexMatches;
         if (has_external_index()) {
-            externalMatchesCollection = partialResults.externalMatches;
+            externalMatchesCollection = partialResults.partialExternalMatches;
         }
     }
     SearchResults result = SearchResults();
@@ -122,9 +122,9 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
             sort(result.hit_documents.begin(), result.hit_documents.end(), document_score_gt);
         }
     } else {
-        result.indexMatches = matchesCollection;
+        result.partialIndexMatches = matchesCollection;
         if (has_external_index()) {
-            result.externalMatches = externalIndexManager->search_documents(query, true, doc_ids).indexMatches;
+            result.partialExternalMatches = externalIndexManager->search_documents(query, true, doc_ids).partialIndexMatches;
         }
     }
     multireader->close();
@@ -295,10 +295,12 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
                                                             set<string> include_doc_fields,
                                                             set<string> include_match_sentences_fields,
                                                             const set<string> &exclude_doc_fields,
-                                                            const set<string> &exclude_match_sentences_fields,
-                                                            bool use_lucene_internal_ids)
+                                                            const set<string> &exclude_match_sentences_fields)
 {
     vector<DocumentSummary> summaries;
+    bool use_lucene_internal_ids = all_of(doc_summaries.begin(), doc_summaries.end(), [](DocumentSummary d) {
+        return d.lucene_internal_id != -1;
+    });
     copy_if(doc_summaries.begin(), doc_summaries.end(), back_inserter(summaries), [this](DocumentSummary doc) {
         return (external && doc.documentType == DocumentType::main);
     });
@@ -362,8 +364,7 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
                                                                            include_sentences, include_doc_fields,
                                                                            include_match_sentences_fields,
                                                                            exclude_doc_fields,
-                                                                           exclude_match_sentences_fields,
-                                                                           use_lucene_internal_ids);
+                                                                           exclude_match_sentences_fields);
         move(externalResults.begin(), externalResults.end(), back_inserter(results));
     }
     if (sort_by_year) {
@@ -379,12 +380,11 @@ DocumentDetails IndexManager::get_document_details(const DocumentSummary& doc_su
                                                    set<string> include_doc_fields,
                                                    set<string> include_match_sentences_fields,
                                                    const set<string>& exclude_doc_fields,
-                                                   const set<string>& exclude_match_sentences_fields,
-                                                   bool use_lucene_internal_ids)
+                                                   const set<string>& exclude_match_sentences_fields)
 {
     return get_documents_details({doc_summary}, false, include_sentences,
                                  include_doc_fields, include_match_sentences_fields, exclude_doc_fields,
-                                 exclude_match_sentences_fields, use_lucene_internal_ids)[0];
+                                 exclude_match_sentences_fields)[0];
 }
 
 void IndexManager::update_document_details(DocumentDetails &doc_details, String field, DocumentPtr doc_ptr) {
