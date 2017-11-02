@@ -58,7 +58,7 @@ target_link_libraries(test_casmanager gtest lucene++ pthread boost_system boost_
         boost_filesystem xerces-c podofo z ${CImg_SYSTEM_LIBS})
 
 install(TARGETS libtextpresso RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
-install(FILES IndexManager.h CASManager.h DESTINATION include/textpresso)
+install(FILES IndexManager.h CASManager.h DataStructures.h DESTINATION include/textpresso)
 
 # uima annotators
 

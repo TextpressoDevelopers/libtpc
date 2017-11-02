@@ -32,19 +32,19 @@ namespace {
         void SetUp() override {
             query_sentence.sort_by_year = false;
             query_sentence.type = QueryType::sentence;
-            query_sentence.query_text = "sentence:al";
+            query_sentence.keyword = "al";
             query_sentence.case_sensitive = false;
             query_sentence.literatures = literatures;
 
             query_sentence_year.sort_by_year = true;
             query_sentence_year.type = QueryType::sentence;
-            query_sentence_year.query_text = "sentence:al";
+            query_sentence_year.keyword = "al";
             query_sentence_year.case_sensitive = false;
             query_sentence_year.literatures = literatures;
 
             query_document.sort_by_year = true;
             query_document.type = QueryType::document;
-            query_document.query_text = "fulltext:al";
+            query_document.keyword = "al";
             query_document.case_sensitive = false;
             query_document.literatures = literatures;
         }

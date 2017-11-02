@@ -125,7 +125,6 @@ namespace tpc {
             QueryType type{QueryType::document};
             std::string keyword{""};
             std::string exclude_keyword{""};
-            std::string category{""};
             std::string year{""};
             std::string author{""};
             std::string accession{""};
@@ -133,8 +132,11 @@ namespace tpc {
             std::string paper_type{""};
             bool case_sensitive{false};
             bool sort_by_year{false};
-            bool exact_match{false};
-            std::vector <std::string> literatures{};
+            bool exact_match_author{false};
+            bool exact_match_journal{false};
+            bool categories_and_ed{true};
+            std::vector<std::string> literatures{};
+            std::vector<std::string> categories{};
 
             /*!
              * combine the query fields and get the full query text
@@ -143,7 +145,8 @@ namespace tpc {
             std::string get_query_text() const;
         private:
             void add_field_to_text_if_not_empty(const std::string& field_value, const std::string& lucene_field_name,
-                                                std::string& query_text) const;
+                                                bool exact_match_field, std::string& query_text) const;
+            void add_categories_to_text(std::string& query_text) const;
         };
 
         /*!
@@ -164,8 +167,8 @@ namespace tpc {
             size_t total_num_sentences{0};
             double max_score{0};
             double min_score{DBL_MAX};
-            Lucene::Collection <Lucene::ScoreDocPtr> indexMatches{};
-            Lucene::Collection <Lucene::ScoreDocPtr> externalMatches{};
+            Lucene::Collection <Lucene::ScoreDocPtr> partialIndexMatches{};
+            Lucene::Collection <Lucene::ScoreDocPtr> partialExternalMatches{};
 
             void update(const SearchResults &other);
         };
