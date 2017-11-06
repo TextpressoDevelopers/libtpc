@@ -180,16 +180,16 @@ SearchResults IndexManager::read_documents_summaries(const Collection<ScoreDocPt
 {
     SearchResults result = SearchResults();
     DbEnv env(DB_CXX_NO_EXCEPTIONS);
-    Db* pdb_y = NULL;
+    Db* pdb = NULL;
     try {
         env.set_error_stream(&cerr);
         env.open((index_dir + "/db").c_str(), DB_INIT_MPOOL, 0);
         typedef dbstl::db_map<int, string> HugeMap;
         HugeMap huge_map_year;
         if (sort_by_year) {
-            pdb_y = new Db(&env, DB_CXX_NO_EXCEPTIONS);
-            pdb_y->open(NULL, "yearmap.db", NULL, DB_BTREE, DB_RDONLY, 0);
-            huge_map_year = HugeMap(pdb_y, &env);
+            pdb = new Db(&env, DB_CXX_NO_EXCEPTIONS);
+            pdb->open(NULL, "doc_map.db", NULL, DB_BTREE, DB_RDONLY, 0);
+            huge_map_year = HugeMap(pdb, &env);
         }
         for (const auto& docresult : matches_collection) {
             DocumentSummary document;
@@ -203,9 +203,9 @@ SearchResults IndexManager::read_documents_summaries(const Collection<ScoreDocPt
             }
             result.hit_documents.push_back(document);
         }
-        if (pdb_y != NULL) {
-            pdb_y->close(0);
-            delete pdb_y;
+        if (pdb != NULL) {
+            pdb->close(0);
+            delete pdb;
         }
         env.close(0);
     } catch (DbException& e) {
@@ -233,47 +233,38 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
     unordered_map<string, DocumentSummary> doc_map;
     DbEnv env(DB_CXX_NO_EXCEPTIONS);
     Db* pdb;
-    Db* pdb_y = NULL;
     try {
         env.set_error_stream(&cerr);
         env.open((index_dir + "/db").c_str(), DB_INIT_MPOOL, 0);
         pdb = new Db(&env, DB_CXX_NO_EXCEPTIONS);
-        pdb->open(NULL, "idmap.db", NULL, DB_BTREE, DB_RDONLY, 0);
+        pdb->open(NULL, "sent_map.db", NULL, DB_BTREE, DB_RDONLY, 0);
         typedef dbstl::db_map<int, string> HugeMap;
         HugeMap huge_map(pdb, &env);
-        HugeMap huge_map_year;
-        if (sort_by_year) {
-            pdb_y = new Db(&env, DB_CXX_NO_EXCEPTIONS);
-            pdb_y->open(NULL, "yearmap.db", NULL, DB_BTREE, DB_RDONLY, 0);
-            huge_map_year = HugeMap(pdb_y, &env);
-        }
         for (const auto& scoredoc : matches_collection) {
-            string identifier_str = huge_map[scoredoc->doc];
-            if (doc_map.find(identifier_str) == doc_map.end()) {
+            vector<string> id_year_arr;
+            string line = huge_map[scoredoc->doc];
+            boost::algorithm::split(id_year_arr, line, boost::is_any_of("|"));
+            if (doc_map.find(id_year_arr[0]) == doc_map.end()) {
                 DocumentSummary document;
                 if (external) {
                     document.documentType = DocumentType::external;
                 }
-                document.identifier = identifier_str;
+                document.identifier = id_year_arr[0];
                 if (sort_by_year) {
-                    document.year = huge_map_year[scoredoc->doc];
+                    document.year = id_year_arr[1];
                 }
                 document.score = 0;
-                doc_map.insert({identifier_str, document});
+                doc_map.insert({id_year_arr[0], document});
             }
-            doc_map[identifier_str].score += scoredoc->score;
+            doc_map[id_year_arr[0]].score += scoredoc->score;
             SentenceSummary sentence;
             sentence.lucene_internal_id = scoredoc->doc;
             sentence.score = scoredoc->score;
-            doc_map[identifier_str].matching_sentences.push_back(sentence);
+            doc_map[id_year_arr[0]].matching_sentences.push_back(sentence);
         }
         if (pdb != NULL) {
             pdb->close(0);
             delete pdb;
-        }
-        if (pdb_y != NULL) {
-            pdb_y->close(0);
-            delete pdb_y;
         }
         env.close(0);
     } catch (DbException& e) {
@@ -958,33 +949,52 @@ void IndexManager::calculate_and_save_corpus_counter() {
 void IndexManager::save_all_doc_ids_for_sentences_to_db() {
     DbEnv env(DB_CXX_NO_EXCEPTIONS);
     Db* pdb;
-    Db* pdb_y;
     try {
         env.set_error_stream(&cerr);
         env.open((index_dir + "/db").c_str(), DB_CREATE | DB_INIT_MPOOL, 0);
         pdb = new Db(&env, DB_CXX_NO_EXCEPTIONS);
-        pdb_y = new Db(&env, DB_CXX_NO_EXCEPTIONS);
-        pdb->open(NULL, "idmap.db", NULL, DB_BTREE, DB_CREATE, 0);
-        pdb_y->open(NULL, "yearmap.db", NULL, DB_BTREE, DB_CREATE, 0);
+        pdb->open(NULL, "sent_map.db", NULL, DB_BTREE, DB_CREATE, 0);
         typedef dbstl::db_map<int, string> HugeMap;
         HugeMap huge_map(pdb, &env);
-        HugeMap huge_map_year(pdb_y, &env);
         Collection<IndexReaderPtr> subReaders = get_subreaders(QueryType::sentence, false);
         MultiReaderPtr multireader = newLucene<MultiReader>(subReaders, false);
         FieldSelectorPtr fsel = newLucene<LazySelector>(set<String>({L"doc_id", L"sentence_id", L"year"}));
         for (int i = 0; i < multireader->maxDoc(); i++) {
             String doc_id = multireader->document(i, fsel)->get(L"doc_id");
             String year = multireader->document(i, fsel)->get(L"year");
-            huge_map[i] = string(doc_id.begin(), doc_id.end());
-            huge_map_year[i] = string(year.begin(), year.end());
+            huge_map[i] = string(doc_id.begin(), doc_id.end()) + "|" + string(year.begin(), year.end());
         }
         if (pdb != NULL) {
             pdb->close(0);
             delete pdb;
         }
-        if (pdb_y != NULL) {
-            pdb_y->close(0);
-            delete pdb_y;
+        env.close(0);
+    } catch (DbException& e) {
+        cerr << "DbException: " << e.what() << endl;
+    } catch (std::exception& e) {
+        cerr << e.what() << endl;
+    }
+}
+
+void IndexManager::save_all_years_for_documents_to_db() {
+    DbEnv env(DB_CXX_NO_EXCEPTIONS);
+    Db* pdb;
+    try {
+        env.open((index_dir + "/db").c_str(), DB_CREATE | DB_INIT_MPOOL, 0);
+        pdb = new Db(&env, DB_CXX_NO_EXCEPTIONS);
+        pdb->open(NULL, "doc_map.db", NULL, DB_BTREE, DB_CREATE, 0);
+        typedef dbstl::db_map<int, string> HugeMap;
+        HugeMap huge_map(pdb, &env);
+        Collection<IndexReaderPtr> subReaders = get_subreaders(QueryType::document, false);
+        MultiReaderPtr multireader = newLucene<MultiReader>(subReaders, false);
+        FieldSelectorPtr fsel = newLucene<LazySelector>(set<String>({L"year"}));
+        for (int i = 0; i < multireader->maxDoc(); i++) {
+            String year = multireader->document(i, fsel)->get(L"year");
+            huge_map[i] = string(year.begin(), year.end());
+        }
+        if (pdb != NULL) {
+            pdb->close(0);
+            delete pdb;
         }
         env.close(0);
     } catch (DbException& e) {

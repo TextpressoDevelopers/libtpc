@@ -396,7 +396,15 @@ namespace tpc {
              */
             void calculate_and_save_corpus_counter();
 
+            /*!
+             * create an external database for sentences containing their document ids
+             */
             void save_all_doc_ids_for_sentences_to_db();
+
+            /*!
+             * create an external database for documents containing their year field
+             */
+            void save_all_years_for_documents_to_db();
 
             /*!
              * whether the index has an external index attached
