@@ -153,7 +153,9 @@ void TxTokenizer::TraverseTree(pugi::xml_node pnode, UnicodeString docstring,
             pos = annb + 1;
             TraverseTree(*it, docstring, pos, tcas, t1, f1, f2, f3);
             int tagchecksum = 1;
-            while (tagchecksum > 0) {
+            // TODO find out why tagchecksum constantly increases for some tags. The check for tagchecksum <= 1000 is
+            // not optimal
+            while (tagchecksum > 0 && tagchecksum <= 1000) {
                 int32_t poss = FindStartTag(docstring, name, pos);
                 pos = FindEndTag(docstring, name, pos);
                 tagchecksum -= 1;
