@@ -731,6 +731,13 @@ int IndexManager::add_cas_file_to_index(const char* file_path, string index_desc
         delete pEngine;
         std::remove(tpcasfile.c_str()); //delete uncompressed temp casfile
         std::remove(bib_file_temp.c_str());
+
+        string file_id = boost::filesystem::path(file_path).parent_path().parent_path().filename() + "/" +
+                boost::filesystem::path(file_path).parent_path().filename() + "/" +
+                boost::filesystem::path(file_path).filename();
+        add_doc_and_sentences_to_bdb(file_id, false);
+        add_doc_and_sentences_to_bdb(file_id, true);
+
         return 1;
     } catch (uima::Exception e) {
         std::cerr << "Exception: " << e << std::endl;
@@ -803,8 +810,53 @@ void IndexManager::remove_file_from_index(const std::string &identifier) {
     remove_sentences_for_document(doc_id, true);
 }
 
+void IndexManager::add_doc_and_sentences_to_bdb(const std::string& identifier, bool case_sensitive) {
+    Collection<IndexReaderPtr> subreaders = get_subreaders(QueryType::sentence, case_sensitive);
+    MultiReaderPtr multireader = newLucene<MultiReader>(subreaders, false);
+    AnalyzerPtr analyzer;
+    if (case_sensitive) {
+        analyzer = newLucene<CaseSensitiveAnalyzer>(LuceneVersion::LUCENE_30);
+    } else {
+        analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_30);
+    }
+    QueryParserPtr parser = newLucene<QueryParser>(LuceneVersion::LUCENE_30, L"filepath", analyzer);
+    String query_str = L"filepath:" + String(identifier.begin(), identifier.end());
+    QueryPtr luceneQuery = parser->parse(query_str);
+    SearcherPtr searcher = newLucene<IndexSearcher>(multireader);
+    TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
+    searcher->search(luceneQuery, collector);
+    Collection<ScoreDocPtr> matchesCollection = collector->topDocs()->scoreDocs;
+    FieldSelectorPtr fsel = newLucene<LazySelector>(set<String>({L"doc_id", L"year"}));
+    DbEnv env(DB_CXX_NO_EXCEPTIONS);
+    Db* pdb;
+    try {
+        env.open((index_dir + "/db").c_str(), DB_CREATE | DB_INIT_MPOOL, 0);
+        pdb = new Db(&env, DB_CXX_NO_EXCEPTIONS);
+        pdb->open(NULL, "sent_map.db", NULL, DB_BTREE, DB_RDWRMASTER, 0);
+        typedef dbstl::db_map<int, string> HugeMap;
+        HugeMap huge_map(pdb, &env);
+        for (const auto& document : matchesCollection) {
+            multireader->deleteDocument(document->doc);
+            if (huge_map.find(document->doc) != huge_map.end()) {
+                huge_map.erase(document->doc);
+            }
+        }
+        if (pdb != NULL) {
+            pdb->close(0);
+            delete pdb;
+        }
+        env.close(0);
+    } catch (DbException& e) {
+        cerr << "DbException: " << e.what() << endl;
+    } catch (std::exception& e) {
+        cerr << e.what() << endl;
+    }
+    multireader->close();
+}
+
 string IndexManager::remove_document_from_index(const string& identifier, bool case_sensitive)
 {
+    // remove doc
     Collection<IndexReaderPtr> subreaders = get_subreaders(QueryType::document, case_sensitive);
     MultiReaderPtr multireader = newLucene<MultiReader>(subreaders, false);
     AnalyzerPtr analyzer;
@@ -820,14 +872,66 @@ string IndexManager::remove_document_from_index(const string& identifier, bool c
     TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
     searcher->search(luceneQuery, collector);
     Collection<ScoreDocPtr> matchesCollection = collector->topDocs()->scoreDocs;
-    FieldSelectorPtr fsel = newLucene<LazySelector>(set<String>({L"doc_id"}));
-    String raw_doc_id = multireader->document(matchesCollection[0]->doc, fsel)->get(L"doc_id");
-    string doc_id(raw_doc_id.begin(), raw_doc_id.end());
-    for (const auto& document : matchesCollection) {
-        multireader->deleteDocument(document->doc);
+    FieldSelectorPtr fsel = newLucene<LazySelector>(set<String>({L"doc_id", L"year"}));
+    String doc_id = multireader->document(matchesCollection[0]->doc, fsel)->get(L"doc_id");
+    String year = multireader->document(matchesCollection[0]->doc, fsel)->get(L"year");
+    DbEnv env(DB_CXX_NO_EXCEPTIONS);
+    Db* pdb;
+    try {
+        env.open((index_dir + "/db").c_str(), DB_CREATE | DB_INIT_MPOOL, 0);
+        pdb = new Db(&env, DB_CXX_NO_EXCEPTIONS);
+        pdb->open(NULL, "doc_map.db", NULL, DB_BTREE, DB_RDWRMASTER, 0);
+        typedef dbstl::db_map<int, string> HugeMap;
+        HugeMap huge_map(pdb, &env);
+        huge_map[matchesCollection[0]->doc] = string(year.begin(), year.end());
+        if (pdb != NULL) {
+            pdb->close(0);
+            delete pdb;
+        }
+        env.close(0);
+    } catch (DbException& e) {
+        cerr << "DbException: " << e.what() << endl;
+    } catch (std::exception& e) {
+        cerr << e.what() << endl;
     }
     multireader->close();
-    return doc_id;
+
+    // remove doc sentences
+    subreaders = get_subreaders(QueryType::sentence, case_sensitive);
+    multireader = newLucene<MultiReader>(subreaders, false);
+    if (case_sensitive) {
+        analyzer = newLucene<CaseSensitiveAnalyzer>(LuceneVersion::LUCENE_30);
+    } else {
+        analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_30);
+    }
+    parser = newLucene<QueryParser>(LuceneVersion::LUCENE_30, L"doc_id", analyzer);
+    query_str = L"doc_id:" + doc_id;
+    luceneQuery = parser->parse(query_str);
+    searcher = newLucene<IndexSearcher>(multireader);
+    collector = TopScoreDocCollector::create(MAX_HITS, true);
+    searcher->search(luceneQuery, collector);
+    matchesCollection = collector->topDocs()->scoreDocs;
+    try {
+        env.open((index_dir + "/db").c_str(), DB_CREATE | DB_INIT_MPOOL, 0);
+        pdb = new Db(&env, DB_CXX_NO_EXCEPTIONS);
+        pdb->open(NULL, "sent_map.db", NULL, DB_BTREE, DB_RDWRMASTER, 0);
+        typedef dbstl::db_map<int, string> HugeMap;
+        HugeMap huge_map(pdb, &env);
+        for (auto& sentence : matchesCollection) {
+            huge_map[sentence->doc] = string(doc_id.begin(), doc_id.end()) + "|" + string(year.begin(), year.end());
+        }
+        if (pdb != NULL) {
+            pdb->close(0);
+            delete pdb;
+        }
+        env.close(0);
+    } catch (DbException& e) {
+        cerr << "DbException: " << e.what() << endl;
+    } catch (std::exception& e) {
+        cerr << e.what() << endl;
+    }
+    multireader->close();
+
 }
 
 void IndexManager::remove_sentences_for_document(const std::string &doc_id, bool case_sensitive) {
@@ -846,9 +950,29 @@ void IndexManager::remove_sentences_for_document(const std::string &doc_id, bool
     TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
     searcher->search(luceneQuery, collector);
     Collection<ScoreDocPtr> matchesCollection = collector->topDocs()->scoreDocs;
-    FieldSelectorPtr fsel = newLucene<LazySelector>(set<String>({L"doc_id"}));
-    for (const auto& document : matchesCollection) {
-        multireader->deleteDocument(document->doc);
+    DbEnv env(DB_CXX_NO_EXCEPTIONS);
+    Db* pdb;
+    try {
+        env.open((index_dir + "/db").c_str(), DB_CREATE | DB_INIT_MPOOL, 0);
+        pdb = new Db(&env, DB_CXX_NO_EXCEPTIONS);
+        pdb->open(NULL, "sent_map.db", NULL, DB_BTREE, DB_RDWRMASTER, 0);
+        typedef dbstl::db_map<int, string> HugeMap;
+        HugeMap huge_map(pdb, &env);
+        for (const auto& document : matchesCollection) {
+            multireader->deleteDocument(document->doc);
+            if (huge_map.find(document->doc) != huge_map.end()) {
+                huge_map.erase(document->doc);
+            }
+        }
+        if (pdb != NULL) {
+            pdb->close(0);
+            delete pdb;
+        }
+        env.close(0);
+    } catch (DbException& e) {
+        cerr << "DbException: " << e.what() << endl;
+    } catch (std::exception& e) {
+        cerr << e.what() << endl;
     }
     multireader->close();
 }

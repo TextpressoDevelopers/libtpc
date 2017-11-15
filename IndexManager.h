@@ -394,6 +394,8 @@ namespace tpc {
             std::string remove_document_from_index(const std::string& identifier, bool case_sensitive);
             void remove_sentences_for_document(const std::string& doc_id, bool case_sensitive);
 
+            void add_doc_and_sentences_to_bdb(const std::string &identifier, bool case_sensitive);
+
             void save_corpus_counter();
 
             void update_corpus_counter();
