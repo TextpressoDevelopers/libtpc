@@ -19,17 +19,10 @@ namespace {
 
         IndexManagerTest() {
             index_root_dir = "/usr/local/share/textpresso/data/index";
-            literatures = {"celegans", "pmcoa_celegans"};
+            literatures = {"C. elegans", "C. elegans Supplementals"};
             cas_root_dir = "/usr/local/share/textpresso/data/tpcas";
-            single_cas_files_dir = "/usr/local/share/textpresso/data/single_cas_files";
+            single_cas_files_dir = "/usr/local/share/textpresso/data/single_cas_files/C. elegans";
             output_index_dir = "/tmp/textpresso_test/index_writer_test";
-            indexManager = IndexManager(index_root_dir);
-        }
-
-        // If the constructor and destructor are not enough for setting up
-        // and cleaning up each test, you can define the following methods:
-
-        void SetUp() override {
             query_sentence.sort_by_year = false;
             query_sentence.type = QueryType::sentence;
             query_sentence.keyword = "al";
@@ -47,9 +40,27 @@ namespace {
             query_document.keyword = "al";
             query_document.case_sensitive = false;
             query_document.literatures = literatures;
+
+            boost::filesystem::create_directories("/tmp/textpresso_test/index");
+            indexManager = IndexManager("/tmp/textpresso_test/index", false);
+            indexManager.create_index_from_existing_cas_dir(cas_root_dir + "/C. elegans");
+            indexManager.save_all_years_for_documents_to_db();
+            indexManager.save_all_doc_ids_for_sentences_to_db();
+        }
+
+        ~IndexManagerTest() {
+            boost::filesystem::remove_all("/tmp/textpresso_test/index");
+        }
+
+        // If the constructor and destructor are not enough for setting up
+        // and cleaning up each test, you can define the following methods:
+
+        void SetUp() override {
+
         }
 
         void TearDown() override{
+
         }
 
         std::string index_root_dir;
@@ -101,23 +112,12 @@ namespace {
         ASSERT_EQ(results.hit_documents.size(), docDetails.size());
     }
 
-    TEST_F(IndexManagerTest, CreateIndexTest) {
-        IndexManager indexManager1("/tmp/textpresso_test/index");
-        indexManager1.create_index_from_existing_cas_dir(cas_root_dir + "/celegans");
-        ASSERT_EQ(boost::filesystem::exists("/tmp/textpresso_test/index/celegans_0"), true);
-        indexManager1.create_index_from_existing_cas_dir(cas_root_dir + "/pmcoa_celegans");
-        ASSERT_EQ(boost::filesystem::exists("/tmp/textpresso_test/index/pmcoa_celegans_0"), true);
-        boost::filesystem::remove_all(output_index_dir);
-    }
-
     TEST_F(IndexManagerTest, AddSingleDocumentsToIndexTest) {
-        IndexManager indexManager1("/tmp/textpresso_test/index");
-        indexManager1.add_file_to_index(single_cas_files_dir + "/WBPaper00029298.tpcas.gz");
+        indexManager.add_file_to_index(single_cas_files_dir + "/WBPaper00029298/WBPaper00029298.tpcas.gz");
     }
 
     TEST_F(IndexManagerTest, DeleteDocument) {
-        IndexManager indexManager1("/tmp/textpresso_test/index", false);
-        indexManager1.remove_file_from_index("076e42e3e7ee32a9");
+        indexManager.remove_file_from_index("C. elegans/WBPaper00046156/WBPaper00046156.tpcas.gz");
     }
 }
 

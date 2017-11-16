@@ -595,6 +595,9 @@ void IndexManager::create_index_from_existing_cas_dir(const string &input_cas_di
                                                       int max_num_papers_per_subindex)
 {
     path input_cas_dir_path(input_cas_dir);
+    if (!boost::filesystem::exists(index_dir + "/db")) {
+        boost::filesystem::create_directory(index_dir + "/db");
+    }
     string out_dir = index_dir + "/" + SUBINDEX_NAME;
     string subindex_dir;
     int counter_cas_files(0);
@@ -658,7 +661,8 @@ TmpConf IndexManager::write_tmp_conf_files(const string &index_path) {
     return tmpConf;
 }
 
-int IndexManager::add_cas_file_to_index(const char* file_path, string index_descriptor, string temp_dir_path) {
+int IndexManager::add_cas_file_to_index(const char* file_path, string index_descriptor, string temp_dir_path,
+                                        bool update_db) {
     std::string gzfile(file_path);
     string source_file = gzfile;
     boost::replace_all(source_file, ".tpcas.gz", ".bib");
@@ -732,11 +736,13 @@ int IndexManager::add_cas_file_to_index(const char* file_path, string index_desc
         std::remove(tpcasfile.c_str()); //delete uncompressed temp casfile
         std::remove(bib_file_temp.c_str());
 
-        string file_id = boost::filesystem::path(file_path).parent_path().parent_path().filename() + "/" +
-                boost::filesystem::path(file_path).parent_path().filename() + "/" +
-                boost::filesystem::path(file_path).filename();
-        add_doc_and_sentences_to_bdb(file_id, false);
-        add_doc_and_sentences_to_bdb(file_id, true);
+        readers_map.clear();
+        if (update_db) {
+            string file_id = boost::filesystem::path(file_path).parent_path().parent_path().filename().string() + "/" +
+                             boost::filesystem::path(file_path).parent_path().filename().string() + "/" +
+                             boost::filesystem::path(file_path).filename().string();
+            add_doc_and_sentences_to_bdb(file_id);
+        }
 
         return 1;
     } catch (uima::Exception e) {
@@ -745,19 +751,20 @@ int IndexManager::add_cas_file_to_index(const char* file_path, string index_desc
     }
 }
 
-bool IndexManager::process_single_file(const string& filepath, bool& first_paper, const TmpConf& tmp_conf) {
+bool IndexManager::process_single_file(const string& filepath, bool& first_paper, const TmpConf& tmp_conf,
+                                       bool update_db) {
     if (filepath.find(".tpcas.gz") == std::string::npos)
         return false;
     cout << "processing cas file: " << filepath << endl;
     if (first_paper) {
-        if (add_cas_file_to_index(filepath.c_str(), tmp_conf.index_descriptor, tmp_conf.tmp_dir) == 1) {
+        if (add_cas_file_to_index(filepath.c_str(), tmp_conf.index_descriptor, tmp_conf.tmp_dir, update_db) == 1) {
             first_paper = false;
             boost::filesystem::remove(tmp_conf.new_index_flag);
         } else {
             return false;
         }
     } else {
-        if (add_cas_file_to_index(filepath.c_str(), tmp_conf.index_descriptor, tmp_conf.tmp_dir) == 0) {
+        if (add_cas_file_to_index(filepath.c_str(), tmp_conf.index_descriptor, tmp_conf.tmp_dir, update_db) == 0) {
             return false;
         }
     }
@@ -767,21 +774,24 @@ bool IndexManager::process_single_file(const string& filepath, bool& first_paper
 void IndexManager::add_file_to_index(const std::string &file_path, int max_num_papers_per_subindex)
 {
     string out_dir = index_dir + "/" + SUBINDEX_NAME;
-    string subindex_dir;
+    string subindex_dir(SUBINDEX_NAME + "_0");
     int counter_cas_files(0);
     int largest_subindex_num(0);
     for (directory_iterator dir_it(index_dir); dir_it != directory_iterator(); ++dir_it) {
-        string actual_subidx_name = dir_it->path().string().substr(0, dir_it->path().string().find_last_of("_"));
-        string actual_subidx_num = dir_it->path().string().substr(dir_it->path().string().find_last_of("_") + 1,
-                                                                  dir_it->path().string().size());
+        string actual_subidx_name = dir_it->path().filename().string().substr(0, dir_it->path().filename()
+                .string().find_last_of("_"));
+        string actual_subidx_num = dir_it->path().filename().string().substr(dir_it->path().filename().string()
+                                                                                     .find_last_of("_") + 1,
+                                                                             dir_it->path().filename().string().size());
         if (actual_subidx_name == SUBINDEX_NAME && stoi(actual_subidx_num) > largest_subindex_num) {
-                largest_subindex_num = stoi(actual_subidx_num);
-            }
+            largest_subindex_num = stoi(actual_subidx_num);
         }
-        IndexReaderPtr indexReader = readers_map[SUBINDEX_NAME + "_" + to_string(largest_subindex_num) + "_fulltext"];
-        counter_cas_files = indexReader->numDocs();
+    }
+    Collection<IndexReaderPtr> subReaders = get_subreaders(QueryType::document, false);
+    MultiReaderPtr multireader = newLucene<MultiReader>(subReaders, false);
+    counter_cas_files = multireader->numDocs();
     bool first_paper;
-    TmpConf tmp_conf = TmpConf();
+    TmpConf tmp_conf = write_tmp_conf_files(out_dir + "_0");
     if (counter_cas_files % max_num_papers_per_subindex == 0) {
         // create new subindex
         subindex_dir = out_dir + "_" + to_string(counter_cas_files / max_num_papers_per_subindex);
@@ -794,7 +804,7 @@ void IndexManager::add_file_to_index(const std::string &file_path, int max_num_p
         }
         create_subindex_dir_structure(subindex_dir);
     }
-    process_single_file(file_path, first_paper, tmp_conf);
+    process_single_file(file_path, first_paper, tmp_conf, true);
     ++counter_cas_files;
     cout << "total number of cas files added: " << to_string(counter_cas_files) << endl;
 }
@@ -810,23 +820,20 @@ void IndexManager::remove_file_from_index(const std::string &identifier) {
     remove_sentences_for_document(doc_id, true);
 }
 
-void IndexManager::add_doc_and_sentences_to_bdb(const std::string& identifier, bool case_sensitive) {
-    Collection<IndexReaderPtr> subreaders = get_subreaders(QueryType::sentence, case_sensitive);
+string IndexManager::remove_document_from_index(std::string identifier, bool case_sensitive) {
+    Collection<IndexReaderPtr> subreaders = get_subreaders(QueryType::document, case_sensitive);
     MultiReaderPtr multireader = newLucene<MultiReader>(subreaders, false);
-    AnalyzerPtr analyzer;
-    if (case_sensitive) {
-        analyzer = newLucene<CaseSensitiveAnalyzer>(LuceneVersion::LUCENE_30);
-    } else {
-        analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_30);
-    }
+    AnalyzerPtr analyzer = newLucene<KeywordAnalyzer>();
     QueryParserPtr parser = newLucene<QueryParser>(LuceneVersion::LUCENE_30, L"filepath", analyzer);
-    String query_str = L"filepath:" + String(identifier.begin(), identifier.end());
+    boost::replace_all(identifier, ".gz", "");
+    String query_str = L"filepath:\"" + String(identifier.begin(), identifier.end()) + L"\"";
     QueryPtr luceneQuery = parser->parse(query_str);
     SearcherPtr searcher = newLucene<IndexSearcher>(multireader);
     TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
     searcher->search(luceneQuery, collector);
     Collection<ScoreDocPtr> matchesCollection = collector->topDocs()->scoreDocs;
-    FieldSelectorPtr fsel = newLucene<LazySelector>(set<String>({L"doc_id", L"year"}));
+    FieldSelectorPtr fsel = newLucene<LazySelector>(set<String>({L"doc_id"}));
+    String doc_id = multireader->document(matchesCollection[0]->doc, fsel)->get(L"doc_id");
     DbEnv env(DB_CXX_NO_EXCEPTIONS);
     Db* pdb;
     try {
@@ -852,21 +859,19 @@ void IndexManager::add_doc_and_sentences_to_bdb(const std::string& identifier, b
         cerr << e.what() << endl;
     }
     multireader->close();
+    readers_map.clear();
+    return string(doc_id.begin(), doc_id.end());
 }
 
-string IndexManager::remove_document_from_index(const string& identifier, bool case_sensitive)
+void IndexManager::add_doc_and_sentences_to_bdb(string identifier)
 {
     // remove doc
-    Collection<IndexReaderPtr> subreaders = get_subreaders(QueryType::document, case_sensitive);
+    Collection<IndexReaderPtr> subreaders = get_subreaders(QueryType::document, false);
     MultiReaderPtr multireader = newLucene<MultiReader>(subreaders, false);
-    AnalyzerPtr analyzer;
-    if (case_sensitive) {
-        analyzer = newLucene<CaseSensitiveAnalyzer>(LuceneVersion::LUCENE_30);
-    } else {
-        analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_30);
-    }
+    AnalyzerPtr analyzer = newLucene<KeywordAnalyzer>();
     QueryParserPtr parser = newLucene<QueryParser>(LuceneVersion::LUCENE_30, L"filepath", analyzer);
-    String query_str = L"filepath:" + String(identifier.begin(), identifier.end());
+    boost::replace_all(identifier, ".gz", "");
+    String query_str = L"filepath:\"" + String(identifier.begin(), identifier.end()) + L"\"";
     QueryPtr luceneQuery = parser->parse(query_str);
     SearcherPtr searcher = newLucene<IndexSearcher>(multireader);
     TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
@@ -897,13 +902,9 @@ string IndexManager::remove_document_from_index(const string& identifier, bool c
     multireader->close();
 
     // remove doc sentences
-    subreaders = get_subreaders(QueryType::sentence, case_sensitive);
+    subreaders = get_subreaders(QueryType::sentence, false);
     multireader = newLucene<MultiReader>(subreaders, false);
-    if (case_sensitive) {
-        analyzer = newLucene<CaseSensitiveAnalyzer>(LuceneVersion::LUCENE_30);
-    } else {
-        analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_30);
-    }
+    analyzer = newLucene<KeywordAnalyzer>();
     parser = newLucene<QueryParser>(LuceneVersion::LUCENE_30, L"doc_id", analyzer);
     query_str = L"doc_id:" + doc_id;
     luceneQuery = parser->parse(query_str);
@@ -912,37 +913,33 @@ string IndexManager::remove_document_from_index(const string& identifier, bool c
     searcher->search(luceneQuery, collector);
     matchesCollection = collector->topDocs()->scoreDocs;
     try {
-        env.open((index_dir + "/db").c_str(), DB_CREATE | DB_INIT_MPOOL, 0);
-        pdb = new Db(&env, DB_CXX_NO_EXCEPTIONS);
-        pdb->open(NULL, "sent_map.db", NULL, DB_BTREE, DB_RDWRMASTER, 0);
+        DbEnv sent_env(DB_CXX_NO_EXCEPTIONS);
+        Db* sent_pdb;
+        sent_env.open((index_dir + "/db").c_str(), DB_CREATE | DB_INIT_MPOOL, 0);
+        sent_pdb = new Db(&sent_env, DB_CXX_NO_EXCEPTIONS);
+        sent_pdb->open(NULL, "sent_map.db", NULL, DB_BTREE, DB_RDWRMASTER, 0);
         typedef dbstl::db_map<int, string> HugeMap;
-        HugeMap huge_map(pdb, &env);
+        HugeMap huge_map(sent_pdb, &sent_env);
         for (auto& sentence : matchesCollection) {
             huge_map[sentence->doc] = string(doc_id.begin(), doc_id.end()) + "|" + string(year.begin(), year.end());
         }
-        if (pdb != NULL) {
-            pdb->close(0);
-            delete pdb;
+        if (sent_pdb != NULL) {
+            sent_pdb->close(0);
+            delete sent_pdb;
         }
-        env.close(0);
+        sent_env.close(0);
     } catch (DbException& e) {
         cerr << "DbException: " << e.what() << endl;
     } catch (std::exception& e) {
         cerr << e.what() << endl;
     }
     multireader->close();
-
 }
 
 void IndexManager::remove_sentences_for_document(const std::string &doc_id, bool case_sensitive) {
     Collection<IndexReaderPtr> subreaders = get_subreaders(QueryType::sentence, case_sensitive);
     MultiReaderPtr multireader = newLucene<MultiReader>(subreaders, false);
-    AnalyzerPtr analyzer;
-    if (case_sensitive) {
-        analyzer = newLucene<CaseSensitiveAnalyzer>(LuceneVersion::LUCENE_30);
-    } else {
-        analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_30);
-    }
+    AnalyzerPtr analyzer = newLucene<KeywordAnalyzer>();
     QueryParserPtr parser = newLucene<QueryParser>(LuceneVersion::LUCENE_30, L"doc_id", analyzer);
     String query_str = L"doc_id:" + String(doc_id.begin(), doc_id.end());
     QueryPtr luceneQuery = parser->parse(query_str);
@@ -974,6 +971,7 @@ void IndexManager::remove_sentences_for_document(const std::string &doc_id, bool
     } catch (std::exception& e) {
         cerr << e.what() << endl;
     }
+    readers_map.clear();
     multireader->close();
 }
 

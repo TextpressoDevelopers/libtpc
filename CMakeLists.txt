@@ -22,6 +22,9 @@ include_directories(${APR_INCLUDE_DIR})
 find_package(CImg REQUIRED)
 include_directories(${CImg_INCLUDE_DIRS})
 
+file(GLOB CAS_GENERATORS_FILES "cas-generators/*.h" "cas-generators/*.cpp" "cas-generators/pdf2tpcas/*.cpp"
+        "cas-generators/pdf2tpcas/*.h" "cas-generators/xml2tpcas/*.cpp" "cas-generators/xml2tpcas/*.h")
+
 set(SOURCE_FILES Utils.h Utils.cpp lucene-custom/CaseSensitiveAnalyzer.h
         lucene-custom/CaseSensitiveAnalyzer.cpp uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.h
         uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.cpp DataStructures.cpp DataStructures.h)
@@ -39,9 +42,20 @@ add_library(libtextpresso SHARED ${SOURCE_FILES} IndexManager.h IndexManager.cpp
 target_link_libraries(libtextpresso lucene++ icuuc uima boost_iostreams boost_system boost_regex boost_filesystem
         boost_serialization xerces-c podofo z ${CImg_SYSTEM_LIBS} db_cxx db_stl)
 
-add_executable(test_indexmanager ${SOURCE_FILES} IndexManager.h IndexManager.cpp tests/test_indexmanager.cpp)
+add_executable(test_indexmanager ${SOURCE_FILES} IndexManager.h IndexManager.cpp CASManager.cpp CASManager.h
+        tests/test_indexmanager.cpp
+        cas-generators/pdf2tpcas/ElementCluster.cpp
+        cas-generators/pdf2tpcas/ElementCluster.h cas-generators/pdf2tpcas/PdfInfo.cpp
+        cas-generators/pdf2tpcas/PdfInfo.h cas-generators/pdf2tpcas/PdfMyFontInfo.h
+        cas-generators/pdf2tpcas/PdfMyFontInfo.cpp cas-generators/Stream2Tpcas.h
+        cas-generators/Stream2Tpcas.cpp cas-generators/pdf2tpcas/TextElement.cpp
+        cas-generators/pdf2tpcas/TextElement.h cas-generators/xml2tpcas/pugiconfig.hpp
+        cas-generators/xml2tpcas/pugixml.cpp cas-generators/xml2tpcas/pugixml.hpp
+        cas-generators/xml2tpcas/PugiXml2Tpcas.cpp cas-generators/xml2tpcas/PugiXml2Tpcas.h
+        cas-generators/xml2tpcas/ReadXml2Stream.cpp cas-generators/xml2tpcas/ReadXml2Stream.h
+        cas-generators/Stream2Tpcas.cpp cas-generators/Stream2Tpcas.h)
 target_link_libraries(test_indexmanager gtest lucene++ pthread boost_system boost_iostreams boost_regex icuuc uima
-        boost_filesystem boost_serialization xerces-c db_cxx db_stl)
+        boost_filesystem boost_serialization xerces-c db_cxx db_stl podofo z ${CImg_SYSTEM_LIBS})
 
 add_executable(test_casmanager ${SOURCE_FILES} CASManager.h CASManager.cpp tests/test_casmanager.cpp
         cas-generators/pdf2tpcas/ElementCluster.cpp
@@ -139,7 +153,8 @@ add_library(Tpcas2SingleIndex SHARED uima-custom-analyzers/Tpcas2SingleIndex/CAS
         uima-custom-analyzers/Tpcas2SingleIndex/Tpcas2SingleIndex.cpp uima-custom-analyzers/Tpcas2SingleIndex/TpNode.h
         uima-custom-analyzers/Tpcas2SingleIndex/TpNode.cpp uima-custom-analyzers/Tpcas2SingleIndex/TpTrie.h
         uima-custom-analyzers/Tpcas2SingleIndex/TpTrie.cpp uima-custom-analyzers/Tpcas2SingleIndex/Utils.h
-        lucene-custom/CaseSensitiveAnalyzer.cpp lucene-custom/CaseSensitiveAnalyzer.h)
+        lucene-custom/CaseSensitiveAnalyzer.cpp lucene-custom/CaseSensitiveAnalyzer.h
+        CASManager.cpp CASManager.h Utils.h Utils.cpp ${CAS_GENERATORS_FILES})
 target_link_libraries(Tpcas2SingleIndex lucene++ xerces-c icuuc boost_system uima boost_filesystem boost_regex
         boost_iostreams)
 

@@ -379,22 +379,26 @@ namespace tpc {
              * @param file_path the path of the cas file to be added to the index
              * @param index_descriptor the index descriptor location
              * @param temp_dir the temp dir location
+             * @param update_db whether to update the db with the new entry
              */
-            int add_cas_file_to_index(const char *file_path, std::string index_descriptor, std::string tempDir);
+            int add_cas_file_to_index(const char *file_path, std::string index_descriptor, std::string tempDir,
+                                      bool update_db);
 
             /*!
              * process a single file to be added to the index, calling the appropriate UIMA annotator
              * @param filepath the path of the file
              * @param first_paper whether the file is the first one to add to the subindex
              * @param tmp_conf the temporary configuration file names
+             * @param update_db whether to update the entries in the db
              * @return true if the file was valid and it has been processed correctly, false otherwise
              */
-            bool process_single_file(const std::string &filepath, bool &first_paper, const TmpConf &tmp_conf);
+            bool process_single_file(const std::string &filepath, bool &first_paper, const TmpConf &tmp_conf,
+                                     bool update_db = false);
 
-            std::string remove_document_from_index(const std::string& identifier, bool case_sensitive);
+            std::string remove_document_from_index(std::string identifier, bool case_sensitive);
             void remove_sentences_for_document(const std::string& doc_id, bool case_sensitive);
 
-            void add_doc_and_sentences_to_bdb(const std::string &identifier, bool case_sensitive);
+            void add_doc_and_sentences_to_bdb(std::string identifier);
 
             void save_corpus_counter();
 

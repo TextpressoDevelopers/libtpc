@@ -77,9 +77,9 @@ string tpfnv(const UnicodeStringRef s) {
 }
 
 
-const char* node_types[] = {
-    "null", "document", "element", "pcdata", "cdata", "comment", "pi", "declaration"
-};
+//const char* node_types[] = {
+//    "null", "document", "element", "pcdata", "cdata", "comment", "pi", "declaration"
+//};
 
 vector< pair<int32_t, int32_t> > RemoveDelimiters(const UnicodeStringRef usdocref,
         vector<string> & regex,
