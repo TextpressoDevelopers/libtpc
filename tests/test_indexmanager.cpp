@@ -41,6 +41,11 @@ namespace {
             query_document.case_sensitive = false;
             query_document.literatures = literatures;
 
+            query_test_quoting.type = QueryType::document;
+            query_test_quoting.keyword = "DNA AND Binding:2 OR DYN-1";
+            query_test_quoting.case_sensitive = false;
+            query_test_quoting.literatures = literatures;
+
             boost::filesystem::create_directories("/tmp/textpresso_test/index");
             indexManager = IndexManager("/tmp/textpresso_test/index", false);
             indexManager.create_index_from_existing_cas_dir(cas_root_dir + "/C. elegans");
@@ -68,6 +73,7 @@ namespace {
         Query query_sentence;
         Query query_sentence_year;
         Query query_document;
+        Query query_test_quoting;
 
         std::string cas_root_dir;
         std::string single_cas_files_dir;
@@ -118,6 +124,10 @@ namespace {
 
     TEST_F(IndexManagerTest, DeleteDocument) {
         indexManager.remove_file_from_index("C. elegans/WBPaper00046156/WBPaper00046156.tpcas.gz");
+    }
+
+    TEST_F(IndexManagerTest, QuotingQueryText) {
+        indexManager.search_documents(query_test_quoting);
     }
 }
 

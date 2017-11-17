@@ -36,62 +36,13 @@ void Query::add_field_to_text_if_not_empty(const std::string& field_name, const 
                                            bool exact_match_field, string& query_text) const {
     if (!field_value.empty() && !field_name.empty()) {
         string field_modified = field_value;
+        vector<string> special_chars = {"+", "-", "!", "(", ")", "{", "}", "[", "]", "^", "~", "*", "?", ":", "\""};
+        for (auto& spec_char : special_chars) {
+            boost::replace_all(field_modified, spec_char, "\\" + spec_char);
+        }
         if (exact_match_field) {
             boost::replace_all(field_modified, "\"", "");
             field_modified = "\"BEGIN " + field_modified + " END\"";
-        } else {
-            // add space for quoted words not separated by whitespace
-            field_modified.clear();
-            regex r("\\w+\"\\w+");
-            regex_replace(field_modified, r, "\" ");
-            vector<pair<size_t, size_t>> positions;
-            size_t pos = field_modified.find("\"", 0);
-            pair<size_t, size_t> begin_end_quote;
-            bool first = true;
-            while(pos != string::npos) {
-                if (first) {
-                    positions.emplace_back(pos, 0);
-                    first = false;
-                } else {
-                    positions[positions.size() - 1].second = pos;
-                }
-                pos = field_modified.find("\"", pos + 1);
-            }
-            vector<string> words_arr;
-            boost::split(words_arr, field_modified, boost::is_any_of(" "));
-            size_t actual_pos = 0;
-            for (auto word : words_arr) {
-                bool starts_with_quote = false;
-                bool ends_with_quote = false;
-                bool inside_quoted_phrase = false;
-                if (word.at(0) == '\"') {
-                    starts_with_quote = true;
-                }
-                if (word.at(0) == '\"'){
-                    ends_with_quote = true;
-                }
-                // delete all double quotes
-                boost::replace_all(word, "\"", "");
-                if (!(starts_with_quote && ends_with_quote)) {
-                    for (auto& pos_pair : positions) {
-                        if (actual_pos >= pos_pair.first && actual_pos <= pos_pair.second) {
-                            inside_quoted_phrase = true;
-                            break;
-                        } else if (actual_pos < pos_pair.first) {
-                            break;
-                        }
-                    }
-                }
-                if (starts_with_quote || !inside_quoted_phrase) {
-                    field_modified.append("\"");
-                }
-                field_modified.append(word);
-                if (ends_with_quote || !inside_quoted_phrase) {
-                    field_modified.append("\"");
-                }
-                field_modified.append(" ");
-                ++actual_pos;
-            }
         }
         if (!query_text.empty()) {
             query_text.append(" AND ");
