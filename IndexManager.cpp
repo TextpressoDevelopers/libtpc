@@ -812,12 +812,14 @@ void IndexManager::add_file_to_index(const std::string &file_path, int max_num_p
 void IndexManager::remove_file_from_index(const std::string &identifier) {
     // document - case insensitive index
     string doc_id = remove_document_from_index(identifier, false);
-    // document - case sensitive index
-    remove_document_from_index(identifier, true);
-    // sentence - case insensitive index
-    remove_sentences_for_document(doc_id, false);
-    // sentence - case sensitive index
-    remove_sentences_for_document(doc_id, true);
+    if (doc_id != "not_found") {
+        // document - case sensitive index
+        remove_document_from_index(identifier, true);
+        // sentence - case insensitive index
+        remove_sentences_for_document(doc_id, false);
+        // sentence - case sensitive index
+        remove_sentences_for_document(doc_id, true);
+    }
 }
 
 string IndexManager::remove_document_from_index(std::string identifier, bool case_sensitive) {
@@ -832,31 +834,34 @@ string IndexManager::remove_document_from_index(std::string identifier, bool cas
     TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
     searcher->search(luceneQuery, collector);
     Collection<ScoreDocPtr> matchesCollection = collector->topDocs()->scoreDocs;
-    FieldSelectorPtr fsel = newLucene<LazySelector>(set<String>({L"doc_id"}));
-    String doc_id = multireader->document(matchesCollection[0]->doc, fsel)->get(L"doc_id");
-    DbEnv env(DB_CXX_NO_EXCEPTIONS);
-    Db* pdb;
-    try {
-        env.open((index_dir + "/db").c_str(), DB_CREATE | DB_INIT_MPOOL, 0);
-        pdb = new Db(&env, DB_CXX_NO_EXCEPTIONS);
-        pdb->open(NULL, "sent_map.db", NULL, DB_BTREE, DB_RDWRMASTER, 0);
-        typedef dbstl::db_map<int, string> HugeMap;
-        HugeMap huge_map(pdb, &env);
-        for (const auto& document : matchesCollection) {
-            multireader->deleteDocument(document->doc);
-            if (huge_map.find(document->doc) != huge_map.end()) {
-                huge_map.erase(document->doc);
+    String doc_id = L"not_found";
+    if (matchesCollection.size() > 0) {
+        FieldSelectorPtr fsel = newLucene<LazySelector>(set<String>({L"doc_id"}));
+        doc_id = multireader->document(matchesCollection[0]->doc, fsel)->get(L"doc_id");
+        DbEnv env(DB_CXX_NO_EXCEPTIONS);
+        Db *pdb;
+        try {
+            env.open((index_dir + "/db").c_str(), DB_CREATE | DB_INIT_MPOOL, 0);
+            pdb = new Db(&env, DB_CXX_NO_EXCEPTIONS);
+            pdb->open(NULL, "sent_map.db", NULL, DB_BTREE, DB_RDWRMASTER, 0);
+            typedef dbstl::db_map<int, string> HugeMap;
+            HugeMap huge_map(pdb, &env);
+            for (const auto &document : matchesCollection) {
+                multireader->deleteDocument(document->doc);
+                if (huge_map.find(document->doc) != huge_map.end()) {
+                    huge_map.erase(document->doc);
+                }
             }
+            if (pdb != NULL) {
+                pdb->close(0);
+                delete pdb;
+            }
+            env.close(0);
+        } catch (DbException &e) {
+            cerr << "DbException: " << e.what() << endl;
+        } catch (std::exception &e) {
+            cerr << e.what() << endl;
         }
-        if (pdb != NULL) {
-            pdb->close(0);
-            delete pdb;
-        }
-        env.close(0);
-    } catch (DbException& e) {
-        cerr << "DbException: " << e.what() << endl;
-    } catch (std::exception& e) {
-        cerr << e.what() << endl;
     }
     multireader->close();
     readers_map.clear();
