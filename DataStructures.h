@@ -18,8 +18,8 @@ namespace tpc {
 
     namespace index {
 
-        static const std::vector<std::string> LUCENE_SPECIAL_CHARS = {"+", "-", "!", "(", ")", "{", "}", "[", "]", "^", "~",
-                                                                      "*", "?", ":", "\""};
+        static const std::vector<std::string> LUCENE_SPECIAL_CHARS = {"!", "(", ")", "{", "}", "[", "]", "^",
+                                                                      "~", ":"};
 
         /*!
          * @enum QueryType
