@@ -18,6 +18,9 @@ namespace tpc {
 
     namespace index {
 
+        static const std::vector<std::string> LUCENE_SPECIAL_CHARS = {"+", "-", "!", "(", ")", "{", "}", "[", "]", "^", "~",
+                                                                      "*", "?", ":", "\""};
+
         /*!
          * @enum QueryType
          * @brief the type of query to perform on the index

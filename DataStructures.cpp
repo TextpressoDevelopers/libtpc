@@ -36,8 +36,7 @@ void Query::add_field_to_text_if_not_empty(const std::string& field_name, const 
                                            bool exact_match_field, string& query_text) const {
     if (!field_value.empty() && !field_name.empty()) {
         string field_modified = field_value;
-        vector<string> special_chars = {"+", "-", "!", "(", ")", "{", "}", "[", "]", "^", "~", "*", "?", ":", "\""};
-        for (auto& spec_char : special_chars) {
+        for (auto& spec_char : LUCENE_SPECIAL_CHARS) {
             boost::replace_all(field_modified, spec_char, "\\" + spec_char);
         }
         if (exact_match_field) {
