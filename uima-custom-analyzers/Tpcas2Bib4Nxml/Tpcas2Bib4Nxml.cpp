@@ -231,6 +231,11 @@ uima::TyErrorId Tpcas2Bib4Nxml::typeSystemInit(uima::TypeSystem const & crTypeSy
 uima::TyErrorId Tpcas2Bib4Nxml::process(uima::CAS & tcas, uima::ResultSpecification const & crResultSpecification) {
     vector<std::string> bib_info;
     string filename = getFilename(tcas);
+    if(const char* env_p = std::getenv("TPCAS_PATH")) {
+        filename = string(env_p) + "/" + filename;
+    } else {
+        filename = "/usr/local/textpresso/tpcas/" + filename;
+    }
     string xml_text = getXMLstring(tcas);
     if (xml_text == "") {
         throw uima::Exception(uima::ErrorInfo());

@@ -685,6 +685,11 @@ TyErrorId Tpcas2Bib::process(CAS & tcas, ResultSpecification const & crResultSpe
     }
 
     String l_filepath = StringUtils::toString(filename.c_str());
+    if(const char* env_p = std::getenv("TPCAS_PATH")) {
+        l_filepath = (StringUtils::toString(env_p) + L"/" + l_filepath);
+    } else {
+        l_filepath = L"/usr/local/textpresso/tpcas/" + l_filepath;
+    }
     bib_info.push_back(l_filepath);
     WriteBib(bib_info);
     return (TyErrorId) UIMA_ERR_NONE;
