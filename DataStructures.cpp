@@ -61,7 +61,7 @@ void Query::add_categories_to_text(std::string &query_text) const {
         for (auto &category : categories) {
             if (query_text.substr(query_text.size() - 1, 1) != "(") {
                 if (categories_and_ed) {
-                    query_text.append(" AND");
+                    query_text.append(" AND ");
                 } else {
                     query_text.append(" OR");
                 }
