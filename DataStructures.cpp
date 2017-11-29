@@ -63,7 +63,7 @@ void Query::add_categories_to_text(std::string &query_text) const {
                 if (categories_and_ed) {
                     query_text.append(" AND ");
                 } else {
-                    query_text.append(" OR");
+                    query_text.append(" OR ");
                 }
             }
             if (type == QueryType::document) {
