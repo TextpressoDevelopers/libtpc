@@ -22,6 +22,13 @@ include_directories(${APR_INCLUDE_DIR})
 find_package(CImg REQUIRED)
 include_directories(${CImg_INCLUDE_DIRS})
 
+find_package(PythonLibs REQUIRED)
+include_directories(${PYTHON_INCLUDE_DIRS})
+
+enable_testing()
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
+
 file(GLOB CAS_GENERATORS_FILES "cas-generators/*.h" "cas-generators/*.cpp" "cas-generators/pdf2tpcas/*.cpp"
         "cas-generators/pdf2tpcas/*.h" "cas-generators/xml2tpcas/*.cpp" "cas-generators/xml2tpcas/*.h")
 
@@ -40,7 +47,7 @@ add_library(libtextpresso SHARED ${SOURCE_FILES} IndexManager.h IndexManager.cpp
         cas-generators/xml2tpcas/ReadXml2Stream.cpp cas-generators/xml2tpcas/ReadXml2Stream.h
         cas-generators/Stream2Tpcas.cpp cas-generators/Stream2Tpcas.h)
 target_link_libraries(libtextpresso lucene++ icuuc uima boost_iostreams boost_system boost_regex boost_filesystem
-        boost_serialization xerces-c podofo z ${CImg_SYSTEM_LIBS} db_cxx db_stl)
+        boost_serialization xerces-c podofo z ${CImg_SYSTEM_LIBS} db_cxx db_stl ${PYTHON_LIBRARIES})
 
 add_executable(test_indexmanager ${SOURCE_FILES} IndexManager.h IndexManager.cpp CASManager.cpp CASManager.h
         tests/test_indexmanager.cpp
@@ -54,8 +61,8 @@ add_executable(test_indexmanager ${SOURCE_FILES} IndexManager.h IndexManager.cpp
         cas-generators/xml2tpcas/PugiXml2Tpcas.cpp cas-generators/xml2tpcas/PugiXml2Tpcas.h
         cas-generators/xml2tpcas/ReadXml2Stream.cpp cas-generators/xml2tpcas/ReadXml2Stream.h
         cas-generators/Stream2Tpcas.cpp cas-generators/Stream2Tpcas.h)
-target_link_libraries(test_indexmanager gtest lucene++ pthread boost_system boost_iostreams boost_regex icuuc uima
-        boost_filesystem boost_serialization xerces-c db_cxx db_stl podofo z ${CImg_SYSTEM_LIBS})
+target_link_libraries(test_indexmanager ${GTEST_BOTH_LIBRARIES} lucene++ pthread boost_system boost_iostreams boost_regex icuuc uima
+        boost_filesystem boost_serialization xerces-c db_cxx db_stl podofo z ${CImg_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
 
 add_executable(test_casmanager ${SOURCE_FILES} CASManager.h CASManager.cpp tests/test_casmanager.cpp
         cas-generators/pdf2tpcas/ElementCluster.cpp
@@ -68,8 +75,8 @@ add_executable(test_casmanager ${SOURCE_FILES} CASManager.h CASManager.cpp tests
         cas-generators/xml2tpcas/PugiXml2Tpcas.cpp cas-generators/xml2tpcas/PugiXml2Tpcas.h
         cas-generators/xml2tpcas/ReadXml2Stream.cpp cas-generators/xml2tpcas/ReadXml2Stream.h
         cas-generators/Stream2Tpcas.cpp cas-generators/Stream2Tpcas.h)
-target_link_libraries(test_casmanager gtest lucene++ pthread boost_system boost_iostreams boost_regex icuuc uima
-        boost_filesystem xerces-c podofo z ${CImg_SYSTEM_LIBS})
+target_link_libraries(test_casmanager ${GTEST_BOTH_LIBRARIES} lucene++ pthread boost_system boost_iostreams boost_regex icuuc uima
+        boost_filesystem xerces-c podofo z ${CImg_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
 
 install(TARGETS libtextpresso RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
 install(FILES IndexManager.h CASManager.h DataStructures.h DESTINATION include/textpresso)
