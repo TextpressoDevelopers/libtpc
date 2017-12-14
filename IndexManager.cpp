@@ -1139,7 +1139,6 @@ void IndexManager::set_external_index(std::string external_idx_path) {
 
 void IndexManager::remove_external_index() {
     externalIndexManager.reset();
-
 }
 
 bool IndexManager::has_external_index() {

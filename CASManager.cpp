@@ -20,6 +20,7 @@
 #include <uima/xmideserializer.hpp>
 #include "uima/xmiwriter.hpp"
 #include "Utils.h"
+#include <Python.h>
 
 using namespace tpc::cas;
 using namespace std;
@@ -276,4 +277,13 @@ std::vector<std::string> CASManager::classify_article_into_corpora_from_bib_file
         }
     }
     return matching_categories;
+}
+
+bool CASManager::get_cas_file_binary_class(const std::string& file_path,
+                                           const std::string& tpc_python_classifier_path)
+{
+    Py_Initialize();
+    PyRun_SimpleString("print('hello')");
+    Py_Finalize();
+    return false;
 }

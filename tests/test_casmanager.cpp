@@ -54,6 +54,10 @@ namespace {
         convert_dir_recursively(pdf_file_path, tmp_dir, literature);
         ASSERT_TRUE(exists(tmp_dir));
     }
+
+    TEST_F(CASManagerTest, get_cas_file_binary_class) {
+        CASManager::get_cas_file_binary_class("test", "test");
+    }
 }
 
 int main(int argc, char **argv) {

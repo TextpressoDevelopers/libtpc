@@ -102,6 +102,14 @@ namespace tpc {
              */
             static std::vector<std::string> classify_article_into_corpora_from_bib_file(const BibInfo& bib_info);
 
+            /*!
+             * apply a binary classifier to the provided CAS file and determine whether the class of the file is
+             * positive or negative
+             * @return
+             */
+            static bool get_cas_file_binary_class(const std::string& file_path,
+                                                  const std::string& tpc_python_classifier_path);
+
         private:
 
             static void writeXmi(uima::CAS &outCas, int num, std::string outfn);
