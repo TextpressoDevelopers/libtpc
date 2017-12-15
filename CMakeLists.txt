@@ -85,6 +85,7 @@ install(FILES IndexManager.h CASManager.h DataStructures.h DESTINATION include/t
 
 add_library(Tpcas2TpCentral SHARED uima-annotators/Tpcas2TpCentral/Tpcas2TpCentral.h
         uima-annotators/Tpcas2TpCentral/Tpcas2TpCentral.cpp)
+target_link_libraries(Tpcas2TpCentral ${PYTHON_LIBRARIES})
 
 add_library(TpLexiconAnnotator SHARED uima-annotators/TpLexiconAnnotator/AnnotationCounter.h
         uima-annotators/TpLexiconAnnotator/AnnotationCounter.cpp uima-annotators/TpLexiconAnnotator/StopWords.h
@@ -94,7 +95,7 @@ add_library(TpLexiconAnnotator SHARED uima-annotators/TpLexiconAnnotator/Annotat
         uima-annotators/TpLexiconAnnotator/TpLexiconAnnotator.cpp uima-annotators/TpLexiconAnnotator/TpLexiconNode.h
         uima-annotators/TpLexiconAnnotator/TpLexiconNode.cpp uima-annotators/TpLexiconAnnotator/TpLexiconTrie.h
         uima-annotators/TpLexiconAnnotator/TpLexiconTrie.cpp)
-target_link_libraries(TpLexiconAnnotator TpTokenizer)
+target_link_libraries(TpLexiconAnnotator TpTokenizer ${PYTHON_LIBRARIES})
 
 add_library(TpLexiconAnnotatorFromPg SHARED uima-annotators/TpLexiconAnnotatorFromPg/AnnotationCounter.h
         uima-annotators/TpLexiconAnnotatorFromPg/AnnotationCounter.cpp
@@ -108,14 +109,14 @@ add_library(TpLexiconAnnotatorFromPg SHARED uima-annotators/TpLexiconAnnotatorFr
         uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconTrie.cpp
         uima-annotators/TpLexiconAnnotatorFromPg/AllMyParents.h
         uima-annotators/TpLexiconAnnotatorFromPg/AllMyParents.cpp)
-target_link_libraries(TpLexiconAnnotatorFromPg pqxx TpTokenizer)
+target_link_libraries(TpLexiconAnnotatorFromPg pqxx TpTokenizer ${PYTHON_LIBRARIES})
 
 add_library(TpLsa SHARED uima-annotators/TpLsa/cmdline.h uima-annotators/TpLsa/LsaTp.h uima-annotators/TpLsa/LsaTp.cpp
         uima-annotators/TpLsa/main.cpp uima-annotators/TpLsa/redsvd.hpp uima-annotators/TpLsa/redsvdFile.hpp
         uima-annotators/TpLsa/redsvdFile.cpp uima-annotators/TpLsa/redsvdIncr.hpp uima-annotators/TpLsa/SetsFromPairs.h
         uima-annotators/TpLsa/SetsFromPairs.cpp uima-annotators/TpLsa/TpCas2LsaToken.h
         uima-annotators/TpLsa/TpCas2LsaToken.cpp uima-annotators/TpLsa/util.hpp uima-annotators/TpLsa/util.cpp)
-target_link_libraries(TpLsa boost_iostreams boost_system uima xerces-c)
+target_link_libraries(TpLsa boost_iostreams boost_system uima xerces-c ${PYTHON_LIBRARIES})
 
 add_library(TpTokenizer SHARED uima-annotators/TpTokenizer/AnnotationCounter.h
         uima-annotators/TpTokenizer/AnnotationCounter.cpp
@@ -123,7 +124,7 @@ add_library(TpTokenizer SHARED uima-annotators/TpTokenizer/AnnotationCounter.h
         uima-annotators/TpTokenizer/TpTokenizer.h
         uima-annotators/TpTokenizer/TpTokenizer.cpp uima-annotators/TpTokenizer/TpTrie.h
         uima-annotators/TpTokenizer/TpTrie.cpp)
-target_link_libraries(TpTokenizer boost_regex)
+target_link_libraries(TpTokenizer boost_regex ${PYTHON_LIBRARIES})
 
 add_library(TxTokenizer SHARED uima-annotators/TxTokenizer/AnnotationCounter.h
         uima-annotators/TxTokenizer/AnnotationCounter.cpp
@@ -132,7 +133,7 @@ add_library(TxTokenizer SHARED uima-annotators/TxTokenizer/AnnotationCounter.h
         uima-annotators/TxTokenizer/TxTokenizer.cpp uima-annotators/TxTokenizer/TpTrie.h
         uima-annotators/TxTokenizer/TpTrie.cpp uima-annotators/TxTokenizer/pugiconfig.hpp
         uima-annotators/TxTokenizer/pugixml.hpp uima-annotators/TxTokenizer/pugixml.cpp)
-target_link_libraries(TxTokenizer boost_regex)
+target_link_libraries(TxTokenizer boost_regex ${PYTHON_LIBRARIES})
 
 add_library(Tpcas2Bib SHARED uima-custom-analyzers/Tpcas2Bib/CASUtils.h
         uima-custom-analyzers/Tpcas2Bib/CASUtils.cpp uima-custom-analyzers/Tpcas2Bib/Tpcas2Bib.h
@@ -140,20 +141,23 @@ add_library(Tpcas2Bib SHARED uima-custom-analyzers/Tpcas2Bib/CASUtils.h
         uima-custom-analyzers/Tpcas2Bib/TpNode.cpp uima-custom-analyzers/Tpcas2Bib/TpTrie.h
         uima-custom-analyzers/Tpcas2Bib/TpTrie.cpp
         uima-custom-analyzers/Tpcas2Bib/Utils.h)
-target_link_libraries(Tpcas2Bib lucene++ xerces-c icuuc boost_system uima boost_filesystem boost_regex)
+target_link_libraries(Tpcas2Bib lucene++ xerces-c icuuc boost_system uima boost_filesystem boost_regex
+        ${PYTHON_LIBRARIES})
 
 add_library(Tpcas2Bib4Nxml SHARED uima-custom-analyzers/Tpcas2Bib4Nxml/CASUtils.h
         uima-custom-analyzers/Tpcas2Bib4Nxml/CASUtils.cpp uima-custom-analyzers/Tpcas2Bib4Nxml/Tpcas2Bib4Nxml.h
         uima-custom-analyzers/Tpcas2Bib4Nxml/Tpcas2Bib4Nxml.cpp uima-custom-analyzers/Tpcas2Bib4Nxml/TpNode.h
         uima-custom-analyzers/Tpcas2Bib4Nxml/TpNode.cpp uima-custom-analyzers/Tpcas2Bib4Nxml/TpTrie.h
         uima-custom-analyzers/Tpcas2Bib4Nxml/TpTrie.cpp)
-target_link_libraries(Tpcas2Bib4Nxml lucene++ xerces-c icuuc boost_system uima boost_filesystem boost_regex)
+target_link_libraries(Tpcas2Bib4Nxml lucene++ xerces-c icuuc boost_system uima boost_filesystem boost_regex
+        ${PYTHON_LIBRARIES})
 
 add_library(Tpcas2Lpp SHARED uima-custom-analyzers/Tpcas2Lpp/CASUtils.h
         uima-custom-analyzers/Tpcas2Lpp/CASUtils.cpp uima-custom-analyzers/Tpcas2Lpp/Tpcas2Lpp.h
         uima-custom-analyzers/Tpcas2Lpp/Tpcas2Lpp.cpp uima-custom-analyzers/Tpcas2Lpp/Utils.h
         lucene-custom/CaseSensitiveAnalyzer.cpp lucene-custom/CaseSensitiveAnalyzer.h)
-target_link_libraries(Tpcas2Lpp lucene++ xerces-c icuuc boost_system uima boost_filesystem boost_regex)
+target_link_libraries(Tpcas2Lpp lucene++ xerces-c icuuc boost_system uima boost_filesystem boost_regex
+        ${PYTHON_LIBRARIES})
 
 add_library(Tpcas2SingleIndex SHARED uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.h
         uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.cpp uima-custom-analyzers/Tpcas2SingleIndex/Tpcas2SingleIndex.h
@@ -163,7 +167,7 @@ add_library(Tpcas2SingleIndex SHARED uima-custom-analyzers/Tpcas2SingleIndex/CAS
         lucene-custom/CaseSensitiveAnalyzer.cpp lucene-custom/CaseSensitiveAnalyzer.h
         CASManager.cpp CASManager.h Utils.h Utils.cpp ${CAS_GENERATORS_FILES})
 target_link_libraries(Tpcas2SingleIndex lucene++ xerces-c icuuc boost_system uima boost_filesystem boost_regex
-        boost_iostreams)
+        boost_iostreams ${PYTHON_LIBRARIES})
 
 add_executable(WriteFeatureDefsFromPg uima-annotators/WriteFeatureDefsFromPg/main.cpp)
 target_link_libraries(WriteFeatureDefsFromPg uima pqxx)
