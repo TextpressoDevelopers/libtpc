@@ -34,7 +34,7 @@ cmake ..; make; make install
 RUN git clone https://github.com/google/googletest.git; cd googletest; mkdir cmake-build-release; cd cmake-build-release; cmake ..; \
 make; make install
 
-RUN git clone http://tpc.textpresso.org:5445/valearna/libtpc.git; cd libtpc; mkdir cmake-build-release; \
+RUN git clone http://tpc.textpresso.org:5445/textpresso/libtpc.git; cd libtpc; mkdir cmake-build-release; \
 cd cmake-build-release; cmake ..; make; make install
 
 # clean

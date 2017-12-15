@@ -12,6 +12,9 @@ build_job:
 test_job:
   stage: test
   script:
+  - mkdir cmake-build-release && cd cmake-build-release
+  - cmake -DCMAKE_BUILD_TYPE=Release ..
+  - make && make install
   - cd cmake-build-release
   - ./test_indexmanager
   - ./test_casmanager
