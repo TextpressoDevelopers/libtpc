@@ -3,7 +3,7 @@ FROM ubuntu:16.04
 RUN export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get -y install cmake libxerces-c-dev \
 libapr1-dev libaprutil1-dev wget libicu-dev liblucene++-dev liblucene++ \
 icu-devtools bzip2 linux-headers-generic build-essential unzip software-properties-common curlftpfs \
-python-software-properties autoconf libboost-all-dev libpodofo-dev libpodofo-utils doxygen libpqxx-dev
+python-software-properties autoconf libboost-all-dev libpodofo-dev libpodofo-utils doxygen libpqxx-dev \
 fcgi++ libmagick++-dev libcurl4-openssl-dev postfix libdb5.3-dev libdb5.3++-dev libdb5.3++-stl-dev \
 libeigen3-dev postgresql-client postgresql postgresql-contrib cimg-dev git lighttpd; \
 wget http://apache.osuosl.org/activemq/activemq-cpp/3.9.4/activemq-cpp-library-3.9.4-src.tar.bz2 -O \
