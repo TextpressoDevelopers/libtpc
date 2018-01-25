@@ -275,5 +275,8 @@ std::vector<std::string> CASManager::classify_article_into_corpora_from_bib_file
             matching_categories.push_back(cat.first);
         }
     }
+    if (matching_categories.empty()) {
+        matching_categories.push_back(PMCOA_UNCLASSIFIED);
+    }
     return matching_categories;
 }

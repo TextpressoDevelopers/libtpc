@@ -28,7 +28,7 @@ namespace tpc {
                 {"PMCOA Genomics", ".*[Gg]enom.*"}, {"PMCOA Disease", ".*[Dd]i(seas|abet).*"},
                 {"PMCOA Agriculture", ".*[Aa]gricult.*"}, {"PMCOA Physiology", ".*[Pp]hysiol.*"}, {"PMCOA Psychology", ".*[Pp]sych(ol|iat).*"},
                 {"PMCOA Crystallography", ".*[Cc]rystal.*"}, {"PMCOA Chemistry", ".*[Cc]hemi.*"}, {"PMCOA Health", ".*[Hh]ealth.*"}, {"PMCOA Cardiology", ".*([Cc]ardi|[Hh]eart).*"},
-                {"PMCOA Pharmacology", ".*[Pp]harm.*"}, {"PMCOA Nutrition", ".*[Nn]utri.*"}, {"PMCOA Immonology", ".*[Ii]mmuno.*"}, {"PMCOA Pediatrics", ".*[Pp]a?ediatri.*"},
+                {"PMCOA Pharmacology", ".*[Pp]harm.*"}, {"PMCOA Nutrition", ".*[Nn]utri.*"}, {"PMCOA Immunology", ".*[Ii]mmuno.*"}, {"PMCOA Pediatrics", ".*[Pp]a?ediatri.*"},
                 {"PMCOA Review", ".*[Rr]eview.*"}, {"PMCOA Protein", ".*[Pp]rotein.*"}, {"PMCOA D. melanogaster", ".*(Drosphila( melanogaster)?|[Ff]ruit [Ff]ly|D\. melanogaster).*"}, {"PMCOA C. elegans", ".*(Caenorhabditis( elegans)?|C\. elegans).*"},
                 {"PMCOA A. thaliana", ".*(Arabidopsis( thaliana)?|A\. thaliana).*"}, {"PMCOA M. musculus", ".*(Mus( musculus)?|M\. musculus|[Mm]usulus|[Mm]murine|[Mm]ouse|[Mm]ice).*"}, {"PMCOA D. rerio", ".*(Danio rerio|D\. rerio|[Zz]ebrafish).*"}, {"PMCOA S. cerevisiae", ".*(Saccharomyces( cerevisiae)?|S\. cerevisiae|[Bb]udding [Yy]east).*"},
                 {"PMCOA S. pombe", ".*(Schizosaccharomyces( pombe)?|S\. pombe|([Ff]ission) [Yy]east).*"}, {"PMCOA D. discoideum", ".*(Dictyostelium( discoideum)?|D\. discoideum|[Ss]lime [Mm]old).*"}, {"PMCOA R. norvegicus", ".*(Rattus norvegicus|R\. norvegicus|Norway brown rat).*"}, {"PMCOA R. rattus", ".*(Rattus rattus|R\. rattus|[Bb]lack rat).*"},
