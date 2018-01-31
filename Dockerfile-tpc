@@ -5,7 +5,7 @@ libapr1-dev libaprutil1-dev wget libicu-dev liblucene++-dev liblucene++ \
 icu-devtools bzip2 linux-headers-generic build-essential unzip software-properties-common curlftpfs \
 python-software-properties autoconf libboost-all-dev libpodofo-dev libpodofo-utils doxygen libpqxx-dev \
 fcgi++ libmagick++-dev libcurl4-openssl-dev postfix libdb5.3-dev libdb5.3++-dev libdb5.3++-stl-dev \
-libeigen3-dev postgresql-client postgresql postgresql-contrib cimg-dev git lighttpd; \
+libeigen3-dev postgresql-client postgresql postgresql-contrib cimg-dev git lighttpd python3 python3-pip; \
 wget http://apache.osuosl.org/activemq/activemq-cpp/3.9.4/activemq-cpp-library-3.9.4-src.tar.bz2 -O \
 activemq.tar.bz2; tar xjf activemq.tar.bz2; cd activemq-cpp-library-3.9.4/; ./configure --enable-static \
 --enable-shared --prefix=/usr/local; make && make install; cd ..; wget \
@@ -33,6 +33,12 @@ cmake ..; make; make install
 #google test
 RUN git clone https://github.com/google/googletest.git; cd googletest; mkdir cmake-build-release; cd cmake-build-release; cmake ..; \
 make; make install
+
+# python packages
+RUN pip3 install psycopg2
+
+# perl packages
+RUN cpan -i DBD::Pg
 
 RUN git clone http://tpc.textpresso.org:5445/textpresso/libtpc.git; cd libtpc; mkdir cmake-build-release; \
 cd cmake-build-release; cmake ..; make; make install
