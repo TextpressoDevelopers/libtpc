@@ -791,7 +791,7 @@ void IndexManager::add_file_to_index(const std::string &file_path, int max_num_p
     MultiReaderPtr multireader = newLucene<MultiReader>(subReaders, false);
     counter_cas_files = multireader->numDocs();
     bool first_paper;
-    TmpConf tmp_conf = write_tmp_conf_files(out_dir + "_0");
+    TmpConf tmp_conf = write_tmp_conf_files(out_dir + "_" + to_string(largest_subindex_num));
     if (counter_cas_files % max_num_papers_per_subindex == 0) {
         // create new subindex
         subindex_dir = out_dir + "_" + to_string(counter_cas_files / max_num_papers_per_subindex);
@@ -1040,6 +1040,8 @@ void IndexManager::update_corpus_counter() {
         for (const auto &corpus_regex : tpc::cas::PMCOA_CAT_REGEX) {
             corpus_doc_counter[corpus_regex.first] = get_num_docs_in_corpus_from_index(corpus_regex.first);
         }
+        corpus_doc_counter[tpc::cas::PMCOA_UNCLASSIFIED] = get_num_docs_in_corpus_from_index(
+                tpc::cas::PMCOA_UNCLASSIFIED);
         corpus_doc_counter[tpc::cas::CELEGANS] = get_num_docs_in_corpus_from_index(tpc::cas::CELEGANS);
         corpus_doc_counter[tpc::cas::CELEGANS_SUP] = get_num_docs_in_corpus_from_index(tpc::cas::CELEGANS_SUP);
     } else {
