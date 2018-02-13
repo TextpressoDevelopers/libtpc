@@ -62,15 +62,15 @@ TextElement * PdfInfo::ProcessStreamFromPage(int pg) {
     // introduce variables keeping track
     // of the beginning of current text line!
 
-    double sCharSpace;
-    double sWordSpace;
-    double sHScale;
-    double sVScale;
+    double sCharSpace(0.0);
+    double sWordSpace(0.0);
+    double sHScale(0.0);
+    double sVScale(0.0);
 
-    double sLeading;
+    double sLeading(0.0);
     // superscripted or subscripted
-    double sRise;
-    double sFontSize;
+    double sRise(0.0);
+    double sFontSize(0.0);
 
     // process only the selected page
     PoDoFo::PdfPage * curPage = mDoc->GetPage(pg);
@@ -240,7 +240,9 @@ TextElement * PdfInfo::ProcessStreamFromPage(int pg) {
                     // font info is stored in a separate object in the pdf file
                     pFont = curPage->GetFromResources(PoDoFo::PdfName("Font"),
                             fontName);
-                    myfi.set(pFont, mDoc);
+                    if (pFont != NULL) {
+                        myfi.set(pFont, mDoc);
+                    }
                     stack.pop();
                     if (pFont == NULL) {
                         PODOFO_RAISE_ERROR_INFO(PoDoFo::ePdfError_InvalidHandle,
