@@ -794,7 +794,7 @@ void IndexManager::add_file_to_index(const std::string &file_path, int max_num_p
     TmpConf tmp_conf = write_tmp_conf_files(out_dir + "_" + to_string(largest_subindex_num));
     if (counter_cas_files % max_num_papers_per_subindex == 0) {
         // create new subindex
-        subindex_dir = out_dir + "_" + to_string(counter_cas_files / max_num_papers_per_subindex);
+        subindex_dir = out_dir + "_" + to_string(largest_subindex_num + 1);
         tmp_conf = write_tmp_conf_files(subindex_dir);
         first_paper = true;
         if (!exists(tmp_conf.new_index_flag)) {
