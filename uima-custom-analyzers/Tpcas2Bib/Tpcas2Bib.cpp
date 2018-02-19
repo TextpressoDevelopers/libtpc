@@ -557,15 +557,26 @@ void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<St
 }
 
 void WriteBib(vector<String> bib_info) {
-    String l_author = bib_info[0];
-    String l_accession = bib_info[1];
-    String l_type = bib_info[2];
-    String l_title = bib_info[3];
-    String l_journal = bib_info[4];
-    String l_citation = bib_info[5];
-    String l_year = bib_info[6];
-    String l_abstract = bib_info[7];
-    String l_filepath = bib_info[8];
+    String l_author;
+    String l_accession;
+    String l_type;
+    String l_title;
+    String l_journal;
+    String l_citation;
+    String l_year;
+    String l_abstract;
+    String l_filepath;
+    if (bib_info.size() > 1) {
+    	l_author = bib_info[0];
+	l_accession = bib_info[1];
+	l_type = bib_info[2];
+	l_title = bib_info[3];
+    	l_journal = bib_info[4];
+    	l_citation = bib_info[5];
+    	l_year = bib_info[6];
+    	l_abstract = bib_info[7];
+    	l_filepath = bib_info[8];
+    }
     wstring w_author = l_author.c_str();
     string s_author(w_author.begin(), w_author.end());
     wstring w_accession = l_accession.c_str();
