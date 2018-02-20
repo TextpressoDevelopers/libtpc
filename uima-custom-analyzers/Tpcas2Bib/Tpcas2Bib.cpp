@@ -568,9 +568,9 @@ void WriteBib(vector<String> bib_info) {
     String l_filepath;
     if (bib_info.size() > 1) {
     	l_author = bib_info[0];
-	l_accession = bib_info[1];
-	l_type = bib_info[2];
-	l_title = bib_info[3];
+        l_accession = bib_info[1];
+        l_type = bib_info[2];
+        l_title = bib_info[3];
     	l_journal = bib_info[4];
     	l_citation = bib_info[5];
     	l_year = bib_info[6];
