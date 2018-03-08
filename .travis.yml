@@ -1,10 +1,10 @@
 sudo: required
 
-language: c++
-
 services:
         - docker
 
 before_install:
         - docker pull valearna/ubuntu-tpc-base
-        - docker run -d -p 127.0.0.1:80:4567 valearna/ubuntu-tpc-base /bin/sh -c "ls -l"
+
+script:
+        - docker run -it -p 127.0.0.1:80:4567 -v $TRAVIS_BUILD_DIR:/volume valearna/ubuntu-tpc-base /bin/sh -c "cd /volume/; mkdir cmake-build-release && cd cmake-build-release; cmake -DCMAKE_BUILD_TYPE=Release ..; make && make install; export INDEX_PATH=/tmp/textpresso_test/index; export LD_LIBRARY_PATH=/usr/local/lib; ./test_indexmanager; ./test_casmanager"
