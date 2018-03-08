@@ -1,6 +1,7 @@
 cmake-build*
 .idea/
 **/build/
+**/_build/
 **/dist/
 **/nbproject/
 *~

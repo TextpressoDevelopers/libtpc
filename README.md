@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/TextpressoDevelopers/libtpc.svg?branch=master)](https://travis-ci.org/TextpressoDevelopers/libtpc) [![Documentation Status](https://readthedocs.org/projects/libtpc/badge/?version=latest)](http://libtpc.readthedocs.io/en/latest/?badge=latest)
+
 # Libtpc
 ## Description
 Textpresso Central is a platform to perform full text literature searches, view and curate research papers,
