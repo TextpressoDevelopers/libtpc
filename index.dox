@@ -8,5 +8,5 @@
  *
  * The main classes of the library are \ref tpc::index::IndexManager, which contains methods for creating and updating
  * Textpresso index from CAS files and to search the indexed documents, and \ref tpc::cas::CASManager, to convert pdf
- * and xml files into CAS files, adding annotations about the content of the documents.
+ * and xml files into CAS files, adding annotations to the documents.
  */

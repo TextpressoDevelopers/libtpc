@@ -151,7 +151,11 @@ namespace tpc {
              * @brief search the Textpresso index for documents matching the provided Lucene query and return summary
              * information with a list of results sorted by their match score
              *
-             * The results returned by this method contain basic information regarding the documents matching the searches
+             * The results returned by this method contain only the internal identifier of the indexed documents and
+             * other summary information regarding the documents matching the provided query. To get detailed
+             * information for the returned internal ids, use the function IndexManager::get_documents_details passing
+             * the hit_documents vector in the DataStructures::SearchResults object returned by this function, or
+             * IndexManager::get_document_details to retrieve details for a single document
              *
              * Note that while the documents are sorted by score, their matched sentences, in case of sentence searches,
              * are not sorted in order to obtain better performances
