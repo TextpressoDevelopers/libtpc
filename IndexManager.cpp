@@ -454,6 +454,7 @@ vector<DocumentDetails> IndexManager::read_documents_details(const vector<Docume
             DocumentPtr docPtr = doc_reader->document(docSummary.lucene_internal_id, fsel);
             for (const auto &f : fields) {
                 update_document_details(documentDetails, f, docPtr);
+                documentDetails.lucene_internal_id = docSummary.lucene_internal_id;
             }
             documentDetails.score = docSummary.score;
             results.push_back(documentDetails);
