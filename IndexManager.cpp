@@ -64,6 +64,9 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
         QueryParserPtr parser = newLucene<QueryParser>(
                 LuceneVersion::LUCENE_30, query.type == QueryType::document ? L"fulltext" : L"sentence", analyzer);
         string query_text = query.get_query_text();
+        if (query_text.empty()) {
+            throw tpc_exception("empty query");
+        }
         String query_str = String(query_text.begin(), query_text.end());
         string joined_lit = boost::algorithm::join(query.literatures, "ED\" OR corpus:\"BG");
         query_str = L"(corpus:\"BG" +  String(joined_lit.begin(), joined_lit.end()) + L"ED\") AND (" + query_str + L")";
