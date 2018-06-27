@@ -558,7 +558,7 @@ void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<St
                                               Field::INDEX_NOT_ANALYZED_NO_NORMS));
             sentencedoc->add(newLucene<Field>(L"sentence",
                                               StringUtils::toString<wstring>(w_sentence),
-                                              Field::STORE_NO, Field::INDEX_ANALYZED_NO_NORMS));
+                                              Field::STORE_NO, Field::INDEX_ANALYZED));
             sentencedoc->add(newLucene<Field>(L"sentence_compressed",
                                               CompressionTools::compressString(
                                                       StringUtils::toString<wstring>(w_sentence)),
