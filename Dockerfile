@@ -40,7 +40,7 @@ RUN pip3 install psycopg2
 # perl packages
 RUN cpan -i DBD::Pg
 
-RUN git clone http://tpc.textpresso.org:5445/textpresso/libtpc.git; cd libtpc; mkdir cmake-build-release; \
+RUN git clone https://github.com/TextpressoDevelopers/libtpc.git; cd libtpc; mkdir cmake-build-release; \
 cd cmake-build-release; cmake ..; make; make install
 
 # clean
