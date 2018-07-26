@@ -1152,3 +1152,20 @@ bool IndexManager::has_external_index() {
     return externalIndexManager != nullptr;
 }
 
+set<string> IndexManager::get_words_belonging_to_category_from_document_fulltext(const string& fulltext,
+        const string& fulltext_cat, const string& category) {
+    set<string> result;
+    vector<string> text_words;
+    vector<string> cat_words;
+    boost::split(text_words, fulltext, boost::is_any_of(" \n\t'\\/()[]{}:.;,!?"));
+    boost::split(cat_words, fulltext_cat, boost::is_any_of("\t"));
+    vector<string> cat_single;
+    for (int i = 0; i < cat_words.size(); ++i) {
+        boost::split(cat_single, cat_words[i], boost::is_any_of("|"));
+        if (std::find(cat_single.begin(), cat_single.end(), category) != cat_single.end()) {
+            result.insert(text_words[i]);
+        }
+    }
+    return result;
+}
+

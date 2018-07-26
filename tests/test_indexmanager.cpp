@@ -46,6 +46,11 @@ namespace {
             query_test_quoting.case_sensitive = false;
             query_test_quoting.literatures = literatures;
 
+            query_test_categories.type = QueryType::document;
+            query_test_categories.accession = "WBPaper00046156";
+            query_test_categories.case_sensitive = false;
+            query_test_categories.literatures = literatures;
+
             boost::filesystem::create_directories("/tmp/textpresso_test/index");
             indexManager = IndexManager("/tmp/textpresso_test/index", false);
             indexManager.create_index_from_existing_cas_dir(cas_root_dir + "/C. elegans");
@@ -74,6 +79,7 @@ namespace {
         Query query_sentence_year;
         Query query_document;
         Query query_test_quoting;
+        Query query_test_categories;
 
         std::string cas_root_dir;
         std::string single_cas_files_dir;
@@ -128,6 +134,15 @@ namespace {
 
     TEST_F(IndexManagerTest, QuotingQueryText) {
         indexManager.search_documents(query_test_quoting);
+    }
+
+    TEST_F(IndexManagerTest, GetWordsinCategories) {
+        SearchResults results = indexManager.search_documents(query_test_categories);
+        DocumentDetails docDetails = indexManager.get_document_details(results.hit_documents[0], false,
+                {"doc_id", "fulltext_compressed", "fulltext_cat_compressed"}, {}, {}, {});
+        std::set<std::string> words = indexManager.get_words_belonging_to_category_from_document_fulltext(
+                docDetails.fulltext, docDetails.categories_string, "Gene (C. elegans) (tpgce:0000001)");
+        ASSERT_EQ(words.size(), 109);
     }
 }
 

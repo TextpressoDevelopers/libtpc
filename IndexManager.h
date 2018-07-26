@@ -223,6 +223,10 @@ namespace tpc {
                                                                const std::set<std::string> &exclude_doc_fields = {},
                                                                const std::set<std::string> &exclude_match_sentences_fields = {});
 
+            std::set<std::string> get_words_belonging_to_category_from_document_fulltext(const std::string& fulltext,
+                                                                                         const std::string& fulltext_cat,
+                                                                                         const std::string& category);
+
             // comparators for reverse sorting of documents and sentence objects
             static bool document_score_gt(const Document &a, const Document &b) { return a.score > b.score; }
             static bool document_year_score_gt(const Document &a, const Document &b) {
