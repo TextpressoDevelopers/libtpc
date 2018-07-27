@@ -148,7 +148,8 @@ namespace tpc {
             std::string get_query_text() const;
         private:
             void add_field_to_text_if_not_empty(const std::string& field_value, const std::string& lucene_field_name,
-                                                bool exact_match_field, std::string& query_text) const;
+                                                bool exact_match_field, std::string& query_text,
+                                                bool concat_with_or = false) const;
             void add_categories_to_text(std::string& query_text) const;
         };
 
