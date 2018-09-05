@@ -124,10 +124,10 @@ wstring getCleanText(CAS& tcas) {
         }
     }
     try {
-        boost::wregex tagregex(L"\<.+?\>");
-        w_fulltext = boost::regex_replace(w_fulltext, tagregex, "");
-        boost::wregex tagregex2(L"\<\/.+?\>");
-        w_fulltext = boost::regex_replace(w_fulltext, tagregex2, "");
+        //boost::wregex tagregex(L"\<[! ].*\>");
+        //w_fulltext = boost::regex_replace(w_fulltext, tagregex, "");
+        //boost::wregex tagregex2(L"\<\/.+?\>");
+        //w_fulltext = boost::regex_replace(w_fulltext, tagregex2, "");
         boost::wregex spaces_regex(L"\\s+");
         w_fulltext = boost::regex_replace(w_fulltext, spaces_regex, " ");
     } catch (std::exception& e) {
