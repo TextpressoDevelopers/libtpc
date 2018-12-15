@@ -603,7 +603,7 @@ void IndexManager::create_index_from_existing_cas_dir(const string &input_cas_di
                                                       int max_num_papers_per_subindex)
 {
     path input_cas_dir_path(input_cas_dir);
-    if (!boost::filesystem::exists(index_dir + "/db")) {
+    if (!boost::filesystem::exists(index_dir + "/db")) { // need index_dir to exist
         boost::filesystem::create_directory(index_dir + "/db");
     }
     string out_dir = index_dir + "/" + SUBINDEX_NAME;
@@ -679,11 +679,11 @@ int IndexManager::add_cas_file_to_index(const char* file_path, string index_desc
     string filename = source.filename().string();
     boost::replace_all(filename, ".tpcas.gz", ".bib");
     if(gzfile.find(".tpcas") == std::string::npos) {
-        //std::cerr << "No .tpcas file found for file " << source.filename().string() << endl;
+        std::cerr << "No .tpcas file found for file " << source.filename().string() << endl;
         return 0;
     }
     if(!exists(bib_file)) {
-        //std::cerr << "No .bib file found for file " << source.filename().string() << endl;
+        std::cerr << "No .bib file found for file " << source.filename().string() << endl;
         return 0;
     }
     string bib_file_temp = temp_dir_path + "/" + filename;
@@ -755,6 +755,9 @@ int IndexManager::add_cas_file_to_index(const char* file_path, string index_desc
         return 1;
     } catch (uima::Exception e) {
         std::cerr << "Exception: " << e << std::endl;
+        return 0;
+    } catch (const boost::bad_lexical_cast& e) {
+        std::cout << "Exception: " << e.what() << std::endl;
         return 0;
     }
 }
