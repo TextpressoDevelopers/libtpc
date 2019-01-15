@@ -756,9 +756,6 @@ int IndexManager::add_cas_file_to_index(const char* file_path, string index_desc
     } catch (uima::Exception e) {
         std::cerr << "Exception: " << e << std::endl;
         return 0;
-    } catch (const boost::bad_lexical_cast& e) {
-        std::cout << "Exception: " << e.what() << std::endl;
-        return 0;
     }
 }
 
@@ -991,14 +988,32 @@ void IndexManager::remove_sentences_for_document(const std::string &doc_id, bool
     multireader->close();
 }
 
-std::vector<std::string> IndexManager::get_available_corpora() {
+std::vector<std::string> IndexManager::get_available_corpora(const std::string& cas_path) {
     vector<string> corpora_vec;
-    for (const auto &cat_regex : tpc::cas::PMCOA_CAT_REGEX) {
-        corpora_vec.push_back(cat_regex.first);
+    directory_iterator enditr;
+    string corpus_name;
+    size_t found;
+    int n_subfolder;
+    for(directory_iterator itr(cas_path); itr != enditr; itr++) {
+        n_subfolder = 0;
+        for (directory_iterator dir_it(itr->path()); dir_it != enditr; ++dir_it) {
+            n_subfolder++;
+        }
+        if (n_subfolder > 0) {
+            corpus_name = itr->path().string();
+            found = corpus_name.find_last_of("/");
+            corpus_name = corpus_name.substr(found+1);
+            boost::replace_all(corpus_name, "_", " ");
+            if (corpus_name.compare("PMCOA") == 0) {
+                for (const auto &cat_regex : tpc::cas::PMCOA_CAT_REGEX) {
+                    corpora_vec.push_back(cat_regex.first);
+                }
+                corpora_vec.push_back(tpc::cas::PMCOA_UNCLASSIFIED);
+            } else {
+                corpora_vec.push_back(corpus_name);
+            }
+        }
     }
-    corpora_vec.push_back(tpc::cas::PMCOA_UNCLASSIFIED);
-    corpora_vec.push_back(tpc::cas::CELEGANS);
-    corpora_vec.push_back(tpc::cas::CELEGANS_SUP);
     return corpora_vec;
 }
 
@@ -1048,13 +1063,32 @@ void IndexManager::load_corpus_counter() {
 
 void IndexManager::update_corpus_counter() {
     if (!external) {
-        for (const auto &corpus_regex : tpc::cas::PMCOA_CAT_REGEX) {
-            corpus_doc_counter[corpus_regex.first] = get_num_docs_in_corpus_from_index(corpus_regex.first);
+        directory_iterator enditr;
+        string corpus_name;
+        size_t found;
+        int n_subfolder;
+        for(directory_iterator itr(cas_dir); itr != enditr; itr++) {
+            n_subfolder = 0;
+            for (directory_iterator dir_it(itr->path()); dir_it != enditr; ++dir_it) {
+                n_subfolder++;
+            }
+            // add corpus only if there are literatures of the corpora i.e. if the folder is not empty
+            if (n_subfolder > 0) {
+                corpus_name = itr->path().string();
+                found = corpus_name.find_last_of("/");
+                corpus_name = corpus_name.substr(found+1);
+                boost::replace_all(corpus_name, "_", " ");
+                if (corpus_name.compare("PMCOA") == 0) { // add all sub-corpora of PMCOA
+                    for (const auto &corpus_regex : tpc::cas::PMCOA_CAT_REGEX) {
+                        corpus_doc_counter[corpus_regex.first] = get_num_docs_in_corpus_from_index(corpus_regex.first);
+                    }
+                    corpus_doc_counter[tpc::cas::PMCOA_UNCLASSIFIED] = get_num_docs_in_corpus_from_index(
+                            tpc::cas::PMCOA_UNCLASSIFIED);
+                } else {
+                    corpus_doc_counter[corpus_name] = get_num_docs_in_corpus_from_index(corpus_name);
+                }
+            }
         }
-        corpus_doc_counter[tpc::cas::PMCOA_UNCLASSIFIED] = get_num_docs_in_corpus_from_index(
-                tpc::cas::PMCOA_UNCLASSIFIED);
-        corpus_doc_counter[tpc::cas::CELEGANS] = get_num_docs_in_corpus_from_index(tpc::cas::CELEGANS);
-        corpus_doc_counter[tpc::cas::CELEGANS_SUP] = get_num_docs_in_corpus_from_index(tpc::cas::CELEGANS_SUP);
     } else {
         map<string, set<string>> external_paper_lit_map;
         std::ifstream ifs(index_dir + "/../uploadedfiles/lit.cfg", std::ios::binary);
@@ -1147,7 +1181,7 @@ void IndexManager::save_all_years_for_documents_to_db() {
 }
 
 void IndexManager::set_external_index(std::string external_idx_path) {
-    externalIndexManager = make_shared<IndexManager>(external_idx_path, true, true);
+    externalIndexManager = make_shared<IndexManager>(external_idx_path, nullptr, true, true);
 }
 
 void IndexManager::remove_external_index() {
