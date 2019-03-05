@@ -18,6 +18,7 @@ namespace {
     protected:
 
         IndexManagerTest() {
+            int test = 0;
             index_root_dir = "/usr/local/share/textpresso/data/index";
             literatures = {"C. elegans", "C. elegans Supplementals"};
             cas_root_dir = "/usr/local/share/textpresso/data/tpcas";

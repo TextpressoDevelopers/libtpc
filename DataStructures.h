@@ -117,7 +117,8 @@ namespace tpc {
             std::string author;
             std::string journal;
             std::string type;
-            std::vector <SentenceDetails> sentences_details;
+            std::vector <SentenceDetails> match_sentences_details;
+            std::vector <SentenceDetails> all_sentences_details;
         };
 
         /*!

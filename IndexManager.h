@@ -179,8 +179,8 @@ namespace tpc {
              * @brief get detailed information about a document specified by a DocumentSummary object
              *
              * @param doc_summary the DocumentSummary object that identifies the document
-             * @param include_sentences_details whether to retrieve the details of the matching sentences specified in the
-             * DocumentSummary object
+             * @param include_match_sentences whether to retrieve the details of the matching sentences
+             * specified in the DocumentSummary object
              * @param include_doc_fields the list of fields to retrieve for the document. Retrieve all fields if not
              * specified
              * @param include_match_sentences_fields the list of fields to retrieve for the matching sentences specified in
@@ -188,14 +188,20 @@ namespace tpc {
              * @param exclude_doc_fields the list of fields to exclude for the document
              * @param exclude_match_sentences_fields the list of fields to exclude for the matching sentences specified in
              * the DocumentSummary object
+             * @param include_all_sentences whether to retrieve the details of all sentences in the document
+             * @param include_all_sentences_fields fields to be included for all sentences
+             * @param exclude_all_sentences_fields fields to be excluded for all sentences
              * @return the detailed information of the document
              */
             DocumentDetails get_document_details(const DocumentSummary &doc_summary,
-                                                 bool include_sentences_details = true,
+                                                 bool include_match_sentences = true,
                                                  std::set<std::string> include_doc_fields = DOCUMENTS_FIELDS_DETAILED,
                                                  std::set<std::string> include_match_sentences_fields = SENTENCE_FIELDS_DETAILED,
                                                  const std::set<std::string> &exclude_doc_fields = {},
-                                                 const std::set<std::string> &exclude_match_sentences_fields = {});
+                                                 const std::set<std::string> &exclude_match_sentences_fields = {},
+                                                 bool include_all_sentences = false,
+                                                 std::set<std::string> include_all_sentences_fields = SENTENCE_FIELDS_DETAILED,
+                                                 const std::set<std::string> &exclude_all_sentences_fields = {});
 
             /*!
              * @brief get detailed information for a set of documents specified by a list of DocumentSummary objects
@@ -204,7 +210,7 @@ namespace tpc {
              * optionally, the list of sentences in the matching_sentences field of the document for which to retrieve
              * detailed information
              * @param sort_by_year whether to sort the results by year
-             * @param include_sentences_details whether to retrieve the details of the matching sentences specified in the
+             * @param include_match_sentences whether to retrieve the details of the matching sentences specified in the
              * DocumentSummary object
              * @param include_doc_fields the list of fields to retrieve for the document. Retrieve all fields if not
              * specified
@@ -213,15 +219,21 @@ namespace tpc {
              * @param exclude_doc_fields the list of fields to exclude for the document
              * @param exclude_match_sentences_fields the list of fields to exclude for the matching sentences specified in
              * the DocumentSummary object
+             * @param include_all_sentences whether to retrieve the details of all sentences in the document
+             * @param include_all_sentences_fields fields to be included for all sentences
+             * @param exclude_all_sentences_fields fields to be excluded for all sentences
              * @return the detailed information of the documents
              */
             std::vector<DocumentDetails> get_documents_details(const std::vector<DocumentSummary> &doc_summaries,
                                                                bool sort_by_year,
-                                                               bool include_sentences_details = true,
+                                                               bool include_match_sentences = true,
                                                                std::set<std::string> include_doc_fields = DOCUMENTS_FIELDS_DETAILED,
                                                                std::set<std::string> include_match_sentences_fields = SENTENCE_FIELDS_DETAILED,
                                                                const std::set<std::string> &exclude_doc_fields = {},
-                                                               const std::set<std::string> &exclude_match_sentences_fields = {});
+                                                               const std::set<std::string> &exclude_match_sentences_fields = {},
+                                                               bool include_all_sentences = false,
+                                                               std::set<std::string> include_all_sentences_fields = SENTENCE_FIELDS_DETAILED,
+                                                               const std::set<std::string> &exclude_all_sentences_fields = {});
 
             std::set<std::string> get_words_belonging_to_category_from_document_fulltext(const std::string& fulltext,
                                                                                          const std::string& fulltext_cat,
@@ -344,14 +356,37 @@ namespace tpc {
              * @param fields the set of fields to be retrieved for the sentences
              * @return the details of the document
              */
-            void update_sentences_details_for_document(const DocumentSummary &doc_summary,
-                                                       DocumentDetails &doc_details,
-                                                       Lucene::QueryParserPtr sent_parser,
-                                                       Lucene::SearcherPtr searcher,
-                                                       Lucene::FieldSelectorPtr fsel,
-                                                       const std::set<Lucene::String> &fields,
-                                                       bool use_lucene_internal_ids,
-                                                       Lucene::MultiReaderPtr sent_reader);
+            void update_match_sentences_details_for_document(const DocumentSummary &doc_summary,
+                                                             DocumentDetails &doc_details,
+                                                             Lucene::QueryParserPtr sent_parser,
+                                                             Lucene::SearcherPtr searcher,
+                                                             Lucene::FieldSelectorPtr fsel,
+                                                             const std::set<Lucene::String> &fields,
+                                                             bool use_lucene_internal_ids,
+                                                             Lucene::MultiReaderPtr sent_reader);
+
+            /*!
+             * get detailed information for the complete sentences list for a document specifed by a DocumentSummary
+             * object and update the respective information in the provided DocumentDetails object
+             * @param doc_details the DocumentDetails object that identifies the document related to the sentences to
+             * be retrieved and that needs be updated with the new detailed information about the sentences. Note that
+             * the object must contain a non null identifier
+             * @param fsel a Lucene field selector
+             * @param fields the set of fields to be retrieved for the sentences
+             * @param internal_lucene_ids whether internal lucene ids are used for the search
+             * @return the details of the document
+             */
+            void update_all_sentences_details_for_document(DocumentDetails &doc_details,
+                                                           Lucene::FieldSelectorPtr fsel,
+                                                           const std::set<Lucene::String> &fields);
+
+            void update_single_sentence_detail_field_luceneids(const Lucene::String &field,
+                                                               SentenceDetails &sentenceDetails,
+                                                               Lucene::DocumentPtr &sentPtr);
+
+            void update_single_sentence_detail_field_normalids(const Lucene::String &field,
+                                                               SentenceDetails &sentenceDetails,
+                                                               Lucene::DocumentPtr &sentPtr);
 
             static std::set<Lucene::String> compose_field_set(const std::set<std::string> &include_fields,
                                                               const std::set<std::string> &exclude_fields,
