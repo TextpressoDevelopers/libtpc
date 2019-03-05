@@ -298,7 +298,7 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
 
 vector<DocumentDetails> IndexManager::get_documents_details(const vector<DocumentSummary> &doc_summaries,
                                                             bool sort_by_year,
-                                                            bool include_match_sentences,
+                                                            bool include_sentences,
                                                             set<string> include_doc_fields,
                                                             set<string> include_match_sentences_fields,
                                                             const set<string> &exclude_doc_fields,
@@ -332,7 +332,7 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
     Collection<IndexReaderPtr> sentSubReaders;
     MultiReaderPtr sentMultireader;
     QueryParserPtr sentParser;
-    if (include_match_sentences) {
+    if (include_sentences) {
         sent_f = compose_field_set(include_match_sentences_fields, exclude_match_sentences_fields);
         sent_fsel = newLucene<LazySelector>(sent_f);
         sentSubReaders = get_subreaders(QueryType::sentence);
@@ -352,7 +352,7 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
             doc_summaries_map[doc_summary.identifier] = doc_summary;
         }
     }
-    if (include_match_sentences) {
+    if (include_sentences) {
         for (DocumentDetails &docDetails : results) {
             if (use_lucene_internal_ids) {
                 update_match_sentences_details_for_document(doc_summaries_map[to_string(docDetails.lucene_internal_id)],
@@ -375,12 +375,12 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
         }
     }
     docMultireader->close();
-    if (include_match_sentences) {
+    if (include_sentences) {
         sentMultireader->close();
     }
     if (!external && has_external_index()) {
         auto externalResults = externalIndexManager->get_documents_details(doc_summaries, sort_by_year,
-                                                                           include_match_sentences, include_doc_fields,
+                                                                           include_sentences, include_doc_fields,
                                                                            include_match_sentences_fields,
                                                                            exclude_doc_fields,
                                                                            exclude_match_sentences_fields);
@@ -395,7 +395,7 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
 }
 
 DocumentDetails IndexManager::get_document_details(const DocumentSummary& doc_summary,
-                                                   bool include_match_sentences,
+                                                   bool include_sentences,
                                                    set<string> include_doc_fields,
                                                    set<string> include_match_sentences_fields,
                                                    const set<string>& exclude_doc_fields,
@@ -404,11 +404,9 @@ DocumentDetails IndexManager::get_document_details(const DocumentSummary& doc_su
                                                    set<std::string> include_all_sentences_fields,
                                                    const set<std::string> &exclude_all_sentences_fields)
 {
-    return get_documents_details({doc_summary}, false, include_match_sentences,
-                                 include_doc_fields,
-                                 include_match_sentences_fields, exclude_doc_fields,
-                                 exclude_match_sentences_fields, include_all_sentences,
-                                 include_all_sentences_fields, exclude_all_sentences_fields)[0];
+    return get_documents_details({doc_summary}, false, include_sentences,
+                                 include_doc_fields, include_match_sentences_fields, exclude_doc_fields,
+                                 exclude_match_sentences_fields)[0];
 }
 
 void IndexManager::update_document_details(DocumentDetails &doc_details, String field, DocumentPtr doc_ptr) {
@@ -562,7 +560,7 @@ void IndexManager::update_match_sentences_details_for_document(const DocumentSum
                 }
             }
             sentenceDetails.score = sent.score;
-            doc_details.match_sentences_details.push_back(sentenceDetails);
+            doc_details.sentences_details.push_back(sentenceDetails);
         }
 
     } else {
@@ -612,7 +610,7 @@ void IndexManager::update_match_sentences_details_for_document(const DocumentSum
                     }
                 }
                 sentenceDetails.score = sentScoreMap[sentenceDetails.sentence_id];
-                doc_details.match_sentences_details.push_back(sentenceDetails);
+                doc_details.sentences_details.push_back(sentenceDetails);
             }
             sentencesIdsItBegin = sentencesIdsItEnd;
         }

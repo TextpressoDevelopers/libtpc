@@ -179,8 +179,8 @@ namespace tpc {
              * @brief get detailed information about a document specified by a DocumentSummary object
              *
              * @param doc_summary the DocumentSummary object that identifies the document
-             * @param include_match_sentences whether to retrieve the details of the matching sentences
-             * specified in the DocumentSummary object
+             * @param include_sentences_details whether to retrieve the details of the matching sentences specified in the
+             * DocumentSummary object
              * @param include_doc_fields the list of fields to retrieve for the document. Retrieve all fields if not
              * specified
              * @param include_match_sentences_fields the list of fields to retrieve for the matching sentences specified in
@@ -194,7 +194,7 @@ namespace tpc {
              * @return the detailed information of the document
              */
             DocumentDetails get_document_details(const DocumentSummary &doc_summary,
-                                                 bool include_match_sentences = true,
+                                                 bool include_sentences_details = true,
                                                  std::set<std::string> include_doc_fields = DOCUMENTS_FIELDS_DETAILED,
                                                  std::set<std::string> include_match_sentences_fields = SENTENCE_FIELDS_DETAILED,
                                                  const std::set<std::string> &exclude_doc_fields = {},
@@ -210,7 +210,7 @@ namespace tpc {
              * optionally, the list of sentences in the matching_sentences field of the document for which to retrieve
              * detailed information
              * @param sort_by_year whether to sort the results by year
-             * @param include_match_sentences whether to retrieve the details of the matching sentences specified in the
+             * @param include_sentences_details whether to retrieve the details of the matching sentences specified in the
              * DocumentSummary object
              * @param include_doc_fields the list of fields to retrieve for the document. Retrieve all fields if not
              * specified
@@ -226,7 +226,7 @@ namespace tpc {
              */
             std::vector<DocumentDetails> get_documents_details(const std::vector<DocumentSummary> &doc_summaries,
                                                                bool sort_by_year,
-                                                               bool include_match_sentences = true,
+                                                               bool include_sentences_details = true,
                                                                std::set<std::string> include_doc_fields = DOCUMENTS_FIELDS_DETAILED,
                                                                std::set<std::string> include_match_sentences_fields = SENTENCE_FIELDS_DETAILED,
                                                                const std::set<std::string> &exclude_doc_fields = {},
@@ -379,14 +379,6 @@ namespace tpc {
             void update_all_sentences_details_for_document(DocumentDetails &doc_details,
                                                            Lucene::FieldSelectorPtr fsel,
                                                            const std::set<Lucene::String> &fields);
-
-            void update_single_sentence_detail_field_luceneids(const Lucene::String &field,
-                                                               SentenceDetails &sentenceDetails,
-                                                               Lucene::DocumentPtr &sentPtr);
-
-            void update_single_sentence_detail_field_normalids(const Lucene::String &field,
-                                                               SentenceDetails &sentenceDetails,
-                                                               Lucene::DocumentPtr &sentPtr);
 
             static std::set<Lucene::String> compose_field_set(const std::set<std::string> &include_fields,
                                                               const std::set<std::string> &exclude_fields,
