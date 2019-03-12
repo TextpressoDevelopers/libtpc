@@ -13,11 +13,30 @@
 #include <boost/iostreams/copy.hpp>
 #include <boost/iostreams/filtering_streambuf.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
+#include <boost/algorithm/string_regex.hpp>
+#include <boost/algorithm/string/trim_all.hpp>
 #include <uima/api.hpp>
 
 using namespace std;
 using namespace boost::posix_time;
 using namespace uima;
+
+string Utils::remove_tags_from_text(string text) {
+    boost::regex tagregex("\<.+?\>");
+    text = boost::regex_replace(text, tagregex, "");
+    boost::regex tagregex2("\<\/.+?\>");
+    text = boost::regex_replace(text, tagregex2, "");
+    boost::regex tagregex3("\<\_pdf[^\>]+$");
+    text = boost::regex_replace(text, tagregex3, "");
+    boost::regex tagregex4("^[^[:blank:]]+\/>");
+    text = boost::regex_replace(text, tagregex4, "");
+    return text;
+}
+
+string Utils::remove_newlines_from_text(string text) {
+    boost::algorithm::trim_all(text);
+    return text;
+}
 
 string Utils::get_temp_dir_path()
 {

@@ -38,6 +38,9 @@ public:
     static std::string gettpfnvHash(uima::CAS& tcas);
 
     static std::wstring getFulltext(uima::CAS& tcas);
+
+    static std::string remove_tags_from_text(std::string text);
+    static std::string remove_newlines_from_text(std::string text);
 };
 
 

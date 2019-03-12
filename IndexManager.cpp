@@ -305,7 +305,8 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
                                                             const set<string> &exclude_match_sentences_fields,
                                                             bool include_all_sentences,
                                                             set<std::string> include_all_sentences_fields,
-                                                            const set<std::string> &exclude_all_sentences_fields)
+                                                            const set<std::string> &exclude_all_sentences_fields,
+                                                            bool remove_tags, bool remove_newlines)
 {
     vector<DocumentSummary> summaries;
     bool use_lucene_internal_ids = all_of(doc_summaries.begin(), doc_summaries.end(), [](DocumentSummary d) {
@@ -391,6 +392,12 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
     } else {
         sort(results.begin(), results.end(), document_score_gt);
     }
+    if (remove_tags) {
+        transform_document_text_fields(Utils::remove_tags_from_text, results);
+    }
+    if (remove_newlines) {
+        transform_document_text_fields(Utils::remove_newlines_from_text, results);
+    }
     return results;
 }
 
@@ -402,11 +409,13 @@ DocumentDetails IndexManager::get_document_details(const DocumentSummary& doc_su
                                                    const set<string>& exclude_match_sentences_fields,
                                                    bool include_all_sentences,
                                                    set<std::string> include_all_sentences_fields,
-                                                   const set<std::string> &exclude_all_sentences_fields)
+                                                   const set<std::string> &exclude_all_sentences_fields,
+                                                   bool remove_tags, bool remove_newlines)
 {
     return get_documents_details({doc_summary}, false, include_sentences,
                                  include_doc_fields, include_match_sentences_fields, exclude_doc_fields,
-                                 exclude_match_sentences_fields)[0];
+                                 exclude_match_sentences_fields, include_all_sentences, include_all_sentences_fields,
+                                 exclude_all_sentences_fields, remove_tags, remove_newlines)[0];
 }
 
 void IndexManager::update_document_details(DocumentDetails &doc_details, String field, DocumentPtr doc_ptr) {

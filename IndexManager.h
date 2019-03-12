@@ -191,6 +191,10 @@ namespace tpc {
              * @param include_all_sentences whether to retrieve the details of all sentences in the document
              * @param include_all_sentences_fields fields to be included for all sentences
              * @param exclude_all_sentences_fields fields to be excluded for all sentences
+             * @param remove_tags whether to remove any tags (e.g., pdf tags) from the text, including the fulltext,
+             * matching sentences and all sentences
+             * @param remove_newlines whether to remove newlines and extra whitespaces from the text, including the
+             * fulltext, matching sentences and all sentences
              * @return the detailed information of the document
              */
             DocumentDetails get_document_details(const DocumentSummary &doc_summary,
@@ -201,7 +205,8 @@ namespace tpc {
                                                  const std::set<std::string> &exclude_match_sentences_fields = {},
                                                  bool include_all_sentences = false,
                                                  std::set<std::string> include_all_sentences_fields = SENTENCE_FIELDS_DETAILED,
-                                                 const std::set<std::string> &exclude_all_sentences_fields = {});
+                                                 const std::set<std::string> &exclude_all_sentences_fields = {},
+                                                 bool remove_tags = false, bool remove_newlines = false);
 
             /*!
              * @brief get detailed information for a set of documents specified by a list of DocumentSummary objects
@@ -222,6 +227,10 @@ namespace tpc {
              * @param include_all_sentences whether to retrieve the details of all sentences in the document
              * @param include_all_sentences_fields fields to be included for all sentences
              * @param exclude_all_sentences_fields fields to be excluded for all sentences
+             * @param remove_tags whether to remove any tags (e.g., pdf tags) from the text, including the fulltext,
+             * matching sentences and all sentences
+             * @param remove_newlines whether to remove newlines and extra whitespaces from the text, including the
+             * fulltext, matching sentences and all sentences
              * @return the detailed information of the documents
              */
             std::vector<DocumentDetails> get_documents_details(const std::vector<DocumentSummary> &doc_summaries,
@@ -233,7 +242,8 @@ namespace tpc {
                                                                const std::set<std::string> &exclude_match_sentences_fields = {},
                                                                bool include_all_sentences = false,
                                                                std::set<std::string> include_all_sentences_fields = SENTENCE_FIELDS_DETAILED,
-                                                               const std::set<std::string> &exclude_all_sentences_fields = {});
+                                                               const std::set<std::string> &exclude_all_sentences_fields = {},
+                                                               bool remove_tags = false, bool remove_newlines = false);
 
             std::set<std::string> get_words_belonging_to_category_from_document_fulltext(const std::string& fulltext,
                                                                                          const std::string& fulltext_cat,
@@ -394,6 +404,37 @@ namespace tpc {
                                                                 const std::set<Lucene::String> &fields,
                                                                 bool use_lucene_internal_ids,
                                                                 Lucene::MultiReaderPtr doc_reader);
+
+            template <typename Function> void transform_document_text_fields(Function f,
+                    std::vector<DocumentDetails> &documents)
+            {
+                for (auto &document : documents) {
+                    if (!document.abstract.empty()) {
+                        document.abstract = f(document.abstract);
+                    }
+                    if (!document.fulltext.empty()) {
+                        document.fulltext = f(document.fulltext);
+                    }
+                    for (auto &sentence : document.sentences_details) {
+                        if (!sentence.sentence_text.empty()) {
+                            sentence.sentence_text = f(sentence.sentence_text);
+                        }
+                    }
+                    document.sentences_details.erase(std::remove_if(document.sentences_details.begin(),
+                            document.sentences_details.end(), [](const SentenceDetails &s) {return s.sentence_text.empty() || s.sentence_text == " ";}),
+                                    document.sentences_details.end());
+                    for (auto &sentence : document.all_sentences_details) {
+                        if (!sentence.sentence_text.empty()) {
+                            sentence.sentence_text = f(sentence.sentence_text);
+                        }
+                    }
+                    document.all_sentences_details.erase(std::remove_if(document.all_sentences_details.begin(),
+                            document.all_sentences_details.end(), [](const SentenceDetails &s)
+                            {
+                                return s.sentence_text.empty() || s.sentence_text == " ";
+                            }), document.all_sentences_details.end());
+                }
+            }
 
             /*!
              * write the temporary conf files for a subindex with the UIMA files needed
