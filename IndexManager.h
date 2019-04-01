@@ -21,7 +21,7 @@ namespace tpc {
     namespace index {
 
         static const std::string INDEX_ROOT_LOCATION("/usr/local/textpresso/luceneindex/");
-        static const std::string CAS_ROOT_LOCATION("/usr/local/textpresso/tpcas");
+        static const std::string CAS_ROOT_LOCATION("/usr/local/textpresso/tpcas/");
         static const std::string CORPUS_COUNTER_FILENAME("cc.cfg");
         static const std::string DOCUMENT_INDEXNAME("fulltext");
         static const std::string SENTENCE_INDEXNAME("sentence");
@@ -81,7 +81,7 @@ namespace tpc {
              * @param read_only whether the index should be opened in read-only mode
              * @param external whether the index is external or standalone
              */
-            explicit IndexManager(const std::string& index_path, const std::string& cas_path, bool read_only = true, bool external = false):
+            explicit IndexManager(const std::string& index_path, const std::string& cas_path="", bool read_only = true, bool external = false):
                     index_dir(index_path),
                     cas_dir(cas_path),
                     readonly(read_only),
