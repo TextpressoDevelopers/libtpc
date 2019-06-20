@@ -131,7 +131,7 @@ The repository contains a Dockerfile that can be used to generate a Docker image
 
 To build the image, run the following command:
 ```{r, engine='bash', count_lines}
-$ sudo docker build -t <image_name>:<tag> -f Dockerfile-tpc <repository_root>
+$ sudo docker build -t <image_name>:<tag> -f Dockerfile <repository_root>
 ```
 
 ---
