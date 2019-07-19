@@ -66,12 +66,25 @@ void CASManager::convert_raw_file_to_cas1(const string& file_path, FileType type
             }
             break;
         case FileType::xml:
-            ReadXml2Stream rs(file_path.c_str());
-            std::stringstream sout;
-            rs.GetStream(sout);
-            const char *descriptor = XML2TPCAS_DESCRIPTOR.c_str();
-            Stream2Tpcas stp(sout, foutname, descriptor);
-            stp.processInputStream();
+            {
+                ReadXml2Stream rs(file_path.c_str());
+                std::stringstream sout;
+                rs.GetStream(sout);
+                const char *descriptor = XML2TPCAS_DESCRIPTOR.c_str();
+                Stream2Tpcas stp(sout, foutname, descriptor);
+                stp.processInputStream();
+            }
+            break;
+        case FileType::txt:
+            {
+                ifstream textFile(file_path.c_str());
+                std::stringstream sout;
+                sout << textFile.rdbuf();
+                textFile.close();
+                const char *descriptor = PDF2TPCAS_DESCRIPTOR.c_str();
+                Stream2Tpcas stp(sout, foutname, descriptor);
+                stp.processInputStream();
+            }
             break;
     }
 }

@@ -21,6 +21,7 @@ namespace tpc {
     namespace index {
 
         static const std::string INDEX_ROOT_LOCATION("/usr/local/textpresso/luceneindex/");
+        static const std::string CAS_ROOT_LOCATION("/usr/local/textpresso/tpcas/");
         static const std::string CORPUS_COUNTER_FILENAME("cc.cfg");
         static const std::string DOCUMENT_INDEXNAME("fulltext");
         static const std::string SENTENCE_INDEXNAME("sentence");
@@ -76,11 +77,13 @@ namespace tpc {
             /*!
              * create a new index manager object
              * @param index_path the path to the index
+             * @param cas_path the path to cas (tpcas-2)
              * @param read_only whether the index should be opened in read-only mode
              * @param external whether the index is external or standalone
              */
-            explicit IndexManager(const std::string& index_path, bool read_only = true, bool external = false):
+            explicit IndexManager(const std::string& index_path, const std::string& cas_path="", bool read_only = true, bool external = false):
                     index_dir(index_path),
+                    cas_dir(cas_path),
                     readonly(read_only),
                     external(external),
                     readers_map(),
@@ -92,6 +95,7 @@ namespace tpc {
             IndexManager(const IndexManager& other) {
                 readers_map = other.readers_map;
                 index_dir = other.index_dir;
+                cas_dir = other.cas_dir;
                 readonly = other.readonly;
                 external = other.external;
                 corpus_doc_counter = other.corpus_doc_counter;
@@ -100,6 +104,7 @@ namespace tpc {
             IndexManager& operator=(const IndexManager& other) {
                 readers_map = other.readers_map;
                 index_dir = other.index_dir;
+                cas_dir = other.cas_dir;
                 readonly = other.readonly;
                 external = other.external;
                 corpus_doc_counter = other.corpus_doc_counter;
@@ -110,11 +115,13 @@ namespace tpc {
                     readonly(other.readonly),
                     external(other.external),
                     index_dir(std::move(other.index_dir)),
+                    cas_dir(std::move(other.cas_dir)),
                     corpus_doc_counter(std::move(other.corpus_doc_counter)),
                     externalIndexManager(std::move(other.externalIndexManager)) {}
             IndexManager& operator=(IndexManager&& other) noexcept {
                 readers_map = std::move(other.readers_map);
                 index_dir = std::move(other.index_dir);
+                cas_dir = std::move(other.cas_dir);
                 readonly = other.readonly;
                 external = other.external;
                 corpus_doc_counter = std::move(other.corpus_doc_counter);
@@ -129,9 +136,10 @@ namespace tpc {
 
             /*!
              * return the list of indexed corpora
+             * @param cas_path location of cas files used to generate indices
              * @return a vector of strings, representing the list of available corpora in the index
              */
-            static std::vector<std::string> get_available_corpora();
+            static std::vector<std::string> get_available_corpora(const std::string& cas_path);
 
             /*!
              * return the list of additional corpora
@@ -488,6 +496,7 @@ namespace tpc {
 
             std::map<std::string, Lucene::IndexReaderPtr> readers_map;
             std::string index_dir;
+            std::string cas_dir;
             bool readonly;
             bool external;
             std::map<std::string, int> corpus_doc_counter;

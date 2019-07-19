@@ -40,8 +40,10 @@ RUN pip3 install psycopg2
 # perl packages
 RUN cpan -i DBD::Pg
 
-RUN git clone https://github.com/TextpressoDevelopers/libtpc.git; cd libtpc; mkdir cmake-build-release; \
-cd cmake-build-release; cmake ..; make; make install
+#RUN git clone https://github.com/TextpressoDevelopers/libtpc.git; cd libtpc; mkdir cmake-build-release; \
+RUN mkdir libtpc
+COPY . libtpc/
+RUN cd libtpc; rm -r cmake-build-debug; mkdir cmake-build-release; cd cmake-build-release; cmake ..; make; make install
 
 # clean
 RUN rm -rf activemq*; rm -rf uimacpp*; rm -rf lucenepp.zip; rm -rf LucenePlusPlus-master; rm -rf wt-3.3.7*;

@@ -14,7 +14,6 @@
 #include "uima/xmiwriter.hpp"
 
 namespace tpc {
-
     namespace cas {
 
         static const std::string PDF2TPCAS_DESCRIPTOR("/usr/local/uima_descriptors/TpTokenizer.xml");
@@ -40,7 +39,7 @@ namespace tpc {
         static const std::string CELEGANS_SUP("C. elegans Supplementals");
 
         enum class FileType {
-            pdf = 1, xml = 2
+            pdf = 1, xml = 2, txt = 3
         };
 
         /*!
