@@ -11,7 +11,7 @@
 namespace {
 
     std::string utf8AsPrintableAscii(const string & string) {
-        bool boingflag = false;
+        //bool boingflag = false;
         int c, i, ix;
         std::string ret("");
         for (i = 0, ix = string.length(); i < ix; i++) {
@@ -64,9 +64,10 @@ namespace {
                         ret += "fl";
                         i++;
                     }
-            } else
-                boingflag = true;
+            } // else
+              //  boingflag = true;
         }
+	/*
         if (boingflag) {
             std::cerr << "UTFERROR: ";
             std::cerr << " STRING: " << string;
@@ -78,6 +79,7 @@ namespace {
             }
             std::cerr << std::endl;
         }
+	*/
         return ret;
     }
 

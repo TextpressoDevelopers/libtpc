@@ -24,14 +24,13 @@ uima::TyErrorId TpLexiconAnnotatorFromPg::initialize(uima::AnnotatorContext & rc
             rclAnnotatorContext.extractValue("LexiconTableName", lexicontablename_) != UIMA_ERR_NONE) {
         /* log the error condition */
         rclAnnotatorContext.getLogger().logError(
-                "Required configuration parameter \"LocalLexiconFile\" not found in component descriptor");
+                "Required configuration parameter \"LexiconTableName\" not found in component descriptor");
         cerr << "TpLexiconAnnotator::initialize() - Error. See logfile." << endl;
         return UIMA_ERR_USER_ANNOTATOR_COULD_NOT_INIT;
     }
     std::cerr << lexicontablename_ << std::endl;
     // database connection
     pqxx::connection cn(PGONTOLOGY);
-    //std::cerr << "Connected to " << cn.dbname() << std::endl;
     pqxx::work w(cn);
     pqxx::result r;
     std::stringstream pc;
@@ -43,7 +42,6 @@ uima::TyErrorId TpLexiconAnnotatorFromPg::initialize(uima::AnnotatorContext & rc
     std::vector<std::string> lexicalvariations;
     std::vector<std::string> category;
     if (r.size() != 0) {
-        //std::cerr << r.size() << " rows retrieved." << std::endl;
         for (pqxx::result::size_type i = 0; i != r.size(); i++) {
             std::string saux;
             r[i]["term"].to(saux);
@@ -56,6 +54,7 @@ uima::TyErrorId TpLexiconAnnotatorFromPg::initialize(uima::AnnotatorContext & rc
     }
     w.commit();
     cn.disconnect();
+    r.clear();
     trie_ = new TpLexiconTrie();
     AllMyParents * amp = new AllMyParents();
     std::multimap<std::string, std::string> mmamp(amp->GetCPs());
@@ -63,13 +62,13 @@ uima::TyErrorId TpLexiconAnnotatorFromPg::initialize(uima::AnnotatorContext & rc
         UnicodeString uterm = UnicodeString::fromUTF8(StringPiece(term.back()));
         UnicodeString ucat = UnicodeString::fromUTF8(StringPiece(category.back()));
         trie_->addWord(uterm, ucat);
-        trie_->addWord(uterm, "pAaCh" + ucat);
+        trie_->addWord(uterm, "PTCAT" + ucat);
         std::pair<std::multimap<std::string, std::string>::iterator,
                 std::multimap<std::string, std::string>::iterator> ppp;
         std::string dummy("");
         ppp = mmamp.equal_range(ucat.toUTF8String<std::string>(dummy));
         for (std::multimap<std::string, std::string>::iterator it2 = ppp.first; it2 != ppp.second; ++it2) {
-            UnicodeString upcat = "pAaCh" + UnicodeString::fromUTF8(StringPiece((*it2).second));
+            UnicodeString upcat = "PTCAT" + UnicodeString::fromUTF8(StringPiece((*it2).second));
             trie_->addWord(uterm, upcat);
         }
         // do lexical variations here;
@@ -80,11 +79,11 @@ uima::TyErrorId TpLexiconAnnotatorFromPg::initialize(uima::AnnotatorContext & rc
             boost::trim(aux);
             uterm = UnicodeString::fromUTF8(StringPiece(aux));
             trie_->addWord(uterm, ucat);
-            trie_->addWord(uterm, "pAaCh" + ucat);
+            trie_->addWord(uterm, "PTCAT" + ucat);
             std::string dummy("");
             ppp = mmamp.equal_range(ucat.toUTF8String<std::string>(dummy));
             for (std::multimap<std::string, std::string>::iterator it2 = ppp.first; it2 != ppp.second; ++it2) {
-                UnicodeString upcat = "pAaCh" + UnicodeString::fromUTF8(StringPiece((*it2).second));
+                UnicodeString upcat = "PTCAT" + UnicodeString::fromUTF8(StringPiece((*it2).second));
                 trie_->addWord(uterm, upcat);
             }
             splitsterms.pop_back();

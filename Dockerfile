@@ -38,16 +38,16 @@ RUN git clone https://github.com/google/googletest.git; cd googletest; mkdir cma
 make -j8 ; make install
 
 # python packages
-RUN pip3 install psycopg2
+RUN pip3 install psycopg2 lxml
 
 # perl packages
-RUN cpan -i DBD::Pg
+RUN cpan -i DBD::Pg HTTP::Request.pm LWP::UserAgent
 
 RUN mkdir libtpc
 COPY . libtpc/
-RUN cd libtpc; rm -r cmake-build-debug; mkdir cmake-build-release; cd cmake-build-release; cmake ..; make -j8 ; make install
+RUN cd libtpc; rm -r cmake-build-release; mkdir cmake-build-release; cd cmake-build-release; cmake ..; make -j8 ; make install
 
 # clean
-RUN rm -rf activemq*; rm -rf uimacpp*; rm -rf lucenepp.zip; rm -rf LucenePlusPlus-master; rm -rf wt-3.3.7*;
+RUN rm -rf activemq*; rm -rf uimacpp*; rm -rf wt-3.3.7*;
 
 EXPOSE 80

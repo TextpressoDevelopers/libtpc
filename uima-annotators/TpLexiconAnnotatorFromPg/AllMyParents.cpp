@@ -66,6 +66,7 @@ std::set<std::string> AllMyParents::FindAllParentsOfChild(std::string c, std::mu
         std::multimap<std::string, std::string>::iterator it2(it1);
         while (it2 != cp.end()) {
             std::string newchild((*it2).second);
+            if (allparents.find(newchild) != allparents.end()) break;
             allparents.insert(newchild);
             it2 = cp.find(newchild);
         }
