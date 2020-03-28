@@ -49,20 +49,20 @@ add_library(libtextpresso SHARED ${SOURCE_FILES} IndexManager.h IndexManager.cpp
 target_link_libraries(libtextpresso lucene++ icuuc uima boost_iostreams boost_system boost_regex boost_filesystem
         boost_serialization xerces-c podofo z ${CImg_SYSTEM_LIBS} db_cxx db_stl ${PYTHON_LIBRARIES})
 
-add_executable(test_indexmanager ${SOURCE_FILES} IndexManager.h IndexManager.cpp CASManager.cpp CASManager.h
-        tests/test_indexmanager.cpp
-        cas-generators/pdf2tpcas/ElementCluster.cpp
-        cas-generators/pdf2tpcas/ElementCluster.h cas-generators/pdf2tpcas/PdfInfo.cpp
-        cas-generators/pdf2tpcas/PdfInfo.h cas-generators/pdf2tpcas/PdfMyFontInfo.h
-        cas-generators/pdf2tpcas/PdfMyFontInfo.cpp cas-generators/Stream2Tpcas.h
-        cas-generators/Stream2Tpcas.cpp cas-generators/pdf2tpcas/TextElement.cpp
-        cas-generators/pdf2tpcas/TextElement.h cas-generators/xml2tpcas/pugiconfig.hpp
-        cas-generators/xml2tpcas/pugixml.cpp cas-generators/xml2tpcas/pugixml.hpp
-        cas-generators/xml2tpcas/PugiXml2Tpcas.cpp cas-generators/xml2tpcas/PugiXml2Tpcas.h
-        cas-generators/xml2tpcas/ReadXml2Stream.cpp cas-generators/xml2tpcas/ReadXml2Stream.h
-        cas-generators/Stream2Tpcas.cpp cas-generators/Stream2Tpcas.h)
-target_link_libraries(test_indexmanager ${GTEST_BOTH_LIBRARIES} lucene++ pthread boost_system boost_iostreams boost_regex icuuc uima
-        boost_filesystem boost_serialization xerces-c db_cxx db_stl podofo z ${CImg_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
+#add_executable(test_indexmanager ${SOURCE_FILES} IndexManager.h IndexManager.cpp CASManager.cpp CASManager.h
+#        tests/test_indexmanager.cpp
+#        cas-generators/pdf2tpcas/ElementCluster.cpp
+#        cas-generators/pdf2tpcas/ElementCluster.h cas-generators/pdf2tpcas/PdfInfo.cpp
+#        cas-generators/pdf2tpcas/PdfInfo.h cas-generators/pdf2tpcas/PdfMyFontInfo.h
+#        cas-generators/pdf2tpcas/PdfMyFontInfo.cpp cas-generators/Stream2Tpcas.h
+#        cas-generators/Stream2Tpcas.cpp cas-generators/pdf2tpcas/TextElement.cpp
+#        cas-generators/pdf2tpcas/TextElement.h cas-generators/xml2tpcas/pugiconfig.hpp
+#        cas-generators/xml2tpcas/pugixml.cpp cas-generators/xml2tpcas/pugixml.hpp
+#        cas-generators/xml2tpcas/PugiXml2Tpcas.cpp cas-generators/xml2tpcas/PugiXml2Tpcas.h
+#        cas-generators/xml2tpcas/ReadXml2Stream.cpp cas-generators/xml2tpcas/ReadXml2Stream.h
+#        cas-generators/Stream2Tpcas.cpp cas-generators/Stream2Tpcas.h)
+#target_link_libraries(test_indexmanager ${GTEST_BOTH_LIBRARIES} lucene++ pthread boost_system boost_iostreams boost_regex icuuc uima
+#        boost_filesystem boost_serialization xerces-c db_cxx db_stl podofo z ${CImg_SYSTEM_LIBS} ${PYTHON_LIBRARIES})
 
 add_executable(test_casmanager ${SOURCE_FILES} CASManager.h CASManager.cpp tests/test_casmanager.cpp
         cas-generators/pdf2tpcas/ElementCluster.cpp
