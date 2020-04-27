@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="0">
+      <df name="build">
+        <df name="CMakeFiles">
+          <df name="3.5.1">
+            <df name="CompilerIdC">
+              <in>CMakeCCompilerId.c</in>
+            </df>
+            <df name="CompilerIdCXX">
+              <in>CMakeCXXCompilerId.cpp</in>
+            </df>
+          </df>
+          <df name="CMakeTmp">
+          </df>
+          <df name="libtextpresso.dir">
+            <df name="cas-generators">
+              <df name="pdf2tpcas">
+              </df>
+              <df name="xml2tpcas">
+              </df>
+            </df>
+            <df name="lucene-custom">
+            </df>
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2SingleIndex">
+              </df>
+            </df>
+          </df>
+          <df name="test_casmanager.dir">
+            <df name="cas-generators">
+              <df name="pdf2tpcas">
+              </df>
+              <df name="xml2tpcas">
+              </df>
+            </df>
+            <df name="lucene-custom">
+            </df>
+            <df name="tests">
+            </df>
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2SingleIndex">
+              </df>
+            </df>
+          </df>
+          <df name="test_indexmanager.dir">
+            <df name="cas-generators">
+              <df name="pdf2tpcas">
+              </df>
+              <df name="xml2tpcas">
+              </df>
+            </df>
+            <df name="lucene-custom">
+            </df>
+            <df name="tests">
+            </df>
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2SingleIndex">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2Bib.dir">
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2Bib">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2Bib4Nxml.dir">
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2Bib4Nxml">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2Lpp.dir">
+            <df name="lucene-custom">
+            </df>
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2Lpp">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2SingleIndex.dir">
+            <df name="cas-generators">
+              <df name="pdf2tpcas">
+              </df>
+              <df name="xml2tpcas">
+              </df>
+            </df>
+            <df name="lucene-custom">
+            </df>
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2SingleIndex">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2TpCentral.dir">
+            <df name="uima-annotators">
+              <df name="Tpcas2TpCentral">
+              </df>
+            </df>
+          </df>
+          <df name="TpLexiconAnnotator.dir">
+            <df name="uima-annotators">
+              <df name="TpLexiconAnnotator">
+              </df>
+            </df>
+          </df>
+          <df name="TpLexiconAnnotatorFromPg.dir">
+            <df name="uima-annotators">
+              <df name="TpLexiconAnnotatorFromPg">
+              </df>
+            </df>
+          </df>
+          <df name="TpLsa.dir">
+            <df name="uima-annotators">
+              <df name="TpLsa">
+              </df>
+            </df>
+          </df>
+          <df name="TpTokenizer.dir">
+            <df name="uima-annotators">
+              <df name="TpTokenizer">
+              </df>
+            </df>
+          </df>
+          <df name="TxTokenizer.dir">
+            <df name="uima-annotators">
+              <df name="TxTokenizer">
+              </df>
+            </df>
+          </df>
+          <df name="WriteFeatureDefsFromPg.dir">
+            <df name="uima-annotators">
+              <df name="WriteFeatureDefsFromPg">
+              </df>
+            </df>
+          </df>
+          <in>feature_tests.c</in>
+          <in>feature_tests.cxx</in>
+        </df>
+      </df>
+      <df name="build-default">
+        <df name="CMakeFiles">
+          <df name="3.5.1">
+            <df name="CompilerIdC">
+              <in>CMakeCCompilerId.c</in>
+            </df>
+            <df name="CompilerIdCXX">
+              <in>CMakeCXXCompilerId.cpp</in>
+            </df>
+          </df>
+          <df name="CMakeTmp">
+          </df>
+          <df name="libtextpresso.dir">
+            <df name="cas-generators">
+              <df name="pdf2tpcas">
+              </df>
+              <df name="xml2tpcas">
+              </df>
+            </df>
+            <df name="lucene-custom">
+            </df>
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2SingleIndex">
+              </df>
+            </df>
+          </df>
+          <df name="test_casmanager.dir">
+            <df name="cas-generators">
+              <df name="pdf2tpcas">
+              </df>
+              <df name="xml2tpcas">
+              </df>
+            </df>
+            <df name="lucene-custom">
+            </df>
+            <df name="tests">
+            </df>
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2SingleIndex">
+              </df>
+            </df>
+          </df>
+          <df name="test_indexmanager.dir">
+            <df name="cas-generators">
+              <df name="pdf2tpcas">
+              </df>
+              <df name="xml2tpcas">
+              </df>
+            </df>
+            <df name="lucene-custom">
+            </df>
+            <df name="tests">
+            </df>
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2SingleIndex">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2Bib.dir">
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2Bib">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2Bib4Nxml.dir">
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2Bib4Nxml">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2Lpp.dir">
+            <df name="lucene-custom">
+            </df>
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2Lpp">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2SingleIndex.dir">
+            <df name="cas-generators">
+              <df name="pdf2tpcas">
+              </df>
+              <df name="xml2tpcas">
+              </df>
+            </df>
+            <df name="lucene-custom">
+            </df>
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2SingleIndex">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2TpCentral.dir">
+            <df name="uima-annotators">
+              <df name="Tpcas2TpCentral">
+              </df>
+            </df>
+          </df>
+          <df name="TpLexiconAnnotator.dir">
+            <df name="uima-annotators">
+              <df name="TpLexiconAnnotator">
+              </df>
+            </df>
+          </df>
+          <df name="TpLexiconAnnotatorFromPg.dir">
+            <df name="uima-annotators">
+              <df name="TpLexiconAnnotatorFromPg">
+              </df>
+            </df>
+          </df>
+          <df name="TpLsa.dir">
+            <df name="uima-annotators">
+              <df name="TpLsa">
+              </df>
+            </df>
+          </df>
+          <df name="TpTokenizer.dir">
+            <df name="uima-annotators">
+              <df name="TpTokenizer">
+              </df>
+            </df>
+          </df>
+          <df name="TxTokenizer.dir">
+            <df name="uima-annotators">
+              <df name="TxTokenizer">
+              </df>
+            </df>
+          </df>
+          <df name="WriteFeatureDefsFromPg.dir">
+            <df name="uima-annotators">
+              <df name="WriteFeatureDefsFromPg">
+              </df>
+            </df>
+          </df>
+          <in>feature_tests.c</in>
+          <in>feature_tests.cxx</in>
+        </df>
+      </df>
+      <df name="cas-generators">
+        <df name="pdf2tpcas">
+          <in>ElementCluster.cpp</in>
+          <in>ElementCluster.h</in>
+          <in>PdfInfo.cpp</in>
+          <in>PdfInfo.h</in>
+          <in>PdfMyFontInfo.cpp</in>
+          <in>PdfMyFontInfo.h</in>
+          <in>TextElement.cpp</in>
+          <in>TextElement.h</in>
+        </df>
+        <df name="xml2tpcas">
+          <in>PugiXml2Tpcas.cpp</in>
+          <in>PugiXml2Tpcas.h</in>
+          <in>ReadXml2Stream.cpp</in>
+          <in>ReadXml2Stream.h</in>
+          <in>pugiconfig.hpp</in>
+          <in>pugixml.cpp</in>
+          <in>pugixml.hpp</in>
+        </df>
+        <in>Stream2Tpcas.cpp</in>
+        <in>Stream2Tpcas.h</in>
+      </df>
+      <df name="cmake-modules">
+      </df>
+      <df name="docs">
+      </df>
+      <df name="lucene-custom">
+        <in>CaseSensitiveAnalyzer.cpp</in>
+        <in>CaseSensitiveAnalyzer.h</in>
+        <in>LazySelector.h</in>
+      </df>
+      <df name="patches">
+        <df name="uimacpp-2.4.0">
+          <df name="src">
+            <df name="framework">
+              <df name="uima">
+                <in>strtools.hpp</in>
+              </df>
+            </df>
+          </df>
+        </df>
+      </df>
+      <df name="tests">
+        <df name="data">
+          <df name="pdf">
+            <df name="C. elegans">
+              <df name="WBPaper00000009">
+              </df>
+              <df name="WBPaper00000011">
+              </df>
+              <df name="WBPaper00000015">
+              </df>
+              <df name="WBPaper00000026">
+              </df>
+              <df name="WBPaper00000045">
+              </df>
+              <df name="WBPaper00000046">
+              </df>
+              <df name="WBPaper00000047">
+              </df>
+              <df name="WBPaper00000048">
+              </df>
+              <df name="WBPaper00000051">
+              </df>
+              <df name="WBPaper00000082">
+              </df>
+              <df name="WBPaper00000093">
+              </df>
+              <df name="WBPaper00000124">
+              </df>
+              <df name="WBPaper00000143">
+              </df>
+              <df name="WBPaper00000162">
+              </df>
+            </df>
+          </df>
+          <df name="single_cas_files">
+            <df name="C. elegans">
+              <df name="WBPaper00029298">
+              </df>
+              <df name="WBPaper00045564">
+              </df>
+              <df name="WBPaper00045697">
+              </df>
+            </df>
+          </df>
+          <df name="tpcas">
+            <df name="C. elegans">
+              <df name="WBPaper00004263">
+                <df name="images">
+                </df>
+              </df>
+              <df name="WBPaper00046156">
+                <df name="images">
+                </df>
+              </df>
+            </df>
+            <df name="C. elegans Supplementals">
+              <df name="PLoS_One_2016_Jan_29_11(1)_e0147511">
+                <df name="images">
+                </df>
+              </df>
+              <df name="Worm_2012_Oct_1_1(4)_202-206">
+                <df name="images">
+                </df>
+              </df>
+            </df>
+          </df>
+        </df>
+        <in>test_casmanager.cpp</in>
+        <in>test_indexmanager.cpp</in>
+      </df>
+      <df name="uima-annotators">
+        <df name="shared_resources">
+          <df name="descriptors">
+          </df>
+        </df>
+        <df name="Tpcas2TpCentral">
+          <in>Tpcas2TpCentral.cpp</in>
+          <in>Tpcas2TpCentral.h</in>
+        </df>
+        <df name="TpLexiconAnnotator">
+          <df name="resources">
+            <df name="descriptors">
+            </df>
+            <df name="wordlists">
+            </df>
+          </df>
+          <in>AnnotationCounter.cpp</in>
+          <in>AnnotationCounter.h</in>
+          <in>StopWords.cpp</in>
+          <in>StopWords.h</in>
+          <in>TpLexiconAnnotator.cpp</in>
+          <in>TpLexiconAnnotator.h</in>
+          <in>TpLexiconNode.cpp</in>
+          <in>TpLexiconNode.h</in>
+          <in>TpLexiconTrie.cpp</in>
+          <in>TpLexiconTrie.h</in>
+        </df>
+        <df name="TpLexiconAnnotatorFromPg">
+          <df name="resources">
+            <df name="descriptors">
+            </df>
+          </df>
+          <in>AllMyParents.cpp</in>
+          <in>AllMyParents.h</in>
+          <in>AnnotationCounter.cpp</in>
+          <in>AnnotationCounter.h</in>
+          <in>StopWords.cpp</in>
+          <in>StopWords.h</in>
+          <in>TpLexiconAnnotatorFromPg.cpp</in>
+          <in>TpLexiconAnnotatorFromPg.h</in>
+          <in>TpLexiconNode.cpp</in>
+          <in>TpLexiconNode.h</in>
+          <in>TpLexiconTrie.cpp</in>
+          <in>TpLexiconTrie.h</in>
+        </df>
+        <df name="TpLsa">
+          <df name="resources">
+            <df name="Latent semantic indexing - Wikipedia, the free encyclopedia_files">
+            </df>
+          </df>
+          <in>LsaTp.cpp</in>
+          <in>LsaTp.h</in>
+          <in>SetsFromPairs.cpp</in>
+          <in>SetsFromPairs.h</in>
+          <in>TpCas2LsaToken.cpp</in>
+          <in>TpCas2LsaToken.h</in>
+          <in>cmdline.h</in>
+          <in>main.cpp</in>
+          <in>redsvd.hpp</in>
+          <in>redsvdFile.cpp</in>
+          <in>redsvdFile.hpp</in>
+          <in>redsvdIncr.hpp</in>
+          <in>util.cpp</in>
+          <in>util.hpp</in>
+        </df>
+        <df name="TpTokenizer">
+          <df name="resources">
+            <df name="descriptors">
+            </df>
+          </df>
+          <in>AnnotationCounter.cpp</in>
+          <in>AnnotationCounter.h</in>
+          <in>TpNode.cpp</in>
+          <in>TpNode.h</in>
+          <in>TpTokenizer.cpp</in>
+          <in>TpTokenizer.h</in>
+          <in>TpTrie.cpp</in>
+          <in>TpTrie.h</in>
+        </df>
+        <df name="TxTokenizer">
+          <df name="resources">
+            <df name="descriptors">
+            </df>
+          </df>
+          <in>AnnotationCounter.cpp</in>
+          <in>AnnotationCounter.h</in>
+          <in>TpNode.cpp</in>
+          <in>TpNode.h</in>
+          <in>TpTrie.cpp</in>
+          <in>TpTrie.h</in>
+          <in>TxTokenizer.cpp</in>
+          <in>TxTokenizer.h</in>
+          <in>pugiconfig.hpp</in>
+          <in>pugixml.cpp</in>
+          <in>pugixml.hpp</in>
+        </df>
+        <df name="WriteFeatureDefsFromPg">
+          <in>main.cpp</in>
+        </df>
+        <in>globaldefinitions.h</in>
+        <in>uimaglobaldefinitions.h</in>
+      </df>
+      <df name="uima-custom-analyzers">
+        <df name="Tpcas2Bib">
+          <in>CASUtils.cpp</in>
+          <in>CASUtils.h</in>
+          <in>TpNode.cpp</in>
+          <in>TpNode.h</in>
+          <in>TpTrie.cpp</in>
+          <in>TpTrie.h</in>
+          <in>Tpcas2Bib.cpp</in>
+          <in>Tpcas2Bib.h</in>
+          <in>Utils.h</in>
+        </df>
+        <df name="Tpcas2Bib4Nxml">
+          <in>CASUtils.cpp</in>
+          <in>CASUtils.h</in>
+          <in>TpNode.cpp</in>
+          <in>TpNode.h</in>
+          <in>TpTrie.cpp</in>
+          <in>TpTrie.h</in>
+          <in>Tpcas2Bib4Nxml.cpp</in>
+          <in>Tpcas2Bib4Nxml.h</in>
+        </df>
+        <df name="Tpcas2Lpp">
+          <in>CASUtils.cpp</in>
+          <in>CASUtils.h</in>
+          <in>Tpcas2Lpp.cpp</in>
+          <in>Tpcas2Lpp.h</in>
+          <in>Utils.h</in>
+        </df>
+        <df name="Tpcas2SingleIndex">
+          <in>CASUtils.cpp</in>
+          <in>CASUtils.h</in>
+          <in>TpNode.cpp</in>
+          <in>TpNode.h</in>
+          <in>TpTrie.cpp</in>
+          <in>TpTrie.h</in>
+          <in>Tpcas2SingleIndex.cpp</in>
+          <in>Tpcas2SingleIndex.h</in>
+          <in>Utils.h</in>
+        </df>
+      </df>
+      <in>CASManager.cpp</in>
+      <in>CASManager.h</in>
+      <in>DataStructures.cpp</in>
+      <in>DataStructures.h</in>
+      <in>IndexManager.cpp</in>
+      <in>IndexManager.h</in>
+      <in>Utils.cpp</in>
+      <in>Utils.h</in>
+    </df>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <platform>2</platform>
+      </toolsSet>
+      <compile>
+        <compiledirpicklist>
+          <compiledirpicklistitem>.</compiledirpicklistitem>
+          <compiledirpicklistitem>${AUTO_FOLDER}</compiledirpicklistitem>
+        </compiledirpicklist>
+        <compiledir>${AUTO_FOLDER}</compiledir>
+        <compilecommandpicklist>
+          <compilecommandpicklistitem>${MAKE} ${ITEM_NAME}.o</compilecommandpicklistitem>
+          <compilecommandpicklistitem>${AUTO_COMPILE}</compilecommandpicklistitem>
+        </compilecommandpicklist>
+        <compilecommand>${AUTO_COMPILE}</compilecommand>
+      </compile>
+      <dbx_gdbdebugger version="1">
+        <gdb_pathmaps>
+        </gdb_pathmaps>
+        <gdb_interceptlist>
+          <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
+        </gdb_interceptlist>
+        <gdb_options>
+          <DebugOptions>
+          </DebugOptions>
+        </gdb_options>
+        <gdb_buildfirst gdb_buildfirst_overriden="false" gdb_buildfirst_old="false"/>
+      </dbx_gdbdebugger>
+      <nativedebugger version="1">
+        <engine>gdb</engine>
+      </nativedebugger>
+      <runprofile version="9">
+        <runcommandpicklist>
+          <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
+        </runcommandpicklist>
+        <runcommand>"${OUTPUT_PATH}"</runcommand>
+        <rundir>.</rundir>
+        <buildfirst>false</buildfirst>
+        <terminal-type>0</terminal-type>
+        <remove-instrumentation>0</remove-instrumentation>
+        <environment>
+        </environment>
+      </runprofile>
+    </conf>
+  </confs>
+</configurationDescriptor>

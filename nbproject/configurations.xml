@@ -1,0 +1,628 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="0">
+      <df name="cas-generators">
+        <df name="pdf2tpcas">
+          <in>ElementCluster.cpp</in>
+          <in>PdfInfo.cpp</in>
+          <in>PdfMyFontInfo.cpp</in>
+          <in>TextElement.cpp</in>
+        </df>
+        <df name="xml2tpcas">
+          <in>PugiXml2Tpcas.cpp</in>
+          <in>ReadXml2Stream.cpp</in>
+          <in>pugixml.cpp</in>
+        </df>
+        <in>Stream2Tpcas.cpp</in>
+      </df>
+      <df name="lucene-custom">
+        <in>CaseSensitiveAnalyzer.cpp</in>
+      </df>
+      <df name="tests">
+        <in>test_casmanager.cpp</in>
+        <in>test_indexmanager.cpp</in>
+      </df>
+      <df name="uima-annotators">
+        <df name="Tpcas2TpCentral">
+          <in>Tpcas2TpCentral.cpp</in>
+        </df>
+        <df name="TpLexiconAnnotator">
+          <in>AnnotationCounter.cpp</in>
+          <in>StopWords.cpp</in>
+          <in>TpLexiconAnnotator.cpp</in>
+          <in>TpLexiconNode.cpp</in>
+          <in>TpLexiconTrie.cpp</in>
+        </df>
+        <df name="TpLexiconAnnotatorFromPg">
+          <in>AllMyParents.cpp</in>
+          <in>AnnotationCounter.cpp</in>
+          <in>StopWords.cpp</in>
+          <in>TpLexiconAnnotatorFromPg.cpp</in>
+          <in>TpLexiconNode.cpp</in>
+          <in>TpLexiconTrie.cpp</in>
+        </df>
+        <df name="TpLsa">
+          <in>LsaTp.cpp</in>
+          <in>SetsFromPairs.cpp</in>
+          <in>TpCas2LsaToken.cpp</in>
+          <in>main.cpp</in>
+          <in>redsvdFile.cpp</in>
+          <in>util.cpp</in>
+        </df>
+        <df name="TpTokenizer">
+          <in>AnnotationCounter.cpp</in>
+          <in>TpNode.cpp</in>
+          <in>TpTokenizer.cpp</in>
+          <in>TpTrie.cpp</in>
+        </df>
+        <df name="TxTokenizer">
+          <in>AnnotationCounter.cpp</in>
+          <in>TpNode.cpp</in>
+          <in>TpTrie.cpp</in>
+          <in>TxTokenizer.cpp</in>
+          <in>pugixml.cpp</in>
+        </df>
+        <df name="WriteFeatureDefsFromPg">
+          <in>main.cpp</in>
+        </df>
+      </df>
+      <df name="uima-custom-analyzers">
+        <df name="Tpcas2Bib">
+          <in>CASUtils.cpp</in>
+          <in>TpNode.cpp</in>
+          <in>TpTrie.cpp</in>
+          <in>Tpcas2Bib.cpp</in>
+        </df>
+        <df name="Tpcas2Bib4Nxml">
+          <in>CASUtils.cpp</in>
+          <in>TpNode.cpp</in>
+          <in>TpTrie.cpp</in>
+          <in>Tpcas2Bib4Nxml.cpp</in>
+        </df>
+        <df name="Tpcas2Lpp">
+          <in>CASUtils.cpp</in>
+          <in>Tpcas2Lpp.cpp</in>
+        </df>
+        <df name="Tpcas2SingleIndex">
+          <in>CASUtils.cpp</in>
+          <in>TpNode.cpp</in>
+          <in>TpTrie.cpp</in>
+          <in>Tpcas2SingleIndex.cpp</in>
+        </df>
+      </df>
+      <in>CASManager.cpp</in>
+      <in>DataStructures.cpp</in>
+      <in>IndexManager.cpp</in>
+      <in>Utils.cpp</in>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>CMakeLists.txt</itemPath>
+      <itemPath>Makefile</itemPath>
+      <itemPath>nbproject/private/launcher.properties</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <flagsDictionary>
+        <element flagsID="0" commonFlags="-fPIC -std=gnu++11"/>
+        <element flagsID="1" commonFlags="-std=gnu++11"/>
+      </flagsDictionary>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>build-default</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile -j 8</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath></executablePath>
+          <ccTool>
+            <incDir>
+              <pElem>/usr/include/apr-1.0</pElem>
+              <pElem>/usr/include/x86_64-linux-gnu</pElem>
+              <pElem>/usr/include/OpenEXR</pElem>
+              <pElem>/usr/include/x86_64-linux-gnu/ImageMagick-6</pElem>
+              <pElem>/usr/include/ImageMagick-6</pElem>
+              <pElem>/usr/include/python3.5m</pElem>
+              <pElem>/usr/local/include</pElem>
+              <pElem>build-default</pElem>
+            </incDir>
+            <preprocessorList>
+              <Elem>BOOST_NO_CXX11_SCOPED_ENUMS</Elem>
+              <Elem>cimg_use_jpeg</Elem>
+              <Elem>cimg_use_magick</Elem>
+              <Elem>cimg_use_openexr</Elem>
+              <Elem>cimg_use_png</Elem>
+              <Elem>cimg_use_tiff</Elem>
+              <Elem>cimg_use_xrandr</Elem>
+              <Elem>cimg_use_xshm</Elem>
+              <Elem>cimg_use_zlib</Elem>
+            </preprocessorList>
+          </ccTool>
+        </makeTool>
+        <preBuild>
+          <preBuildCommandWorkingDir>build-default</preBuildCommandWorkingDir>
+          <preBuildCommand>${CMAKE} -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=${IDE_CC} -DCMAKE_CXX_COMPILER=${IDE_CXX} -DCMAKE_C_FLAGS_DEBUG="-g3 -gdwarf-2" -DCMAKE_CXX_FLAGS_DEBUG="-g3 -gdwarf-2" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..</preBuildCommand>
+        </preBuild>
+      </makefileType>
+      <item path="CASManager.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <preprocessorList>
+            <Elem>Tpcas2SingleIndex_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DataStructures.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <preprocessorList>
+            <Elem>libtextpresso_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="IndexManager.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <preprocessorList>
+            <Elem>libtextpresso_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="Utils.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <preprocessorList>
+            <Elem>Tpcas2SingleIndex_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="cas-generators/Stream2Tpcas.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="cas-generators/pdf2tpcas/ElementCluster.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="cas-generators/pdf2tpcas/PdfInfo.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="cas-generators/pdf2tpcas/PdfMyFontInfo.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="cas-generators/pdf2tpcas/TextElement.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="cas-generators/xml2tpcas/PugiXml2Tpcas.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="cas-generators/xml2tpcas/ReadXml2Stream.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="cas-generators/xml2tpcas/pugixml.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <folder path="0/cas-generators">
+        <ccTool>
+          <preprocessorList>
+            <Elem>Tpcas2SingleIndex_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/lucene-custom">
+        <ccTool>
+          <preprocessorList>
+            <Elem>Tpcas2SingleIndex_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/uima-annotators/TpLexiconAnnotator">
+        <ccTool>
+          <preprocessorList>
+            <Elem>TpLexiconAnnotator_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/uima-annotators/TpLexiconAnnotatorFromPg">
+        <ccTool>
+          <preprocessorList>
+            <Elem>TpLexiconAnnotatorFromPg_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/uima-annotators/TpLsa">
+        <ccTool>
+          <preprocessorList>
+            <Elem>TpLsa_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/uima-annotators/TpTokenizer">
+        <ccTool>
+          <preprocessorList>
+            <Elem>TpTokenizer_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/uima-annotators/Tpcas2TpCentral">
+        <ccTool>
+          <preprocessorList>
+            <Elem>Tpcas2TpCentral_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/uima-annotators/TxTokenizer">
+        <ccTool>
+          <preprocessorList>
+            <Elem>TxTokenizer_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/uima-custom-analyzers/Tpcas2Bib">
+        <ccTool>
+          <preprocessorList>
+            <Elem>Tpcas2Bib_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/uima-custom-analyzers/Tpcas2Bib4Nxml">
+        <ccTool>
+          <preprocessorList>
+            <Elem>Tpcas2Bib4Nxml_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/uima-custom-analyzers/Tpcas2Lpp">
+        <ccTool>
+          <preprocessorList>
+            <Elem>Tpcas2Lpp_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/uima-custom-analyzers/Tpcas2SingleIndex">
+        <ccTool>
+          <preprocessorList>
+            <Elem>Tpcas2SingleIndex_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <item path="lucene-custom/CaseSensitiveAnalyzer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="tests/test_casmanager.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="tests/test_indexmanager.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpLexiconAnnotator/AnnotationCounter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpLexiconAnnotator/StopWords.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpLexiconAnnotator/TpLexiconAnnotator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpLexiconAnnotator/TpLexiconNode.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpLexiconAnnotator/TpLexiconTrie.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpLexiconAnnotatorFromPg/AllMyParents.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpLexiconAnnotatorFromPg/AnnotationCounter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpLexiconAnnotatorFromPg/StopWords.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconAnnotatorFromPg.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconNode.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconTrie.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpLsa/LsaTp.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpLsa/SetsFromPairs.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpLsa/TpCas2LsaToken.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpLsa/main.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpLsa/redsvdFile.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpLsa/util.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpTokenizer/AnnotationCounter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpTokenizer/TpNode.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpTokenizer/TpTokenizer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TpTokenizer/TpTrie.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/Tpcas2TpCentral/Tpcas2TpCentral.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TxTokenizer/AnnotationCounter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TxTokenizer/TpNode.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TxTokenizer/TpTrie.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TxTokenizer/TxTokenizer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/TxTokenizer/pugixml.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-annotators/WriteFeatureDefsFromPg/main.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="uima-custom-analyzers/Tpcas2Bib/CASUtils.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-custom-analyzers/Tpcas2Bib/TpNode.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-custom-analyzers/Tpcas2Bib/TpTrie.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-custom-analyzers/Tpcas2Bib/Tpcas2Bib.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-custom-analyzers/Tpcas2Bib4Nxml/CASUtils.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-custom-analyzers/Tpcas2Bib4Nxml/TpNode.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-custom-analyzers/Tpcas2Bib4Nxml/TpTrie.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-custom-analyzers/Tpcas2Bib4Nxml/Tpcas2Bib4Nxml.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-custom-analyzers/Tpcas2Lpp/CASUtils.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-custom-analyzers/Tpcas2Lpp/Tpcas2Lpp.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-custom-analyzers/Tpcas2SingleIndex/TpNode.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-custom-analyzers/Tpcas2SingleIndex/TpTrie.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="uima-custom-analyzers/Tpcas2SingleIndex/Tpcas2SingleIndex.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

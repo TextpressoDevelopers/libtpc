@@ -1,9 +1,6 @@
 cmake-build*
 .idea/
-**/build/
-**/_build/
-**/dist/
-**/nbproject/
+build*/
 *~
 docs/html/
 docs/latex/

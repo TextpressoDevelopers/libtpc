@@ -1,0 +1,141 @@
+Scanning dependencies of target Tpcas2Lpp
+[  1%] Building CXX object CMakeFiles/Tpcas2Lpp.dir/uima-custom-analyzers/Tpcas2Lpp/CASUtils.cpp.o
+[  2%] Building CXX object CMakeFiles/Tpcas2Lpp.dir/uima-custom-analyzers/Tpcas2Lpp/Tpcas2Lpp.cpp.o
+[  3%] Building CXX object CMakeFiles/Tpcas2Lpp.dir/lucene-custom/CaseSensitiveAnalyzer.cpp.o
+[  4%] Linking CXX shared library Tpcas2Lpp.so
+[  4%] Built target Tpcas2Lpp
+Scanning dependencies of target Tpcas2Bib4Nxml
+[  4%] Building CXX object CMakeFiles/Tpcas2Bib4Nxml.dir/uima-custom-analyzers/Tpcas2Bib4Nxml/CASUtils.cpp.o
+[  5%] Building CXX object CMakeFiles/Tpcas2Bib4Nxml.dir/uima-custom-analyzers/Tpcas2Bib4Nxml/Tpcas2Bib4Nxml.cpp.o
+[  6%] Building CXX object CMakeFiles/Tpcas2Bib4Nxml.dir/uima-custom-analyzers/Tpcas2Bib4Nxml/TpNode.cpp.o
+[  7%] Building CXX object CMakeFiles/Tpcas2Bib4Nxml.dir/uima-custom-analyzers/Tpcas2Bib4Nxml/TpTrie.cpp.o
+[  8%] Linking CXX shared library Tpcas2Bib4Nxml.so
+[  8%] Built target Tpcas2Bib4Nxml
+Scanning dependencies of target TpLsa
+[  9%] Building CXX object CMakeFiles/TpLsa.dir/uima-annotators/TpLsa/LsaTp.cpp.o
+[ 10%] Building CXX object CMakeFiles/TpLsa.dir/uima-annotators/TpLsa/main.cpp.o
+[ 11%] Building CXX object CMakeFiles/TpLsa.dir/uima-annotators/TpLsa/redsvdFile.cpp.o
+[ 12%] Building CXX object CMakeFiles/TpLsa.dir/uima-annotators/TpLsa/SetsFromPairs.cpp.o
+[ 13%] Building CXX object CMakeFiles/TpLsa.dir/uima-annotators/TpLsa/TpCas2LsaToken.cpp.o
+[ 14%] Building CXX object CMakeFiles/TpLsa.dir/uima-annotators/TpLsa/util.cpp.o
+[ 15%] Linking CXX shared library TpLsa.so
+CMakeFiles/TpLsa.dir/uima-annotators/TpLsa/TpCas2LsaToken.cpp.o: In function `(anonymous namespace)::uncompressGzip2(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)':
+/data/textpresso/libtpc/uima-annotators/TpLsa/TpCas2LsaToken.cpp:31: warning: the use of `tmpnam' is dangerous, better use `mkstemp'
+[ 15%] Built target TpLsa
+Scanning dependencies of target Tpcas2TpCentral
+[ 16%] Building CXX object CMakeFiles/Tpcas2TpCentral.dir/uima-annotators/Tpcas2TpCentral/Tpcas2TpCentral.cpp.o
+[ 17%] Linking CXX shared library Tpcas2TpCentral.so
+[ 17%] Built target Tpcas2TpCentral
+Scanning dependencies of target test_casmanager
+[ 17%] Building CXX object CMakeFiles/test_casmanager.dir/Utils.cpp.o
+[ 18%] Building CXX object CMakeFiles/test_casmanager.dir/lucene-custom/CaseSensitiveAnalyzer.cpp.o
+[ 19%] Building CXX object CMakeFiles/test_casmanager.dir/uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.cpp.o
+[ 20%] Building CXX object CMakeFiles/test_casmanager.dir/DataStructures.cpp.o
+[ 21%] Building CXX object CMakeFiles/test_casmanager.dir/CASManager.cpp.o
+[ 22%] Building CXX object CMakeFiles/test_casmanager.dir/tests/test_casmanager.cpp.o
+[ 23%] Building CXX object CMakeFiles/test_casmanager.dir/cas-generators/pdf2tpcas/ElementCluster.cpp.o
+[ 24%] Building CXX object CMakeFiles/test_casmanager.dir/cas-generators/pdf2tpcas/PdfInfo.cpp.o
+[ 25%] Building CXX object CMakeFiles/test_casmanager.dir/cas-generators/pdf2tpcas/PdfMyFontInfo.cpp.o
+[ 26%] Building CXX object CMakeFiles/test_casmanager.dir/cas-generators/Stream2Tpcas.cpp.o
+[ 26%] Building CXX object CMakeFiles/test_casmanager.dir/cas-generators/pdf2tpcas/TextElement.cpp.o
+[ 27%] Building CXX object CMakeFiles/test_casmanager.dir/cas-generators/xml2tpcas/pugixml.cpp.o
+[ 28%] Building CXX object CMakeFiles/test_casmanager.dir/cas-generators/xml2tpcas/PugiXml2Tpcas.cpp.o
+[ 29%] Building CXX object CMakeFiles/test_casmanager.dir/cas-generators/xml2tpcas/ReadXml2Stream.cpp.o
+[ 30%] Linking CXX executable test_casmanager
+[ 30%] Built target test_casmanager
+Scanning dependencies of target Tpcas2SingleIndex
+[ 31%] Building CXX object CMakeFiles/Tpcas2SingleIndex.dir/uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.cpp.o
+[ 31%] Building CXX object CMakeFiles/Tpcas2SingleIndex.dir/uima-custom-analyzers/Tpcas2SingleIndex/Tpcas2SingleIndex.cpp.o
+[ 32%] Building CXX object CMakeFiles/Tpcas2SingleIndex.dir/uima-custom-analyzers/Tpcas2SingleIndex/TpNode.cpp.o
+[ 33%] Building CXX object CMakeFiles/Tpcas2SingleIndex.dir/uima-custom-analyzers/Tpcas2SingleIndex/TpTrie.cpp.o
+[ 34%] Building CXX object CMakeFiles/Tpcas2SingleIndex.dir/lucene-custom/CaseSensitiveAnalyzer.cpp.o
+[ 35%] Building CXX object CMakeFiles/Tpcas2SingleIndex.dir/CASManager.cpp.o
+[ 36%] Building CXX object CMakeFiles/Tpcas2SingleIndex.dir/Utils.cpp.o
+[ 37%] Building CXX object CMakeFiles/Tpcas2SingleIndex.dir/cas-generators/Stream2Tpcas.cpp.o
+[ 38%] Building CXX object CMakeFiles/Tpcas2SingleIndex.dir/cas-generators/pdf2tpcas/TextElement.cpp.o
+[ 39%] Building CXX object CMakeFiles/Tpcas2SingleIndex.dir/cas-generators/pdf2tpcas/PdfMyFontInfo.cpp.o
+[ 40%] Building CXX object CMakeFiles/Tpcas2SingleIndex.dir/cas-generators/pdf2tpcas/PdfInfo.cpp.o
+[ 40%] Building CXX object CMakeFiles/Tpcas2SingleIndex.dir/cas-generators/pdf2tpcas/ElementCluster.cpp.o
+[ 41%] Building CXX object CMakeFiles/Tpcas2SingleIndex.dir/cas-generators/xml2tpcas/PugiXml2Tpcas.cpp.o
+[ 42%] Building CXX object CMakeFiles/Tpcas2SingleIndex.dir/cas-generators/xml2tpcas/pugixml.cpp.o
+[ 43%] Building CXX object CMakeFiles/Tpcas2SingleIndex.dir/cas-generators/xml2tpcas/ReadXml2Stream.cpp.o
+[ 44%] Linking CXX shared library Tpcas2SingleIndex.so
+[ 44%] Built target Tpcas2SingleIndex
+Scanning dependencies of target test_indexmanager
+[ 45%] Building CXX object CMakeFiles/test_indexmanager.dir/Utils.cpp.o
+[ 46%] Building CXX object CMakeFiles/test_indexmanager.dir/lucene-custom/CaseSensitiveAnalyzer.cpp.o
+[ 47%] Building CXX object CMakeFiles/test_indexmanager.dir/uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.cpp.o
+[ 48%] Building CXX object CMakeFiles/test_indexmanager.dir/DataStructures.cpp.o
+[ 49%] Building CXX object CMakeFiles/test_indexmanager.dir/IndexManager.cpp.o
+[ 49%] Building CXX object CMakeFiles/test_indexmanager.dir/CASManager.cpp.o
+[ 50%] Building CXX object CMakeFiles/test_indexmanager.dir/tests/test_indexmanager.cpp.o
+[ 51%] Building CXX object CMakeFiles/test_indexmanager.dir/cas-generators/pdf2tpcas/ElementCluster.cpp.o
+[ 52%] Building CXX object CMakeFiles/test_indexmanager.dir/cas-generators/pdf2tpcas/PdfInfo.cpp.o
+[ 53%] Building CXX object CMakeFiles/test_indexmanager.dir/cas-generators/pdf2tpcas/PdfMyFontInfo.cpp.o
+[ 54%] Building CXX object CMakeFiles/test_indexmanager.dir/cas-generators/Stream2Tpcas.cpp.o
+[ 55%] Building CXX object CMakeFiles/test_indexmanager.dir/cas-generators/pdf2tpcas/TextElement.cpp.o
+[ 56%] Building CXX object CMakeFiles/test_indexmanager.dir/cas-generators/xml2tpcas/pugixml.cpp.o
+[ 57%] Building CXX object CMakeFiles/test_indexmanager.dir/cas-generators/xml2tpcas/PugiXml2Tpcas.cpp.o
+[ 58%] Building CXX object CMakeFiles/test_indexmanager.dir/cas-generators/xml2tpcas/ReadXml2Stream.cpp.o
+[ 59%] Linking CXX executable test_indexmanager
+[ 59%] Built target test_indexmanager
+Scanning dependencies of target TpTokenizer
+[ 59%] Building CXX object CMakeFiles/TpTokenizer.dir/uima-annotators/TpTokenizer/AnnotationCounter.cpp.o
+[ 60%] Building CXX object CMakeFiles/TpTokenizer.dir/uima-annotators/TpTokenizer/TpNode.cpp.o
+[ 61%] Building CXX object CMakeFiles/TpTokenizer.dir/uima-annotators/TpTokenizer/TpTokenizer.cpp.o
+[ 62%] Building CXX object CMakeFiles/TpTokenizer.dir/uima-annotators/TpTokenizer/TpTrie.cpp.o
+[ 63%] Linking CXX shared library TpTokenizer.so
+[ 63%] Built target TpTokenizer
+Scanning dependencies of target TpLexiconAnnotator
+[ 63%] Building CXX object CMakeFiles/TpLexiconAnnotator.dir/uima-annotators/TpLexiconAnnotator/AnnotationCounter.cpp.o
+[ 64%] Building CXX object CMakeFiles/TpLexiconAnnotator.dir/uima-annotators/TpLexiconAnnotator/StopWords.cpp.o
+[ 65%] Building CXX object CMakeFiles/TpLexiconAnnotator.dir/uima-annotators/TpLexiconAnnotator/TpLexiconAnnotator.cpp.o
+[ 66%] Building CXX object CMakeFiles/TpLexiconAnnotator.dir/uima-annotators/TpLexiconAnnotator/TpLexiconNode.cpp.o
+[ 67%] Building CXX object CMakeFiles/TpLexiconAnnotator.dir/uima-annotators/TpLexiconAnnotator/TpLexiconTrie.cpp.o
+[ 68%] Linking CXX shared library TpLexiconAnnotator.so
+[ 68%] Built target TpLexiconAnnotator
+Scanning dependencies of target TxTokenizer
+[ 69%] Building CXX object CMakeFiles/TxTokenizer.dir/uima-annotators/TxTokenizer/AnnotationCounter.cpp.o
+[ 70%] Building CXX object CMakeFiles/TxTokenizer.dir/uima-annotators/TxTokenizer/TpNode.cpp.o
+[ 71%] Building CXX object CMakeFiles/TxTokenizer.dir/uima-annotators/TxTokenizer/TxTokenizer.cpp.o
+[ 71%] Building CXX object CMakeFiles/TxTokenizer.dir/uima-annotators/TxTokenizer/TpTrie.cpp.o
+[ 72%] Building CXX object CMakeFiles/TxTokenizer.dir/uima-annotators/TxTokenizer/pugixml.cpp.o
+[ 73%] Linking CXX shared library TxTokenizer.so
+[ 73%] Built target TxTokenizer
+Scanning dependencies of target libtextpresso
+[ 74%] Building CXX object CMakeFiles/libtextpresso.dir/Utils.cpp.o
+[ 75%] Building CXX object CMakeFiles/libtextpresso.dir/lucene-custom/CaseSensitiveAnalyzer.cpp.o
+[ 76%] Building CXX object CMakeFiles/libtextpresso.dir/uima-custom-analyzers/Tpcas2SingleIndex/CASUtils.cpp.o
+[ 77%] Building CXX object CMakeFiles/libtextpresso.dir/DataStructures.cpp.o
+[ 78%] Building CXX object CMakeFiles/libtextpresso.dir/IndexManager.cpp.o
+[ 78%] Building CXX object CMakeFiles/libtextpresso.dir/CASManager.cpp.o
+[ 79%] Building CXX object CMakeFiles/libtextpresso.dir/cas-generators/pdf2tpcas/ElementCluster.cpp.o
+[ 80%] Building CXX object CMakeFiles/libtextpresso.dir/cas-generators/pdf2tpcas/PdfInfo.cpp.o
+[ 81%] Building CXX object CMakeFiles/libtextpresso.dir/cas-generators/pdf2tpcas/PdfMyFontInfo.cpp.o
+[ 82%] Building CXX object CMakeFiles/libtextpresso.dir/cas-generators/Stream2Tpcas.cpp.o
+[ 83%] Building CXX object CMakeFiles/libtextpresso.dir/cas-generators/pdf2tpcas/TextElement.cpp.o
+[ 84%] Building CXX object CMakeFiles/libtextpresso.dir/cas-generators/xml2tpcas/pugixml.cpp.o
+[ 85%] Building CXX object CMakeFiles/libtextpresso.dir/cas-generators/xml2tpcas/PugiXml2Tpcas.cpp.o
+[ 86%] Building CXX object CMakeFiles/libtextpresso.dir/cas-generators/xml2tpcas/ReadXml2Stream.cpp.o
+[ 87%] Linking CXX shared library libtextpresso.so
+[ 87%] Built target libtextpresso
+Scanning dependencies of target TpLexiconAnnotatorFromPg
+[ 88%] Building CXX object CMakeFiles/TpLexiconAnnotatorFromPg.dir/uima-annotators/TpLexiconAnnotatorFromPg/AnnotationCounter.cpp.o
+[ 89%] Building CXX object CMakeFiles/TpLexiconAnnotatorFromPg.dir/uima-annotators/TpLexiconAnnotatorFromPg/StopWords.cpp.o
+[ 90%] Building CXX object CMakeFiles/TpLexiconAnnotatorFromPg.dir/uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconAnnotatorFromPg.cpp.o
+[ 91%] Building CXX object CMakeFiles/TpLexiconAnnotatorFromPg.dir/uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconNode.cpp.o
+[ 91%] Building CXX object CMakeFiles/TpLexiconAnnotatorFromPg.dir/uima-annotators/TpLexiconAnnotatorFromPg/TpLexiconTrie.cpp.o
+[ 92%] Building CXX object CMakeFiles/TpLexiconAnnotatorFromPg.dir/uima-annotators/TpLexiconAnnotatorFromPg/AllMyParents.cpp.o
+[ 93%] Linking CXX shared library TpLexiconAnnotatorFromPg.so
+[ 93%] Built target TpLexiconAnnotatorFromPg
+Scanning dependencies of target Tpcas2Bib
+[ 94%] Building CXX object CMakeFiles/Tpcas2Bib.dir/uima-custom-analyzers/Tpcas2Bib/CASUtils.cpp.o
+[ 95%] Building CXX object CMakeFiles/Tpcas2Bib.dir/uima-custom-analyzers/Tpcas2Bib/Tpcas2Bib.cpp.o
+[ 96%] Building CXX object CMakeFiles/Tpcas2Bib.dir/uima-custom-analyzers/Tpcas2Bib/TpNode.cpp.o
+[ 97%] Building CXX object CMakeFiles/Tpcas2Bib.dir/uima-custom-analyzers/Tpcas2Bib/TpTrie.cpp.o
+[ 98%] Linking CXX shared library Tpcas2Bib.so
+[ 98%] Built target Tpcas2Bib
+Scanning dependencies of target WriteFeatureDefsFromPg
+[ 99%] Building CXX object CMakeFiles/WriteFeatureDefsFromPg.dir/uima-annotators/WriteFeatureDefsFromPg/main.cpp.o
+[100%] Linking CXX executable WriteFeatureDefsFromPg
+[100%] Built target WriteFeatureDefsFromPg
