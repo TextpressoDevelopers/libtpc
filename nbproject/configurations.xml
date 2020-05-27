@@ -2,6 +2,20 @@
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
+      <df name="build-default">
+        <df name="CMakeFiles">
+          <df name="3.10.2">
+            <df name="CompilerIdC">
+              <in>CMakeCCompilerId.c</in>
+            </df>
+            <df name="CompilerIdCXX">
+              <in>CMakeCXXCompilerId.cpp</in>
+            </df>
+          </df>
+          <in>feature_tests.c</in>
+          <in>feature_tests.cxx</in>
+        </df>
+      </df>
       <df name="cas-generators">
         <df name="pdf2tpcas">
           <in>ElementCluster.cpp</in>
@@ -96,6 +110,15 @@
       <in>IndexManager.cpp</in>
       <in>Utils.cpp</in>
     </df>
+    <logicalFolder name="Modules"
+                   displayName="Modules"
+                   projectFiles="true"
+                   root="/usr/share/cmake-3.10/Modules">
+      <itemPath>/usr/share/cmake-3.10/Modules/CMakeCCompilerABI.c</itemPath>
+      <itemPath>/usr/share/cmake-3.10/Modules/CMakeCXXCompilerABI.cpp</itemPath>
+      <itemPath>/usr/share/cmake-3.10/Modules/CMakeCompilerABI.h</itemPath>
+      <itemPath>/usr/share/cmake-3.10/Modules/CheckFunctionExists.c</itemPath>
+    </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
                    projectFiles="false"
@@ -119,7 +142,9 @@
       </toolsSet>
       <flagsDictionary>
         <element flagsID="0" commonFlags="-fPIC -std=gnu++11"/>
-        <element flagsID="1" commonFlags="-std=gnu++11"/>
+        <element flagsID="1" commonFlags="-std=c++1z"/>
+        <element flagsID="2" commonFlags="-std=c11"/>
+        <element flagsID="3" commonFlags="-std=gnu++11"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -129,61 +154,172 @@
           <buildCommand>${MAKE} -f Makefile -j 8</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath></executablePath>
-          <ccTool>
-            <incDir>
-              <pElem>/usr/include/apr-1.0</pElem>
-              <pElem>/usr/include/x86_64-linux-gnu</pElem>
-              <pElem>/usr/include/OpenEXR</pElem>
-              <pElem>/usr/include/x86_64-linux-gnu/ImageMagick-6</pElem>
-              <pElem>/usr/include/ImageMagick-6</pElem>
-              <pElem>/usr/include/python3.5m</pElem>
-              <pElem>/usr/local/include</pElem>
-              <pElem>build-default</pElem>
-            </incDir>
-            <preprocessorList>
-              <Elem>BOOST_NO_CXX11_SCOPED_ENUMS</Elem>
-              <Elem>cimg_use_jpeg</Elem>
-              <Elem>cimg_use_magick</Elem>
-              <Elem>cimg_use_openexr</Elem>
-              <Elem>cimg_use_png</Elem>
-              <Elem>cimg_use_tiff</Elem>
-              <Elem>cimg_use_xrandr</Elem>
-              <Elem>cimg_use_xshm</Elem>
-              <Elem>cimg_use_zlib</Elem>
-            </preprocessorList>
-          </ccTool>
         </makeTool>
         <preBuild>
           <preBuildCommandWorkingDir>build-default</preBuildCommandWorkingDir>
           <preBuildCommand>${CMAKE} -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=${IDE_CC} -DCMAKE_CXX_COMPILER=${IDE_CXX} -DCMAKE_C_FLAGS_DEBUG="-g3 -gdwarf-2" -DCMAKE_CXX_FLAGS_DEBUG="-g3 -gdwarf-2" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..</preBuildCommand>
         </preBuild>
       </makefileType>
+      <item path="/usr/share/cmake-3.10/Modules/CMakeCCompilerABI.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="/usr/share/cmake-3.10/Modules/CMakeCXXCompilerABI.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="/usr/share/cmake-3.10/Modules/CheckFunctionExists.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>CHECK_FUNCTION_EXISTS=sgemm_</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
       <item path="CASManager.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/apr-1.0</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu</pElem>
+            <pElem>/usr/include/OpenEXR</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/ImageMagick-6</pElem>
+            <pElem>/usr/include/ImageMagick-6</pElem>
+            <pElem>/usr/include/opencv</pElem>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
           <preprocessorList>
-            <Elem>Tpcas2SingleIndex_EXPORTS</Elem>
+            <Elem>BOOST_NO_CXX11_SCOPED_ENUMS</Elem>
+            <Elem>cimg_use_jpeg</Elem>
+            <Elem>cimg_use_magick</Elem>
+            <Elem>cimg_use_opencv</Elem>
+            <Elem>cimg_use_openexr</Elem>
+            <Elem>cimg_use_png</Elem>
+            <Elem>cimg_use_tiff</Elem>
+            <Elem>cimg_use_xrandr</Elem>
+            <Elem>cimg_use_xshm</Elem>
+            <Elem>cimg_use_zlib</Elem>
+            <Elem>libtextpresso_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="DataStructures.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/apr-1.0</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu</pElem>
+            <pElem>/usr/include/OpenEXR</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/ImageMagick-6</pElem>
+            <pElem>/usr/include/ImageMagick-6</pElem>
+            <pElem>/usr/include/opencv</pElem>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
           <preprocessorList>
+            <Elem>BOOST_NO_CXX11_SCOPED_ENUMS</Elem>
+            <Elem>cimg_use_jpeg</Elem>
+            <Elem>cimg_use_magick</Elem>
+            <Elem>cimg_use_opencv</Elem>
+            <Elem>cimg_use_openexr</Elem>
+            <Elem>cimg_use_png</Elem>
+            <Elem>cimg_use_tiff</Elem>
+            <Elem>cimg_use_xrandr</Elem>
+            <Elem>cimg_use_xshm</Elem>
+            <Elem>cimg_use_zlib</Elem>
             <Elem>libtextpresso_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="IndexManager.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/apr-1.0</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu</pElem>
+            <pElem>/usr/include/OpenEXR</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/ImageMagick-6</pElem>
+            <pElem>/usr/include/ImageMagick-6</pElem>
+            <pElem>/usr/include/opencv</pElem>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
           <preprocessorList>
+            <Elem>BOOST_NO_CXX11_SCOPED_ENUMS</Elem>
+            <Elem>cimg_use_jpeg</Elem>
+            <Elem>cimg_use_magick</Elem>
+            <Elem>cimg_use_opencv</Elem>
+            <Elem>cimg_use_openexr</Elem>
+            <Elem>cimg_use_png</Elem>
+            <Elem>cimg_use_tiff</Elem>
+            <Elem>cimg_use_xrandr</Elem>
+            <Elem>cimg_use_xshm</Elem>
+            <Elem>cimg_use_zlib</Elem>
             <Elem>libtextpresso_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </item>
       <item path="Utils.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/apr-1.0</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu</pElem>
+            <pElem>/usr/include/OpenEXR</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/ImageMagick-6</pElem>
+            <pElem>/usr/include/ImageMagick-6</pElem>
+            <pElem>/usr/include/opencv</pElem>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
           <preprocessorList>
-            <Elem>Tpcas2SingleIndex_EXPORTS</Elem>
+            <Elem>BOOST_NO_CXX11_SCOPED_ENUMS</Elem>
+            <Elem>cimg_use_jpeg</Elem>
+            <Elem>cimg_use_magick</Elem>
+            <Elem>cimg_use_opencv</Elem>
+            <Elem>cimg_use_openexr</Elem>
+            <Elem>cimg_use_png</Elem>
+            <Elem>cimg_use_tiff</Elem>
+            <Elem>cimg_use_xrandr</Elem>
+            <Elem>cimg_use_xshm</Elem>
+            <Elem>cimg_use_zlib</Elem>
+            <Elem>libtextpresso_EXPORTS</Elem>
           </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="build-default/CMakeFiles/3.10.2/CompilerIdC/CMakeCCompilerId.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="build-default/CMakeFiles/3.10.2/CompilerIdCXX/CMakeCXXCompilerId.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="build-default/CMakeFiles/feature_tests.c"
+            ex="false"
+            tool="0"
+            flavor2="10">
+        <cTool flags="2">
+          <incDir>
+            <pElem>build-default/CMakeFiles/CMakeTmp</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="build-default/CMakeFiles/feature_tests.cxx"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>build-default/CMakeFiles/CMakeTmp</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="cas-generators/Stream2Tpcas.cpp" ex="false" tool="1" flavor2="8">
@@ -241,20 +377,111 @@
       </item>
       <folder path="0/cas-generators">
         <ccTool>
+          <incDir>
+            <pElem>/usr/include/apr-1.0</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu</pElem>
+            <pElem>/usr/include/OpenEXR</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/ImageMagick-6</pElem>
+            <pElem>/usr/include/ImageMagick-6</pElem>
+            <pElem>/usr/include/opencv</pElem>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
           <preprocessorList>
-            <Elem>Tpcas2SingleIndex_EXPORTS</Elem>
+            <Elem>BOOST_NO_CXX11_SCOPED_ENUMS</Elem>
+            <Elem>cimg_use_jpeg</Elem>
+            <Elem>cimg_use_magick</Elem>
+            <Elem>cimg_use_opencv</Elem>
+            <Elem>cimg_use_openexr</Elem>
+            <Elem>cimg_use_png</Elem>
+            <Elem>cimg_use_tiff</Elem>
+            <Elem>cimg_use_xrandr</Elem>
+            <Elem>cimg_use_xshm</Elem>
+            <Elem>cimg_use_zlib</Elem>
+            <Elem>libtextpresso_EXPORTS</Elem>
           </preprocessorList>
         </ccTool>
       </folder>
       <folder path="0/lucene-custom">
         <ccTool>
+          <incDir>
+            <pElem>/usr/include/apr-1.0</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu</pElem>
+            <pElem>/usr/include/OpenEXR</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/ImageMagick-6</pElem>
+            <pElem>/usr/include/ImageMagick-6</pElem>
+            <pElem>/usr/include/opencv</pElem>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
           <preprocessorList>
-            <Elem>Tpcas2SingleIndex_EXPORTS</Elem>
+            <Elem>BOOST_NO_CXX11_SCOPED_ENUMS</Elem>
+            <Elem>cimg_use_jpeg</Elem>
+            <Elem>cimg_use_magick</Elem>
+            <Elem>cimg_use_opencv</Elem>
+            <Elem>cimg_use_openexr</Elem>
+            <Elem>cimg_use_png</Elem>
+            <Elem>cimg_use_tiff</Elem>
+            <Elem>cimg_use_xrandr</Elem>
+            <Elem>cimg_use_xshm</Elem>
+            <Elem>cimg_use_zlib</Elem>
+            <Elem>libtextpresso_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/tests">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/apr-1.0</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu</pElem>
+            <pElem>/usr/include/OpenEXR</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/ImageMagick-6</pElem>
+            <pElem>/usr/include/ImageMagick-6</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_NO_CXX11_SCOPED_ENUMS</Elem>
+            <Elem>cimg_use_jpeg</Elem>
+            <Elem>cimg_use_magick</Elem>
+            <Elem>cimg_use_openexr</Elem>
+            <Elem>cimg_use_png</Elem>
+            <Elem>cimg_use_tiff</Elem>
+            <Elem>cimg_use_xrandr</Elem>
+            <Elem>cimg_use_xshm</Elem>
+            <Elem>cimg_use_zlib</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/uima-annotators">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/apr-1.0</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu</pElem>
+            <pElem>/usr/include/OpenEXR</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/ImageMagick-6</pElem>
+            <pElem>/usr/include/ImageMagick-6</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_NO_CXX11_SCOPED_ENUMS</Elem>
+            <Elem>cimg_use_jpeg</Elem>
+            <Elem>cimg_use_magick</Elem>
+            <Elem>cimg_use_openexr</Elem>
+            <Elem>cimg_use_png</Elem>
+            <Elem>cimg_use_tiff</Elem>
+            <Elem>cimg_use_xrandr</Elem>
+            <Elem>cimg_use_xshm</Elem>
+            <Elem>cimg_use_zlib</Elem>
           </preprocessorList>
         </ccTool>
       </folder>
       <folder path="0/uima-annotators/TpLexiconAnnotator">
         <ccTool>
+          <incDir>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>TpLexiconAnnotator_EXPORTS</Elem>
           </preprocessorList>
@@ -262,6 +489,11 @@
       </folder>
       <folder path="0/uima-annotators/TpLexiconAnnotatorFromPg">
         <ccTool>
+          <incDir>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>TpLexiconAnnotatorFromPg_EXPORTS</Elem>
           </preprocessorList>
@@ -269,6 +501,11 @@
       </folder>
       <folder path="0/uima-annotators/TpLsa">
         <ccTool>
+          <incDir>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>TpLsa_EXPORTS</Elem>
           </preprocessorList>
@@ -276,34 +513,102 @@
       </folder>
       <folder path="0/uima-annotators/TpTokenizer">
         <ccTool>
+          <incDir>
+            <pElem>/usr/include/opencv</pElem>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>TpTokenizer_EXPORTS</Elem>
+            <Elem>cimg_use_opencv</Elem>
           </preprocessorList>
         </ccTool>
       </folder>
       <folder path="0/uima-annotators/Tpcas2TpCentral">
         <ccTool>
+          <incDir>
+            <pElem>/usr/include/opencv</pElem>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>Tpcas2TpCentral_EXPORTS</Elem>
+            <Elem>cimg_use_opencv</Elem>
           </preprocessorList>
         </ccTool>
       </folder>
       <folder path="0/uima-annotators/TxTokenizer">
         <ccTool>
+          <incDir>
+            <pElem>/usr/include/opencv</pElem>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>TxTokenizer_EXPORTS</Elem>
+            <Elem>cimg_use_opencv</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/uima-annotators/WriteFeatureDefsFromPg">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/opencv</pElem>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>cimg_use_opencv</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/uima-custom-analyzers">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/apr-1.0</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu</pElem>
+            <pElem>/usr/include/OpenEXR</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/ImageMagick-6</pElem>
+            <pElem>/usr/include/ImageMagick-6</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_NO_CXX11_SCOPED_ENUMS</Elem>
+            <Elem>cimg_use_jpeg</Elem>
+            <Elem>cimg_use_magick</Elem>
+            <Elem>cimg_use_openexr</Elem>
+            <Elem>cimg_use_png</Elem>
+            <Elem>cimg_use_tiff</Elem>
+            <Elem>cimg_use_xrandr</Elem>
+            <Elem>cimg_use_xshm</Elem>
+            <Elem>cimg_use_zlib</Elem>
           </preprocessorList>
         </ccTool>
       </folder>
       <folder path="0/uima-custom-analyzers/Tpcas2Bib">
         <ccTool>
+          <incDir>
+            <pElem>/usr/include/opencv</pElem>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>Tpcas2Bib_EXPORTS</Elem>
+            <Elem>cimg_use_opencv</Elem>
           </preprocessorList>
         </ccTool>
       </folder>
       <folder path="0/uima-custom-analyzers/Tpcas2Bib4Nxml">
         <ccTool>
+          <incDir>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>Tpcas2Bib4Nxml_EXPORTS</Elem>
           </preprocessorList>
@@ -311,16 +616,28 @@
       </folder>
       <folder path="0/uima-custom-analyzers/Tpcas2Lpp">
         <ccTool>
+          <incDir>
+            <pElem>/usr/include/opencv</pElem>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>Tpcas2Lpp_EXPORTS</Elem>
+            <Elem>cimg_use_opencv</Elem>
           </preprocessorList>
         </ccTool>
       </folder>
-      <folder path="0/uima-custom-analyzers/Tpcas2SingleIndex">
+      <folder path="Modules">
+        <cTool>
+          <incDir>
+            <pElem>build-default/CMakeFiles/CMakeTmp</pElem>
+          </incDir>
+        </cTool>
         <ccTool>
-          <preprocessorList>
-            <Elem>Tpcas2SingleIndex_EXPORTS</Elem>
-          </preprocessorList>
+          <incDir>
+            <pElem>build-default/CMakeFiles/CMakeTmp</pElem>
+          </incDir>
         </ccTool>
       </folder>
       <item path="lucene-custom/CaseSensitiveAnalyzer.cpp"
@@ -331,11 +648,25 @@
         </ccTool>
       </item>
       <item path="tests/test_casmanager.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
+        <ccTool flags="3">
+          <incDir>
+            <pElem>/usr/include/opencv</pElem>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>cimg_use_opencv</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="tests/test_indexmanager.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="1">
+        <ccTool flags="3">
+          <incDir>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="uima-annotators/TpLexiconAnnotator/AnnotationCounter.cpp"
@@ -522,7 +853,7 @@
             ex="false"
             tool="1"
             flavor2="8">
-        <ccTool flags="1">
+        <ccTool flags="3">
         </ccTool>
       </item>
       <item path="uima-custom-analyzers/Tpcas2Bib/CASUtils.cpp"
@@ -600,6 +931,16 @@
             tool="1"
             flavor2="8">
         <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/opencv</pElem>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>cimg_use_opencv</Elem>
+            <Elem>libtextpresso_EXPORTS</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="uima-custom-analyzers/Tpcas2SingleIndex/TpNode.cpp"
@@ -607,6 +948,14 @@
             tool="1"
             flavor2="8">
         <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>Tpcas2SingleIndex_EXPORTS</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="uima-custom-analyzers/Tpcas2SingleIndex/TpTrie.cpp"
@@ -614,6 +963,14 @@
             tool="1"
             flavor2="8">
         <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>Tpcas2SingleIndex_EXPORTS</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="uima-custom-analyzers/Tpcas2SingleIndex/Tpcas2SingleIndex.cpp"
@@ -621,6 +978,14 @@
             tool="1"
             flavor2="8">
         <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/python3.5m</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build-default</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>Tpcas2SingleIndex_EXPORTS</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
     </conf>

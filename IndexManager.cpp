@@ -1253,7 +1253,7 @@ void IndexManager::save_all_years_for_documents_to_db() {
 }
 
 void IndexManager::set_external_index(std::string external_idx_path) {
-    externalIndexManager = make_shared<IndexManager>(external_idx_path, nullptr, true, true);
+    externalIndexManager = make_shared<IndexManager>(external_idx_path, "", true, true);
 }
 
 void IndexManager::remove_external_index() {
