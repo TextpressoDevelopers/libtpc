@@ -84,6 +84,7 @@ TextElement * PdfInfo::ProcessStreamFromPage(int pg) {
     // the stack is used to store variants associated to the current keyword, until the keyword itself is found
     std::stack<PoDoFo::PdfVariant> stack;
     while (tokenizer.ReadNext(eType, pszToken, var)) {
+      try {
         if (eType == PoDoFo::ePdfContentsType_Keyword) {
             if (strcmp(pszToken, "BT") == 0) {
                 // BT = Begin Text
@@ -385,6 +386,10 @@ TextElement * PdfInfo::ProcessStreamFromPage(int pg) {
             std::cerr << "Type must be keyword or variant." << std::endl;
             //PODOFO_RAISE_ERROR(PoDoFo::ePdfError_InternalLogic);
         }
+      } catch (PoDoFo::PdfError &e) {
+	cerr << "PdfInfo.cpp: An error occurred during processing the pdf file." << endl << e.GetError() << endl;
+	e.PrintErrorMsg();
+      }
     }
     return rtp;
 }
