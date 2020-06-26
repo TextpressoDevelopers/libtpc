@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 
 RUN export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get -y install cmake libxerces-c-dev \
-libapr1-dev libaprutil1-dev wget libicu-dev liblucene++-dev liblucene++ bc \
+libapr1-dev libaprutil1-dev wget libicu-dev liblucene++-dev liblucene++ bc poppler-utils \
 icu-devtools bzip2 linux-headers-generic build-essential unzip software-properties-common curlftpfs \
 software-properties-common autoconf libboost-all-dev libpodofo-dev libpodofo-utils doxygen libpqxx-dev \
 libfcgi++ libmagick++-dev libcurl4-openssl-dev postfix libdb5.3-dev libdb5.3++-dev libdb5.3++-stl-dev \
