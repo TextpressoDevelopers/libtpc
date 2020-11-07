@@ -2,290 +2,14 @@
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
-      <df name="build">
-        <df name="CMakeFiles">
-          <df name="3.5.1">
-            <df name="CompilerIdC">
-              <in>CMakeCCompilerId.c</in>
-            </df>
-            <df name="CompilerIdCXX">
-              <in>CMakeCXXCompilerId.cpp</in>
-            </df>
-          </df>
-          <df name="CMakeTmp">
-          </df>
-          <df name="libtextpresso.dir">
-            <df name="cas-generators">
-              <df name="pdf2tpcas">
-              </df>
-              <df name="xml2tpcas">
-              </df>
-            </df>
-            <df name="lucene-custom">
-            </df>
-            <df name="uima-custom-analyzers">
-              <df name="Tpcas2SingleIndex">
-              </df>
-            </df>
-          </df>
-          <df name="test_casmanager.dir">
-            <df name="cas-generators">
-              <df name="pdf2tpcas">
-              </df>
-              <df name="xml2tpcas">
-              </df>
-            </df>
-            <df name="lucene-custom">
-            </df>
-            <df name="tests">
-            </df>
-            <df name="uima-custom-analyzers">
-              <df name="Tpcas2SingleIndex">
-              </df>
-            </df>
-          </df>
-          <df name="test_indexmanager.dir">
-            <df name="cas-generators">
-              <df name="pdf2tpcas">
-              </df>
-              <df name="xml2tpcas">
-              </df>
-            </df>
-            <df name="lucene-custom">
-            </df>
-            <df name="tests">
-            </df>
-            <df name="uima-custom-analyzers">
-              <df name="Tpcas2SingleIndex">
-              </df>
-            </df>
-          </df>
-          <df name="Tpcas2Bib.dir">
-            <df name="uima-custom-analyzers">
-              <df name="Tpcas2Bib">
-              </df>
-            </df>
-          </df>
-          <df name="Tpcas2Bib4Nxml.dir">
-            <df name="uima-custom-analyzers">
-              <df name="Tpcas2Bib4Nxml">
-              </df>
-            </df>
-          </df>
-          <df name="Tpcas2Lpp.dir">
-            <df name="lucene-custom">
-            </df>
-            <df name="uima-custom-analyzers">
-              <df name="Tpcas2Lpp">
-              </df>
-            </df>
-          </df>
-          <df name="Tpcas2SingleIndex.dir">
-            <df name="cas-generators">
-              <df name="pdf2tpcas">
-              </df>
-              <df name="xml2tpcas">
-              </df>
-            </df>
-            <df name="lucene-custom">
-            </df>
-            <df name="uima-custom-analyzers">
-              <df name="Tpcas2SingleIndex">
-              </df>
-            </df>
-          </df>
-          <df name="Tpcas2TpCentral.dir">
-            <df name="uima-annotators">
-              <df name="Tpcas2TpCentral">
-              </df>
-            </df>
-          </df>
-          <df name="TpLexiconAnnotator.dir">
-            <df name="uima-annotators">
-              <df name="TpLexiconAnnotator">
-              </df>
-            </df>
-          </df>
-          <df name="TpLexiconAnnotatorFromPg.dir">
-            <df name="uima-annotators">
-              <df name="TpLexiconAnnotatorFromPg">
-              </df>
-            </df>
-          </df>
-          <df name="TpLsa.dir">
-            <df name="uima-annotators">
-              <df name="TpLsa">
-              </df>
-            </df>
-          </df>
-          <df name="TpTokenizer.dir">
-            <df name="uima-annotators">
-              <df name="TpTokenizer">
-              </df>
-            </df>
-          </df>
-          <df name="TxTokenizer.dir">
-            <df name="uima-annotators">
-              <df name="TxTokenizer">
-              </df>
-            </df>
-          </df>
-          <df name="WriteFeatureDefsFromPg.dir">
-            <df name="uima-annotators">
-              <df name="WriteFeatureDefsFromPg">
-              </df>
-            </df>
-          </df>
-          <in>feature_tests.c</in>
-          <in>feature_tests.cxx</in>
-        </df>
-      </df>
       <df name="build-default">
         <df name="CMakeFiles">
           <df name="3.10.2">
             <df name="CompilerIdC">
-              <df name="tmp">
-              </df>
-              <in>CMakeCCompilerId.c</in>
-            </df>
-            <df name="CompilerIdCXX">
-              <df name="tmp">
-              </df>
-              <in>CMakeCXXCompilerId.cpp</in>
-            </df>
-          </df>
-          <df name="3.5.1">
-            <df name="CompilerIdC">
               <in>CMakeCCompilerId.c</in>
             </df>
             <df name="CompilerIdCXX">
               <in>CMakeCXXCompilerId.cpp</in>
-            </df>
-          </df>
-          <df name="CMakeTmp">
-          </df>
-          <df name="libtextpresso.dir">
-            <df name="cas-generators">
-              <df name="pdf2tpcas">
-              </df>
-              <df name="xml2tpcas">
-              </df>
-            </df>
-            <df name="lucene-custom">
-            </df>
-            <df name="uima-custom-analyzers">
-              <df name="Tpcas2SingleIndex">
-              </df>
-            </df>
-          </df>
-          <df name="Progress">
-          </df>
-          <df name="test_casmanager.dir">
-            <df name="cas-generators">
-              <df name="pdf2tpcas">
-              </df>
-              <df name="xml2tpcas">
-              </df>
-            </df>
-            <df name="lucene-custom">
-            </df>
-            <df name="tests">
-            </df>
-            <df name="uima-custom-analyzers">
-              <df name="Tpcas2SingleIndex">
-              </df>
-            </df>
-          </df>
-          <df name="test_indexmanager.dir">
-            <df name="cas-generators">
-              <df name="pdf2tpcas">
-              </df>
-              <df name="xml2tpcas">
-              </df>
-            </df>
-            <df name="lucene-custom">
-            </df>
-            <df name="tests">
-            </df>
-            <df name="uima-custom-analyzers">
-              <df name="Tpcas2SingleIndex">
-              </df>
-            </df>
-          </df>
-          <df name="Tpcas2Bib.dir">
-            <df name="uima-custom-analyzers">
-              <df name="Tpcas2Bib">
-              </df>
-            </df>
-          </df>
-          <df name="Tpcas2Bib4Nxml.dir">
-            <df name="uima-custom-analyzers">
-              <df name="Tpcas2Bib4Nxml">
-              </df>
-            </df>
-          </df>
-          <df name="Tpcas2Lpp.dir">
-            <df name="lucene-custom">
-            </df>
-            <df name="uima-custom-analyzers">
-              <df name="Tpcas2Lpp">
-              </df>
-            </df>
-          </df>
-          <df name="Tpcas2SingleIndex.dir">
-            <df name="cas-generators">
-              <df name="pdf2tpcas">
-              </df>
-              <df name="xml2tpcas">
-              </df>
-            </df>
-            <df name="lucene-custom">
-            </df>
-            <df name="uima-custom-analyzers">
-              <df name="Tpcas2SingleIndex">
-              </df>
-            </df>
-          </df>
-          <df name="Tpcas2TpCentral.dir">
-            <df name="uima-annotators">
-              <df name="Tpcas2TpCentral">
-              </df>
-            </df>
-          </df>
-          <df name="TpLexiconAnnotator.dir">
-            <df name="uima-annotators">
-              <df name="TpLexiconAnnotator">
-              </df>
-            </df>
-          </df>
-          <df name="TpLexiconAnnotatorFromPg.dir">
-            <df name="uima-annotators">
-              <df name="TpLexiconAnnotatorFromPg">
-              </df>
-            </df>
-          </df>
-          <df name="TpLsa.dir">
-            <df name="uima-annotators">
-              <df name="TpLsa">
-              </df>
-            </df>
-          </df>
-          <df name="TpTokenizer.dir">
-            <df name="uima-annotators">
-              <df name="TpTokenizer">
-              </df>
-            </df>
-          </df>
-          <df name="TxTokenizer.dir">
-            <df name="uima-annotators">
-              <df name="TxTokenizer">
-              </df>
-            </df>
-          </df>
-          <df name="WriteFeatureDefsFromPg.dir">
-            <df name="uima-annotators">
-              <df name="WriteFeatureDefsFromPg">
-              </df>
             </df>
           </df>
           <in>feature_tests.c</in>
@@ -315,6 +39,116 @@
         <in>Stream2Tpcas.cpp</in>
         <in>Stream2Tpcas.h</in>
       </df>
+      <df name="cmake-build-release">
+        <df name="CMakeFiles">
+          <df name="3.10.2">
+            <df name="CompilerIdC">
+              <df name="tmp">
+              </df>
+              <in>CMakeCCompilerId.c</in>
+            </df>
+            <df name="CompilerIdCXX">
+              <df name="tmp">
+              </df>
+              <in>CMakeCXXCompilerId.cpp</in>
+            </df>
+          </df>
+          <df name="CMakeTmp">
+          </df>
+          <df name="libtextpresso.dir">
+            <df name="cas-generators">
+              <df name="pdf2tpcas">
+              </df>
+              <df name="xml2tpcas">
+              </df>
+            </df>
+            <df name="lucene-custom">
+            </df>
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2SingleIndex">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2Bib.dir">
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2Bib">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2Bib4Nxml.dir">
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2Bib4Nxml">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2Lpp.dir">
+            <df name="lucene-custom">
+            </df>
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2Lpp">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2SingleIndex.dir">
+            <df name="cas-generators">
+              <df name="pdf2tpcas">
+              </df>
+              <df name="xml2tpcas">
+              </df>
+            </df>
+            <df name="lucene-custom">
+            </df>
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2SingleIndex">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2TpCentral.dir">
+            <df name="uima-annotators">
+              <df name="Tpcas2TpCentral">
+              </df>
+            </df>
+          </df>
+          <df name="TpLexiconAnnotator.dir">
+            <df name="uima-annotators">
+              <df name="TpLexiconAnnotator">
+              </df>
+            </df>
+          </df>
+          <df name="TpLexiconAnnotatorFromPg.dir">
+            <df name="uima-annotators">
+              <df name="TpLexiconAnnotatorFromPg">
+              </df>
+            </df>
+          </df>
+          <df name="TpLsa.dir">
+            <df name="uima-annotators">
+              <df name="TpLsa">
+              </df>
+            </df>
+          </df>
+          <df name="TpTokenizer.dir">
+            <df name="uima-annotators">
+              <df name="TpTokenizer">
+              </df>
+            </df>
+          </df>
+          <df name="TxTokenizer.dir">
+            <df name="uima-annotators">
+              <df name="TxTokenizer">
+              </df>
+            </df>
+          </df>
+          <df name="WriteFeatureDefsFromPg.dir">
+            <df name="uima-annotators">
+              <df name="WriteFeatureDefsFromPg">
+              </df>
+            </df>
+          </df>
+          <in>feature_tests.c</in>
+          <in>feature_tests.cxx</in>
+        </df>
+      </df>
       <df name="cmake-modules">
       </df>
       <df name="docs">
@@ -323,6 +157,534 @@
         <in>CaseSensitiveAnalyzer.cpp</in>
         <in>CaseSensitiveAnalyzer.h</in>
         <in>LazySelector.h</in>
+      </df>
+      <df name="old">
+        <df name="podofountar">
+          <df name="podofo-0.9.3">
+            <df name="cmake">
+              <df name="modules">
+              </df>
+            </df>
+            <df name="debian">
+              <df name="man">
+              </df>
+            </df>
+            <df name="doc">
+              <df name="html">
+              </df>
+              <df name="latex">
+              </df>
+            </df>
+            <df name="examples">
+              <df name="helloworld">
+                <in>helloworld.cpp</in>
+              </df>
+              <df name="helloworld-base14">
+                <in>helloworld-base14.cpp</in>
+              </df>
+              <df name="pdfcontentsgraph">
+                <in>PdfContentsGraph.cpp</in>
+                <in>PdfContentsGraph.h</in>
+                <in>main.cpp</in>
+              </df>
+            </df>
+            <df name="podofo">
+              <df name="base">
+                <df name="util">
+                  <in>PdfMutex.h</in>
+                  <in>PdfMutexImpl_noop.h</in>
+                  <in>PdfMutexImpl_pthread.h</in>
+                  <in>PdfMutexImpl_win32.h</in>
+                  <in>PdfMutexWrapper.h</in>
+                </df>
+                <in>Pdf3rdPtyForwardDecl.h</in>
+                <in>PdfArray.h</in>
+                <in>PdfCanvas.h</in>
+                <in>PdfColor.h</in>
+                <in>PdfCompilerCompat.h</in>
+                <in>PdfCompilerCompatPrivate.h</in>
+                <in>PdfContentsTokenizer.h</in>
+                <in>PdfData.h</in>
+                <in>PdfDataType.h</in>
+                <in>PdfDate.h</in>
+                <in>PdfDefines.h</in>
+                <in>PdfDefinesPrivate.h</in>
+                <in>PdfDictionary.h</in>
+                <in>PdfEncoding.h</in>
+                <in>PdfEncodingFactory.h</in>
+                <in>PdfEncrypt.h</in>
+                <in>PdfError.h</in>
+                <in>PdfExtension.h</in>
+                <in>PdfFileStream.h</in>
+                <in>PdfFilter.h</in>
+                <in>PdfFiltersPrivate.h</in>
+                <in>PdfImmediateWriter.h</in>
+                <in>PdfInputDevice.h</in>
+                <in>PdfInputStream.h</in>
+                <in>PdfLocale.h</in>
+                <in>PdfMemStream.h</in>
+                <in>PdfMemoryManagement.h</in>
+                <in>PdfMutex.h</in>
+                <in>PdfMutexImpl_noop.h</in>
+                <in>PdfMutexImpl_pthread.h</in>
+                <in>PdfMutexImpl_win32.h</in>
+                <in>PdfMutexWrapper.h</in>
+                <in>PdfName.h</in>
+                <in>PdfObject.h</in>
+                <in>PdfObjectStreamParserObject.h</in>
+                <in>PdfOutputDevice.h</in>
+                <in>PdfOutputStream.h</in>
+                <in>PdfParser.h</in>
+                <in>PdfParserObject.h</in>
+                <in>PdfRect.h</in>
+                <in>PdfRefCountedBuffer.h</in>
+                <in>PdfRefCountedInputDevice.h</in>
+                <in>PdfReference.h</in>
+                <in>PdfRijndael.h</in>
+                <in>PdfSigIncWriter.h</in>
+                <in>PdfStream.h</in>
+                <in>PdfString.h</in>
+                <in>PdfTokenizer.h</in>
+                <in>PdfVariant.h</in>
+                <in>PdfVecObjects.h</in>
+                <in>PdfVersion.h</in>
+                <in>PdfWriter.h</in>
+                <in>PdfXRef.h</in>
+                <in>PdfXRefStream.h</in>
+                <in>PdfXRefStreamParserObject.h</in>
+                <in>podofoapi.h</in>
+              </df>
+              <df name="compilercompat">
+                <df name="borland">
+                  <in>cstdio</in>
+                  <in>ctime</in>
+                </df>
+              </df>
+              <in>podofo.h</in>
+            </df>
+            <df name="src">
+              <df name="base">
+                <df name="util">
+                  <in>PdfMutex.h</in>
+                  <in>PdfMutexImpl_noop.h</in>
+                  <in>PdfMutexImpl_pthread.h</in>
+                  <in>PdfMutexImpl_win32.h</in>
+                  <in>PdfMutexWrapper.h</in>
+                </df>
+                <in>Pdf3rdPtyForwardDecl.h</in>
+                <in>PdfArray.cpp</in>
+                <in>PdfArray.h</in>
+                <in>PdfCanvas.cpp</in>
+                <in>PdfCanvas.h</in>
+                <in>PdfColor.cpp</in>
+                <in>PdfColor.h</in>
+                <in>PdfCompilerCompat.h</in>
+                <in>PdfCompilerCompatPrivate.h</in>
+                <in>PdfContentsTokenizer.cpp</in>
+                <in>PdfContentsTokenizer.h</in>
+                <in>PdfData.cpp</in>
+                <in>PdfData.h</in>
+                <in>PdfDataType.cpp</in>
+                <in>PdfDataType.h</in>
+                <in>PdfDate.cpp</in>
+                <in>PdfDate.h</in>
+                <in>PdfDefines.h</in>
+                <in>PdfDefinesPrivate.h</in>
+                <in>PdfDictionary.cpp</in>
+                <in>PdfDictionary.h</in>
+                <in>PdfEncoding.cpp</in>
+                <in>PdfEncoding.h</in>
+                <in>PdfEncodingFactory.cpp</in>
+                <in>PdfEncodingFactory.h</in>
+                <in>PdfEncrypt.cpp</in>
+                <in>PdfEncrypt.h</in>
+                <in>PdfError.cpp</in>
+                <in>PdfError.h</in>
+                <in>PdfExtension.h</in>
+                <in>PdfFileStream.cpp</in>
+                <in>PdfFileStream.h</in>
+                <in>PdfFilter.cpp</in>
+                <in>PdfFilter.h</in>
+                <in>PdfFiltersPrivate.cpp</in>
+                <in>PdfFiltersPrivate.h</in>
+                <in>PdfImmediateWriter.cpp</in>
+                <in>PdfImmediateWriter.h</in>
+                <in>PdfInputDevice.cpp</in>
+                <in>PdfInputDevice.h</in>
+                <in>PdfInputStream.cpp</in>
+                <in>PdfInputStream.h</in>
+                <in>PdfLocale.cpp</in>
+                <in>PdfLocale.h</in>
+                <in>PdfMemStream.cpp</in>
+                <in>PdfMemStream.h</in>
+                <in>PdfMemoryManagement.cpp</in>
+                <in>PdfMemoryManagement.h</in>
+                <in>PdfName.cpp</in>
+                <in>PdfName.h</in>
+                <in>PdfObject.cpp</in>
+                <in>PdfObject.h</in>
+                <in>PdfObjectStreamParserObject.cpp</in>
+                <in>PdfObjectStreamParserObject.h</in>
+                <in>PdfOutputDevice.cpp</in>
+                <in>PdfOutputDevice.h</in>
+                <in>PdfOutputStream.cpp</in>
+                <in>PdfOutputStream.h</in>
+                <in>PdfParser.cpp</in>
+                <in>PdfParser.h</in>
+                <in>PdfParserObject.cpp</in>
+                <in>PdfParserObject.h</in>
+                <in>PdfRect.cpp</in>
+                <in>PdfRect.h</in>
+                <in>PdfRefCountedBuffer.cpp</in>
+                <in>PdfRefCountedBuffer.h</in>
+                <in>PdfRefCountedInputDevice.cpp</in>
+                <in>PdfRefCountedInputDevice.h</in>
+                <in>PdfReference.cpp</in>
+                <in>PdfReference.h</in>
+                <in>PdfSigIncWriter.cpp</in>
+                <in>PdfSigIncWriter.h</in>
+                <in>PdfStream.cpp</in>
+                <in>PdfStream.h</in>
+                <in>PdfString.cpp</in>
+                <in>PdfString.h</in>
+                <in>PdfTokenizer.cpp</in>
+                <in>PdfTokenizer.h</in>
+                <in>PdfVariant.cpp</in>
+                <in>PdfVariant.h</in>
+                <in>PdfVecObjects.cpp</in>
+                <in>PdfVecObjects.h</in>
+                <in>PdfVersion.h</in>
+                <in>PdfWriter.cpp</in>
+                <in>PdfWriter.h</in>
+                <in>PdfXRef.cpp</in>
+                <in>PdfXRef.h</in>
+                <in>PdfXRefStream.cpp</in>
+                <in>PdfXRefStream.h</in>
+                <in>PdfXRefStreamParserObject.cpp</in>
+                <in>PdfXRefStreamParserObject.h</in>
+                <in>podofoapi.h</in>
+              </df>
+              <df name="doc">
+                <in>PdfAcroForm.cpp</in>
+                <in>PdfAcroForm.h</in>
+                <in>PdfAction.cpp</in>
+                <in>PdfAction.h</in>
+                <in>PdfAnnotation.cpp</in>
+                <in>PdfAnnotation.h</in>
+                <in>PdfCMapEncoding.cpp</in>
+                <in>PdfCMapEncoding.h</in>
+                <in>PdfContents.cpp</in>
+                <in>PdfContents.h</in>
+                <in>PdfDestination.cpp</in>
+                <in>PdfDestination.h</in>
+                <in>PdfDifferenceEncoding.cpp</in>
+                <in>PdfDifferenceEncoding.h</in>
+                <in>PdfDocument.cpp</in>
+                <in>PdfDocument.h</in>
+                <in>PdfElement.cpp</in>
+                <in>PdfElement.h</in>
+                <in>PdfEncodingObjectFactory.cpp</in>
+                <in>PdfEncodingObjectFactory.h</in>
+                <in>PdfExtGState.cpp</in>
+                <in>PdfExtGState.h</in>
+                <in>PdfField.cpp</in>
+                <in>PdfField.h</in>
+                <in>PdfFileSpec.cpp</in>
+                <in>PdfFileSpec.h</in>
+                <in>PdfFont.cpp</in>
+                <in>PdfFont.h</in>
+                <in>PdfFontCID.cpp</in>
+                <in>PdfFontCID.h</in>
+                <in>PdfFontCache.cpp</in>
+                <in>PdfFontCache.h</in>
+                <in>PdfFontConfigWrapper.cpp</in>
+                <in>PdfFontConfigWrapper.h</in>
+                <in>PdfFontFactory.cpp</in>
+                <in>PdfFontFactory.h</in>
+                <in>PdfFontFactoryBase14Data.h</in>
+                <in>PdfFontMetrics.cpp</in>
+                <in>PdfFontMetrics.h</in>
+                <in>PdfFontMetricsBase14.cpp</in>
+                <in>PdfFontMetricsBase14.h</in>
+                <in>PdfFontMetricsFreetype.cpp</in>
+                <in>PdfFontMetricsFreetype.h</in>
+                <in>PdfFontMetricsObject.cpp</in>
+                <in>PdfFontMetricsObject.h</in>
+                <in>PdfFontSimple.cpp</in>
+                <in>PdfFontSimple.h</in>
+                <in>PdfFontTTFSubset.cpp</in>
+                <in>PdfFontTTFSubset.h</in>
+                <in>PdfFontTrueType.cpp</in>
+                <in>PdfFontTrueType.h</in>
+                <in>PdfFontType1.cpp</in>
+                <in>PdfFontType1.h</in>
+                <in>PdfFontType1Base14.cpp</in>
+                <in>PdfFontType1Base14.h</in>
+                <in>PdfFontType3.cpp</in>
+                <in>PdfFontType3.h</in>
+                <in>PdfFunction.cpp</in>
+                <in>PdfFunction.h</in>
+                <in>PdfHintStream.cpp</in>
+                <in>PdfHintStream.h</in>
+                <in>PdfIdentityEncoding.cpp</in>
+                <in>PdfIdentityEncoding.h</in>
+                <in>PdfImage.cpp</in>
+                <in>PdfImage.h</in>
+                <in>PdfInfo.cpp</in>
+                <in>PdfInfo.h</in>
+                <in>PdfMemDocument.cpp</in>
+                <in>PdfMemDocument.h</in>
+                <in>PdfNamesTree.cpp</in>
+                <in>PdfNamesTree.h</in>
+                <in>PdfOutlines.cpp</in>
+                <in>PdfOutlines.h</in>
+                <in>PdfPage.cpp</in>
+                <in>PdfPage.h</in>
+                <in>PdfPagesTree.cpp</in>
+                <in>PdfPagesTree.h</in>
+                <in>PdfPagesTreeCache.cpp</in>
+                <in>PdfPagesTreeCache.h</in>
+                <in>PdfPainter.cpp</in>
+                <in>PdfPainter.h</in>
+                <in>PdfPainterMM.cpp</in>
+                <in>PdfPainterMM.h</in>
+                <in>PdfShadingPattern.cpp</in>
+                <in>PdfShadingPattern.h</in>
+                <in>PdfSigIncMemDocument.cpp</in>
+                <in>PdfSigIncMemDocument.h</in>
+                <in>PdfSigIncPainter.cpp</in>
+                <in>PdfSigIncPainter.h</in>
+                <in>PdfSigIncSignatureField.cpp</in>
+                <in>PdfSigIncSignatureField.h</in>
+                <in>PdfSignOutputDevice.cpp</in>
+                <in>PdfSignOutputDevice.h</in>
+                <in>PdfSignatureField.cpp</in>
+                <in>PdfSignatureField.h</in>
+                <in>PdfStreamedDocument.cpp</in>
+                <in>PdfStreamedDocument.h</in>
+                <in>PdfTTFWriter.cpp</in>
+                <in>PdfTTFWriter.h</in>
+                <in>PdfTable.cpp</in>
+                <in>PdfTable.h</in>
+                <in>PdfTilingPattern.cpp</in>
+                <in>PdfTilingPattern.h</in>
+                <in>PdfXObject.cpp</in>
+                <in>PdfXObject.h</in>
+              </df>
+              <in>podofo-base.h</in>
+              <in>podofo.h</in>
+            </df>
+            <df name="test">
+              <df name="ContentParser">
+                <in>main.cpp</in>
+              </df>
+              <df name="CreationTest">
+                <df name="resources">
+                </df>
+                <in>CreationTest.cpp</in>
+              </df>
+              <df name="DeviceTest">
+                <in>DeviceTest.cpp</in>
+              </df>
+              <df name="FilterTest">
+                <in>FilterTest.cpp</in>
+              </df>
+              <df name="FormTest">
+                <in>FormTest.cpp</in>
+              </df>
+              <df name="LargeTest">
+                <in>LargeTest.cpp</in>
+              </df>
+              <df name="ObjectParserTest">
+                <df name="objects">
+                </df>
+                <in>ObjectParserTest.cpp</in>
+              </df>
+              <df name="ParserTest">
+                <in>ParserTest.cpp</in>
+              </df>
+              <df name="pdfs">
+              </df>
+              <df name="SignatureTest">
+                <in>NSSSignatureGenerator.cpp</in>
+                <in>NSSSignatureGenerator.h</in>
+                <in>SignTest.cpp</in>
+                <in>SignatureGenerator.h</in>
+                <in>SimpleSignatureGenerator.h</in>
+              </df>
+              <df name="SignTest">
+                <in>SignTest.cpp</in>
+              </df>
+              <df name="system">
+                <df name="data">
+                </df>
+              </df>
+              <df name="TokenizerTest">
+                <in>TokenizerTest.cpp</in>
+              </df>
+              <df name="unit">
+                <in>BasicTypeTest.cpp</in>
+                <in>BasicTypeTest.h</in>
+                <in>ColorTest.cpp</in>
+                <in>ColorTest.h</in>
+                <in>DateTest.cpp</in>
+                <in>DateTest.h</in>
+                <in>ElementTest.cpp</in>
+                <in>ElementTest.h</in>
+                <in>EncodingTest.cpp</in>
+                <in>EncodingTest.h</in>
+                <in>EncryptTest.cpp</in>
+                <in>EncryptTest.h</in>
+                <in>FilterTest.cpp</in>
+                <in>FilterTest.h</in>
+                <in>FontTest.cpp</in>
+                <in>FontTest.h</in>
+                <in>NameTest.cpp</in>
+                <in>NameTest.h</in>
+                <in>PageTest.cpp</in>
+                <in>PageTest.h</in>
+                <in>PagesTreeTest.cpp</in>
+                <in>PagesTreeTest.h</in>
+                <in>PainterTest.cpp</in>
+                <in>PainterTest.h</in>
+                <in>StringTest.cpp</in>
+                <in>StringTest.h</in>
+                <in>TestUtils.cpp</in>
+                <in>TestUtils.h</in>
+                <in>TokenizerTest.cpp</in>
+                <in>TokenizerTest.h</in>
+                <in>VariantTest.cpp</in>
+                <in>VariantTest.h</in>
+                <in>cppunitextensions.h</in>
+                <in>main.cpp</in>
+              </df>
+              <df name="VariantTest">
+                <in>VariantTest.cpp</in>
+              </df>
+              <df name="WatermarkTest">
+                <in>WatermarkTest.cpp</in>
+              </df>
+              <in>PdfTest.h</in>
+            </df>
+            <df name="tools">
+              <df name="podofobox">
+                <in>boxsetter.cpp</in>
+                <in>boxsetter.h</in>
+                <in>podofobox.cpp</in>
+              </df>
+              <df name="podofocolor">
+                <in>colorchanger.cpp</in>
+                <in>colorchanger.h</in>
+                <in>colorspace.cpp</in>
+                <in>colorspace.h</in>
+                <in>dummyconverter.cpp</in>
+                <in>dummyconverter.h</in>
+                <in>graphicsstack.cpp</in>
+                <in>graphicsstack.h</in>
+                <in>grayscaleconverter.cpp</in>
+                <in>grayscaleconverter.h</in>
+                <in>iconverter.cpp</in>
+                <in>iconverter.h</in>
+                <in>lua_compat.h</in>
+                <in>luaconverter.cpp</in>
+                <in>luaconverter.h</in>
+                <in>podofocolor.cpp</in>
+              </df>
+              <df name="podofocountpages">
+                <in>countpages.cpp</in>
+              </df>
+              <df name="podofocrop">
+                <in>podofocrop.cpp</in>
+              </df>
+              <df name="podofoencrypt">
+                <in>podofoencrypt.cpp</in>
+              </df>
+              <df name="podofogc">
+                <in>podofogc.cpp</in>
+              </df>
+              <df name="podofoimg2pdf">
+                <in>ImageConverter.cpp</in>
+                <in>ImageConverter.h</in>
+                <in>podofoimg2pdf.cpp</in>
+              </df>
+              <df name="podofoimgextract">
+                <in>ImageExtractor.cpp</in>
+                <in>ImageExtractor.h</in>
+                <in>podofoimgextract.cpp</in>
+              </df>
+              <df name="podofoimpose">
+                <df name="plans">
+                  <df name="lua">
+                  </df>
+                </df>
+                <in>charpainter.cpp</in>
+                <in>charpainter.h</in>
+                <in>impositionplan.cpp</in>
+                <in>impositionplan.h</in>
+                <in>lua_compat.h</in>
+                <in>pdftranslator.cpp</in>
+                <in>pdftranslator.h</in>
+                <in>planreader_legacy.cpp</in>
+                <in>planreader_legacy.h</in>
+                <in>planreader_lua.cpp</in>
+                <in>planreader_lua.h</in>
+                <in>podofoimpose.cpp</in>
+              </df>
+              <df name="podofoincrementalupdates">
+                <in>incrementalupdates.cpp</in>
+              </df>
+              <df name="podofomerge">
+                <in>podofomerge.cpp</in>
+              </df>
+              <df name="podofopages">
+                <in>DeleteOperation.cpp</in>
+                <in>DeleteOperation.h</in>
+                <in>MoveOperation.cpp</in>
+                <in>MoveOperation.h</in>
+                <in>Operation.h</in>
+                <in>podofopages.cpp</in>
+              </df>
+              <df name="podofopdfinfo">
+                <in>pdfinfo.cpp</in>
+                <in>pdfinfo.h</in>
+                <in>podofopdfinfo.cpp</in>
+              </df>
+              <df name="podofotxt2pdf">
+                <in>podofotxt2pdf.cpp</in>
+              </df>
+              <df name="podofotxtextract">
+                <in>TextExtractor.cpp</in>
+                <in>TextExtractor.h</in>
+                <in>podofotxtextract.cpp</in>
+              </df>
+              <df name="podofouncompress">
+                <in>Uncompress.cpp</in>
+                <in>Uncompress.h</in>
+                <in>podofouncompress.cpp</in>
+              </df>
+              <df name="podofoxmp">
+                <in>podofoxmp.cpp</in>
+              </df>
+            </df>
+            <df name="vcincludes">
+              <in>unistd.h</in>
+            </df>
+          </df>
+        </df>
+        <df name="thesolution">
+          <df name="cas-generators">
+            <df name="pdf2tpcas">
+              <in>PdfInfo.cpp</in>
+            </df>
+          </df>
+          <df name="podofo-0.9.3">
+            <df name="src">
+              <df name="base">
+                <in>PdfEncrypt.cpp</in>
+              </df>
+            </df>
+          </df>
+        </df>
       </df>
       <df name="patches">
         <df name="uimacpp-2.4.0">
