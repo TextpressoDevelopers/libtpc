@@ -1,3 +1,7 @@
+#
+# Build:
+#	docker build --no-cache -t ubuntu-tpc-hmm .
+#
 FROM ubuntu:18.04
 
 RUN export DEBIAN_FRONTEND=noninteractive; apt-get -qq update; apt-get -y install cmake libxerces-c-dev \
