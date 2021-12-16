@@ -23,21 +23,17 @@ COPY ./patches/uimacpp-2.4.0/src/framework/uima/strtools.hpp /uimacpp-2.4.0/src/
 COPY ./patches/uimacpp-2.4.0/configure.ac /uimacpp-2.4.0/
 
 ## compile and install uima library
-#RUN cd uimacpp-2.4.0; autoconf -i; chmod +x configure; ./configure --without-activemq \
-#--with-jdk="/usr/lib/jvm/java-8-openjdk-amd64/include -I/usr/lib/jvm/java-8-openjdk-amd64/include/linux" \
-#--with-icu=/usr --enable-static --enable-shared --prefix=/usr/local; make -j8 && make install
-# compile and install uima library
 RUN cd uimacpp-2.4.0; autoconf -i; chmod +x configure; ./configure --without-activemq \
 --with-jdk="/usr/lib/jvm/java-11-openjdk-amd64/include -I/usr/lib/jvm/java-11-openjdk-amd64/include/linux" \
---with-icu=/usr --enable-static --enable-shared --prefix=/usr/local; make -j8 && make install
+--with-icu=/usr --enable-static --enable-shared --prefix=/usr/local; make -j8 && make install && rm -rf /uimacpp-2.4.0
 
 # compile and install wt - the version provided by ubuntu is bugged!
 RUN wget https://github.com/emweb/wt/archive/3.3.7.tar.gz -O wt-3.3.7.tar.gz; tar xzf wt-3.3.7.tar.gz; cd wt-3.3.7; mkdir build; cd build; \
-cmake ..; make -j8 ; make install
+cmake ..; make -j8; make install; rm -rf /wt-3.3.7
 
 # google test
 RUN git clone https://github.com/google/googletest.git; cd googletest; mkdir cmake-build-release; cd cmake-build-release; cmake ..; \
-make -j8 ; make install
+make -j8 ; make install; rm -rf googletest
 
 # python packages
 RUN pip3 install psycopg2 lxml
@@ -50,10 +46,11 @@ ADD podofo-0.9.3.tar.gz /.
 WORKDIR /podofo-0.9.3
 RUN mkdir -p build
 WORKDIR /podofo-0.9.3/build
-RUN cmake -G "Unix Makefiles" DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release -DPODOFO_BUILD_SHARED:BOOL=TRUE ..
-RUN make -j 8 && make install
-RUN rm /usr/lib/libpodofo*
-RUN ln -s /usr/local/lib/libpodofo* /usr/lib/.
+RUN cmake -G "Unix Makefiles" DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release -DPODOFO_BUILD_SHARED:BOOL=TRUE .. \
+&& make -j 8 && make install \
+&& rm /usr/lib/libpodofo* \
+&& ln -s /usr/local/lib/libpodofo* /usr/lib/. \
+&& rm -rf /podofo-0.9.3
 
 # install popplerlab
 RUN apt-get update
@@ -64,22 +61,16 @@ libfontconfig1-dev libjpeg-dev libopenjp2-7-dev libboost-dev libnss3-dev libcurl
 libtiff5-dev
 ADD poppler-data-0.4.11.tar.gz /
 WORKDIR /poppler-data-0.4.11
-RUN mkdir -p build && cd build && cmake .. && make && make install
-RUN rm -rf /poppler-data-0.4.11
+RUN mkdir -p build && cd build && cmake .. && make && make install && rm -rf /poppler-data-0.4.11
 ADD popplerlab-21.11.0.tgz /
 WORKDIR /popplerlab-21.11.0
 RUN mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_UTILS=OFF \
 -DENABLE_CPP=OFF -DBUILD_MANUAL_TESTS=OFF -DENABLE_UNSTABLE_API_ABI_HEADERS=ON \
--DENABLE_GLIB=OFF .. && make -j 8 && make install
-RUN ldconfig
-RUN rm -rf /popplerlab-21.11.0
+-DENABLE_GLIB=OFF .. && make -j 8 && make install && ldconfig && rm -rf /popplerlab-21.11.0
 
 WORKDIR /
 RUN mkdir libtpc
 COPY . libtpc/
-RUN cd libtpc; rm -r cmake-build-release; mkdir cmake-build-release; cd cmake-build-release; cmake ..; make -j 8 ; make install
-
-# clean
-RUN rm -rf uimacpp* wt-3.3.7* libtpc* podofo-0.9.3* googletest*
+RUN cd libtpc; rm -r cmake-build-release; mkdir cmake-build-release; cd cmake-build-release; cmake ..; make -j 8 ; make install; rm -rf /libtpc
 
 EXPOSE 80
