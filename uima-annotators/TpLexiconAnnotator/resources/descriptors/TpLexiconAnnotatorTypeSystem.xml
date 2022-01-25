@@ -20,11 +20,11 @@
                     <description>Attaches a category name to each annotation.</description>
                     <rangeTypeName>uima.cas.String</rangeTypeName>
                 </featureDescription>
-                <featureDescriptiom>
+                <featureDescription>
                     <name>aid</name>
                     <description>Annotation Id</description>
                     <rangeTypeName>uima.cas.Integer</rangeTypeName>
-                </featureDescriptiom>
+                </featureDescription>
             </features>
         </typeDescription>
     </types>

@@ -35,11 +35,11 @@
                     <description>Actual word that is a token.</description>
                     <rangeTypeName>uima.cas.String</rangeTypeName>
                 </featureDescription>
-                <featureDescriptiom>
+                <featureDescription>
                     <name>aid</name>
                     <description>Annotation Id</description>
                     <rangeTypeName>uima.cas.Integer</rangeTypeName>
-                </featureDescriptiom>
+                </featureDescription>
             </features>
         </typeDescription>      
         <typeDescription>
@@ -64,11 +64,11 @@
                     <description>Actual sentence.</description>
                     <rangeTypeName>uima.cas.String</rangeTypeName>
                 </featureDescription>
-                <featureDescriptiom>
+                <featureDescription>
                     <name>aid</name>
                     <description>Annotation Id</description>
                     <rangeTypeName>uima.cas.Integer</rangeTypeName>
-                </featureDescriptiom>
+                </featureDescription>
             </features>
         </typeDescription>
         <typeDescription>
