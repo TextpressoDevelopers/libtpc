@@ -35,7 +35,7 @@ RUN wget https://github.com/emweb/wt/archive/3.3.7.tar.gz -O wt-3.3.7.tar.gz \
 
 # google test
 RUN git clone https://github.com/google/googletest.git; cd googletest; mkdir cmake-build-release; cd cmake-build-release; cmake ..; \
-make -j8 ; make install; rm -rf googletest
+make -j8 ; make install
 
 # python packages
 RUN pip3 install psycopg2 lxml
