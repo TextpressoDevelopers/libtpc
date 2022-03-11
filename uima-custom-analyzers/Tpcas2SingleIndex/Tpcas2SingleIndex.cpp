@@ -328,7 +328,7 @@ string readFromWBfile(const char* field, string paper) {
                 std::string line;
                 getline(f, line);
                 if (field == "accession")
-                    output_line = output_line + " "+line;
+                    output_line = output_line + " " + line;
                 else output_line += line;
             }
         }
@@ -336,61 +336,50 @@ string readFromWBfile(const char* field, string paper) {
     return output_line;
 }
 
-vector<String> Tpcas2SingleIndex::GetBib(string fullfilename)
-{
+vector<String> Tpcas2SingleIndex::GetBib(string fullfilename) {
     vector<String> bib_info;
-    boost::filesystem::path source  = fullfilename;
+    boost::filesystem::path source = fullfilename;
     string filename = source.filename().string();
     boost::replace_all(filename, ".tpcas", ".bib");
-    string bib_file(tempDir+"/"+filename);
+    string bib_file(tempDir + "/" + filename);
     std::ifstream f(bib_file.c_str());
     string str;
-    while (std::getline(f, str))
-    {
+    while (std::getline(f, str)) {
         vector<string> items;
         boost::split(items, str, boost::is_any_of("|"));
         if (items.size() <= 1) {
             continue;
         }
         string field = items[0];
-        string content  = items[1].c_str();
+        string content = items[1].c_str();
         boost::replace_all(content, "\377", "");
         boost::replace_all(content, "\\377", "");
         String content_conv = StringUtils::toString(content.c_str());
         boost::replace_all(content_conv, "\377", "");
         boost::replace_all(content_conv, "\\377", "");
         // Process str
-        if(field == "author")
-        {
+        if (field == "author") {
             bib_info.push_back(content_conv);
         }
-        if(field == "accession")
-        {
+        if (field == "accession") {
             bib_info.push_back(content_conv);
         }
-         if(field == "type")
-        {
+        if (field == "type") {
             bib_info.push_back(content_conv);
         }
-         if(field == "title")
-        {
-
+        if (field == "title") {
             bib_info.push_back(content_conv);
         }
-         if(field == "journal")
-        {
+        if (field == "journal") {
             bib_info.push_back(content_conv);
         }
-         if(field == "citation")
-        {
+        if (field == "citation") {
             bib_info.push_back(content_conv);
         }
-         if(field == "year")
-        {
+        if (field == "year") {
             bib_info.push_back(content_conv);
         }
-         if(field == "abstract")
-        {
+        if (field == "abstract") {
             bib_info.push_back(content_conv);
         }
     }
@@ -401,7 +390,7 @@ vector<String> GetBibFromWB(string paper) {
     vector<String> bib;
     string author_line = readFromWBfile("author", paper);
     string accession_line = readFromWBfile("accession", paper);
-    accession_line = accession_line +" "+ paper;
+    accession_line = accession_line + " " + paper;
     string type_line = readFromWBfile("type", paper);
     string title_line = readFromWBfile("title", paper);
     string journal_line = readFromWBfile("journal", paper);
@@ -482,8 +471,24 @@ std::map<wstring, vector<wstring> > collectCategoryMapping(CAS& tcas) {
     return cat_map;
 }
 
+wstring getCatString(map<wstring, vector < wstring>> cat_map, wstring w_cleanText) {
+    wstring w_cat_string_temp = w_cleanText;
+    vector<wstring> words;
+    boost::split(words, w_cleanText, boost::is_any_of(" \n\t'\\/()[]{}:.;,!?"));
+    wstring w_cat_string;
+    for (wstring word : words) {
+        if (cat_map.find(word) != cat_map.end()) {
+            w_cat_string += boost::algorithm::join(cat_map[word], "|") + L"\t";
+        } else {
+            w_cat_string += L"NA\t";
+        }
+    }
+    w_cat_string = w_cat_string.substr(0, w_cat_string.length() - 1);
+    return w_cat_string;
+}
+
 void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<String> bib_info, const string& corpora,
-                    const string& doc_id, const IndexWriterPtr& sentencewriter) {
+        const string& doc_id, const IndexWriterPtr& sentencewriter) {
     std::hash<std::string> string_hash;
     String l_author = fieldStartMark + bib_info[0] + fieldEndMark;
     String l_accession = bib_info[1];
@@ -551,31 +556,31 @@ void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<St
             string sentence_id_str = to_string(count);
 
             w_sentence_cat = w_sentence_cat.substr(0, w_sentence_cat.length() -
-                                                      1); ///remove last \t to avoid empty string after split
+                    1); ///remove last \t to avoid empty string after split
             w_sentence_pos = w_sentence_pos.substr(0, w_sentence_pos.length() - 1);
             //testing w_cat_string and w_positions matches and retrieve words from w_cleanText
             DocumentPtr sentencedoc = newLucene<Document>();
             sentencedoc->add(newLucene<Field>(L"sentence_id", StringUtils::toString(sentence_id_str.c_str()),
-                                              Field::STORE_YES, Field::INDEX_NOT_ANALYZED_NO_NORMS));
+                    Field::STORE_YES, Field::INDEX_NOT_ANALYZED_NO_NORMS));
             sentencedoc->add(newLucene<Field>(L"doc_id", StringUtils::toString(doc_id.c_str()), Field::STORE_YES,
-                                              Field::INDEX_NOT_ANALYZED_NO_NORMS));
+                    Field::INDEX_NOT_ANALYZED_NO_NORMS));
             sentencedoc->add(newLucene<Field>(L"sentence",
-                                              StringUtils::toString<wstring>(w_sentence),
-                                              Field::STORE_NO, Field::INDEX_ANALYZED));
+                    StringUtils::toString<wstring>(w_sentence),
+                    Field::STORE_NO, Field::INDEX_ANALYZED));
             sentencedoc->add(newLucene<Field>(L"sentence_compressed",
-                                              CompressionTools::compressString(
-                                                      StringUtils::toString<wstring>(w_sentence)),
-                                              Field::STORE_YES));
+                    CompressionTools::compressString(
+                    StringUtils::toString<wstring>(w_sentence)),
+                    Field::STORE_YES));
             sentencedoc->add(newLucene<Field>(L"sentence_cat", StringUtils::toString<wstring>(w_sentence_cat),
-                                              Field::STORE_NO, Field::INDEX_ANALYZED));
+                    Field::STORE_NO, Field::INDEX_ANALYZED));
             sentencedoc->add(newLucene<Field>(L"sentence_cat_compressed",
-                                              CompressionTools::compressString(
-                                                      StringUtils::toString<wstring>(w_sentence_cat)),
-                                              Field::STORE_YES));
+                    CompressionTools::compressString(
+                    StringUtils::toString<wstring>(w_sentence_cat)),
+                    Field::STORE_YES));
             sentencedoc->add(newLucene<Field>(L"begin", StringUtils::toString<int>(begin), Field::STORE_YES,
-                                              Field::INDEX_ANALYZED));
+                    Field::INDEX_ANALYZED));
             sentencedoc->add(newLucene<Field>(L"end", StringUtils::toString<int>(end), Field::STORE_YES,
-                                              Field::INDEX_ANALYZED));
+                    Field::INDEX_ANALYZED));
             sentencedoc->add(newLucene<Field>(L"author", l_author, Field::STORE_NO, Field::INDEX_ANALYZED));
             sentencedoc->add(newLucene<Field>(L"accession", l_accession, Field::STORE_NO, Field::INDEX_ANALYZED));
             sentencedoc->add(newLucene<Field>(L"type", l_type, Field::STORE_NO, Field::INDEX_ANALYZED));
@@ -584,12 +589,58 @@ void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<St
             sentencedoc->add(newLucene<Field>(L"citation", l_citation, Field::STORE_NO, Field::INDEX_ANALYZED));
             sentencedoc->add(newLucene<Field>(L"year", l_year, Field::STORE_YES, Field::INDEX_ANALYZED));
             sentencedoc->add(newLucene<Field>(L"corpus", String(corpora.begin(), corpora.end()), Field::STORE_NO,
-                                              Field::INDEX_ANALYZED));
+                    Field::INDEX_ANALYZED));
             sentencewriter->addDocument(sentencedoc);
         }
         aait.moveToNext();
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// added by mueller 2022/02/04
+
+void addSectionFields(CAS& tcas, map<wstring, vector<wstring> > cat_map, DocumentPtr fulltextdoc) {
+    Type section = tcas.getTypeSystem().getType("org.apache.uima.textpresso.section");
+    ANIndex sectionindex = tcas.getAnnotationIndex(section);
+    ANIterator aait = sectionindex.iterator();
+    aait.moveToFirst();
+    while (aait.isValid()) {
+        Feature sectionContent = section.getFeatureByBaseName("content");
+        UnicodeStringRef uSectionContent = aait.get().getStringValue(sectionContent);
+        Feature sectionType = section.getFeatureByBaseName("type");
+        UnicodeStringRef uSectionType = aait.get().getStringValue(sectionType);
+        wstring wSection;
+        UnicodeString wd;
+        uSectionContent.extract(0, uSectionContent.length(), wd);
+        for (int i = 0; i < wd.length(); i++)
+            wSection += static_cast<wchar_t> (wd[i]);
+        wstring wType;
+        UnicodeString wdt;
+        uSectionType.extract(0, uSectionType.length(), wdt);
+        for (int i = 0; i < wdt.length(); i++)
+            wType += static_cast<wchar_t> (wdt[i]);
+        // the abstract from the bibinfo should be
+        //  be indexed as it is cleaner.
+        if (wType.compare(L"abstract") != 0) {
+            wstring wSectionCat = getCatString(cat_map, wSection);
+            wstring fieldname = wType;
+            fulltextdoc->add(newLucene<Field>(fieldname, wSection,
+                    Field::STORE_NO, Field::INDEX_ANALYZED));
+            fieldname = wType + L"_compressed";
+            fulltextdoc->add(newLucene<Field>(fieldname,
+                    CompressionTools::compressString(wSection), Field::STORE_YES));
+            fieldname = wType + L"_cat";
+            fulltextdoc->add(newLucene<Field>(fieldname, wSectionCat,
+                    Field::STORE_NO, Field::INDEX_ANALYZED));
+            fieldname = wType + L"_cat_compressed";
+            fulltextdoc->add(newLucene<Field>(fieldname,
+                    CompressionTools::compressString(wSectionCat), Field::STORE_YES));
+        }
+        aait.moveToNext();
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 TyErrorId Tpcas2SingleIndex::initialize(AnnotatorContext & rclAnnotatorContext) {
     if (!rclAnnotatorContext.isParameterDefined("TempDirectory") ||
@@ -620,7 +671,7 @@ TyErrorId Tpcas2SingleIndex::initialize(AnnotatorContext & rclAnnotatorContext) 
     }
     String TokenIndexDir = StringUtils::toString(tokenindexdirectory.c_str());
     if (!rclAnnotatorContext.isParameterDefined("TokenCaseSensitiveLuceneIndexDirectory") ||
-        rclAnnotatorContext.extractValue("TokenCaseSensitiveLuceneIndexDirectory", tokenindexdirectory_casesens) != UIMA_ERR_NONE) {
+            rclAnnotatorContext.extractValue("TokenCaseSensitiveLuceneIndexDirectory", tokenindexdirectory_casesens) != UIMA_ERR_NONE) {
         // log the error condition
         rclAnnotatorContext.getLogger().logError(
                 "Required configuration parameter \"TokenCaseSensitiveLuceneIndexDirectory\" not found in component descriptor");
@@ -639,8 +690,8 @@ TyErrorId Tpcas2SingleIndex::initialize(AnnotatorContext & rclAnnotatorContext) 
     }
     String SentenceIndexDir = StringUtils::toString(sentenceindexdirectory.c_str());
     sentencewriter = newLucene<IndexWriter > (FSDirectory::open(SentenceIndexDir),
-                                              newLucene<StandardAnalyzer > (LuceneVersion::LUCENE_30), b_newindex, //create new index
-                                              IndexWriter::MaxFieldLengthUNLIMITED);
+            newLucene<StandardAnalyzer > (LuceneVersion::LUCENE_30), b_newindex, //create new index
+            IndexWriter::MaxFieldLengthUNLIMITED);
     if (!rclAnnotatorContext.isParameterDefined("SentenceCaseSensitiveLuceneIndexDirectory") ||
             rclAnnotatorContext.extractValue("SentenceCaseSensitiveLuceneIndexDirectory", sentenceindexdirectory_casesens) != UIMA_ERR_NONE) {
         // log the error condition
@@ -666,7 +717,7 @@ TyErrorId Tpcas2SingleIndex::initialize(AnnotatorContext & rclAnnotatorContext) 
             newLucene<StandardAnalyzer > (LuceneVersion::LUCENE_30), b_newindex, //create new index
             IndexWriter::MaxFieldLengthUNLIMITED);
     if (!rclAnnotatorContext.isParameterDefined("FulltextCaseSensitiveLuceneIndexDirectory") ||
-        rclAnnotatorContext.extractValue("FulltextCaseSensitiveLuceneIndexDirectory", fulltextindexdirectory_casesens) != UIMA_ERR_NONE) {
+            rclAnnotatorContext.extractValue("FulltextCaseSensitiveLuceneIndexDirectory", fulltextindexdirectory_casesens) != UIMA_ERR_NONE) {
         // log the error condition
         rclAnnotatorContext.getLogger().logError(
                 "Required configuration parameter \"FulltextCaseSensitiveLuceneIndexDirectory\" not found in component descriptor");
@@ -675,8 +726,8 @@ TyErrorId Tpcas2SingleIndex::initialize(AnnotatorContext & rclAnnotatorContext) 
     }
     String FulltextCaseSensitiveIndexDir = StringUtils::toString(fulltextindexdirectory_casesens.c_str());
     fulltextwriter_casesens = newLucene<IndexWriter > (FSDirectory::open(FulltextCaseSensitiveIndexDir),
-                                              newLucene<CaseSensitiveAnalyzer > (LuceneVersion::LUCENE_30), b_newindex, //create new index
-                                              IndexWriter::MaxFieldLengthUNLIMITED);
+            newLucene<CaseSensitiveAnalyzer > (LuceneVersion::LUCENE_30), b_newindex, //create new index
+            IndexWriter::MaxFieldLengthUNLIMITED);
     return (TyErrorId) UIMA_ERR_NONE;
 }
 
@@ -710,22 +761,6 @@ TyErrorId Tpcas2SingleIndex::typeSystemInit(TypeSystem const & crTypeSystem) {
     return (TyErrorId) UIMA_ERR_NONE;
 }
 
-wstring getCatString(CAS& tcas, map<wstring, vector<wstring>> cat_map, wstring w_cleanText) {
-    wstring w_cat_string_temp = w_cleanText;
-    vector<wstring> words;
-    boost::split(words, w_cleanText, boost::is_any_of(" \n\t'\\/()[]{}:.;,!?"));
-    wstring w_cat_string;
-    for (wstring word : words) {
-        if (cat_map.find(word) != cat_map.end()) {
-            w_cat_string += boost::algorithm::join(cat_map[word], "|") + L"\t";
-        } else {
-            w_cat_string += L"NA\t";
-        }
-    }
-    w_cat_string = w_cat_string.substr(0, w_cat_string.length() - 1);
-    return w_cat_string;
-}
-
 TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crResultSpecification) {
     FSIndexRepository & indices = tcas.getIndexRepository();
     ANIndex allannindex = tcas.getAnnotationIndex();
@@ -737,7 +772,7 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
     int global_doc_counter(0);
     // read global doc counter from file
     std::ifstream ifs;
-    if(const char* env_p = std::getenv("INDEX_PATH")) {
+    if (const char* env_p = std::getenv("INDEX_PATH")) {
         ifs.open(string(env_p) + "/counter.dat", std::ios::binary);
     } else {
         ifs.open("/usr/local/textpresso/luceneindex/counter.dat", std::ios::binary);
@@ -751,7 +786,7 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
     ++global_doc_counter;
     // save the new value back to file
     std::ofstream ofs;
-    if(const char* env_p = std::getenv("INDEX_PATH")) {
+    if (const char* env_p = std::getenv("INDEX_PATH")) {
         ofs.open(string(env_p) + "/counter.dat");
     } else {
         ofs.open("/usr/local/textpresso/luceneindex/counter.dat");
@@ -770,9 +805,7 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
 
     // collecting and indexing categories
     auto cat_map = collectCategoryMapping(tcas);
-    wstring w_cat_string = getCatString(tcas, cat_map, w_cleanText);
-
-    w_cat_string = w_cat_string.substr(0, w_cat_string.length() - 1); ///remove last \t to avoid empty string after split
+    wstring w_cat_string = getCatString(cat_map, w_cleanText);
     vector<String> bib_info;
     //string regex_wb = "WBPaper";
     string filename = getFilename(tcas);
@@ -780,13 +813,13 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
     // get subject and title from xml fulltext and classify according to regex
     string corpora("BG");
     String l_article_type;
-    if (std::regex_match (filename, std::regex("useruploads\/(.*)"))) {
+    if (std::regex_match(filename, std::regex("useruploads\/(.*)"))) {
         std::regex rgx("useruploads\/([^\/]+)\/([^\/]+)\/.*");
         std::smatch matches;
         std::regex_search(filename, matches, rgx);
         string username = matches[1];
         string fn = matches[2];
-        map<string, set<string>> papers_lit_map;
+        map<string, set < string>> papers_lit_map;
         // lit.cfg is generated by user interface
         std::ifstream ifs("/usr/local/textpresso/useruploads/" + username + "/uploadedfiles/lit.cfg", std::ios::binary);
         if (ifs) {
@@ -797,7 +830,7 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
         corpora.append(boost::join(papers_lit_map[fn], "ED BG"));
         corpora.append("ED");
     } else {
-        if (getCASType(tcas) == "pdf") {
+        if ((getCASType(tcas) == "pdf") || (getCASType(tcas) == "tai")) {
             std::string corpusName = filename.substr(0, filename.find("/"));
             corpusName.append("ED");
             corpora.append(corpusName);
@@ -851,48 +884,70 @@ TyErrorId Tpcas2SingleIndex::process(CAS & tcas, ResultSpecification const & crR
         l_title = L"Not available";
     }
     if (w_cleanText.empty()) {
-        w_cleanText = L"not available";
+        w_cleanText = L"Not available";
     }
+    String l_title_cat = getCatString(cat_map, l_title);
+    if (l_title_cat.size() == 0)
+        l_title_cat = L"Not available";
+    String l_abstract_cat = getCatString(cat_map, l_abstract);
+    if (l_abstract_cat.size() == 0)
+        l_abstract_cat = L"Not available";
     DocumentPtr fulltextdoc = newLucene<Document > ();
     fulltextdoc->add(newLucene<Field > (L"doc_id", StringUtils::toString(base64_id.c_str()),
-                                        Field::STORE_YES, Field::INDEX_NOT_ANALYZED_NO_NORMS));
+            Field::STORE_YES, Field::INDEX_NOT_ANALYZED_NO_NORMS));
     fulltextdoc->add(newLucene<Field > (L"filepath", l_filepath, Field::STORE_YES, Field::INDEX_NOT_ANALYZED));
     fulltextdoc->add(newLucene<Field > (L"fulltext", StringUtils::toString<wstring>(w_cleanText), Field::STORE_NO, Field::INDEX_ANALYZED));
     fulltextdoc->add(newLucene<Field > (L"fulltext_compressed",
-                                        CompressionTools::compressString(StringUtils::toString<wstring>(w_cleanText)),
-                                        Field::STORE_YES));
+            CompressionTools::compressString(StringUtils::toString<wstring>(w_cleanText)),
+            Field::STORE_YES));
     fulltextdoc->add(newLucene<Field > (L"fulltext_cat",
-                                        StringUtils::toString<wstring>(w_cat_string),
-                                        Field::STORE_NO, Field::INDEX_ANALYZED));
+            StringUtils::toString<wstring>(w_cat_string),
+            Field::STORE_NO, Field::INDEX_ANALYZED));
     fulltextdoc->add(newLucene<Field > (L"fulltext_cat_compressed",
-                                        CompressionTools::compressString(StringUtils::toString<wstring>(w_cat_string)),
-                                        Field::STORE_YES));
+            CompressionTools::compressString(StringUtils::toString<wstring>(w_cat_string)),
+            Field::STORE_YES));
     fulltextdoc->add(newLucene<Field > (L"author", l_author, Field::STORE_NO, Field::INDEX_ANALYZED));
     fulltextdoc->add(newLucene<Field > (L"author_compressed",
-                                        CompressionTools::compressString(StringUtils::toString<wstring>(l_author)),
-                                        Field::STORE_YES));
+            CompressionTools::compressString(StringUtils::toString<wstring>(l_author)),
+            Field::STORE_YES));
     fulltextdoc->add(newLucene<Field > (L"accession", l_accession, Field::STORE_NO, Field::INDEX_ANALYZED));
     fulltextdoc->add(newLucene<Field > (L"accession_compressed",
-                                        CompressionTools::compressString(StringUtils::toString<wstring>(l_accession)),
-                                        Field::STORE_YES));
+            CompressionTools::compressString(StringUtils::toString<wstring>(l_accession)),
+            Field::STORE_YES));
     fulltextdoc->add(newLucene<Field > (L"type", l_type, Field::STORE_NO, Field::INDEX_ANALYZED));
     fulltextdoc->add(newLucene<Field > (L"type_compressed",
-                                        CompressionTools::compressString(StringUtils::toString<wstring>(l_type)),
-                                        Field::STORE_YES));
+            CompressionTools::compressString(StringUtils::toString<wstring>(l_type)),
+            Field::STORE_YES));
     fulltextdoc->add(newLucene<Field > (L"title", l_title, Field::STORE_NO, Field::INDEX_ANALYZED));
     fulltextdoc->add(newLucene<Field > (L"title_compressed",
-                                        CompressionTools::compressString(StringUtils::toString<wstring>(l_title)),
-                                        Field::STORE_YES));
+            CompressionTools::compressString(StringUtils::toString<wstring>(l_title)),
+            Field::STORE_YES));
+    fulltextdoc->add(newLucene<Field > (L"title_cat",
+            StringUtils::toString<wstring>(l_title_cat),
+            Field::STORE_NO, Field::INDEX_ANALYZED));
+    fulltextdoc->add(newLucene<Field > (L"title_cat_compressed",
+            CompressionTools::compressString(StringUtils::toString<wstring>(l_title_cat)),
+            Field::STORE_YES));
     fulltextdoc->add(newLucene<Field > (L"journal", l_journal, Field::STORE_NO, Field::INDEX_ANALYZED));
     fulltextdoc->add(newLucene<Field > (L"journal_compressed",
-                                        CompressionTools::compressString(StringUtils::toString<wstring>(l_journal)),
-                                        Field::STORE_YES));
+            CompressionTools::compressString(StringUtils::toString<wstring>(l_journal)),
+            Field::STORE_YES));
     fulltextdoc->add(newLucene<Field > (L"citation", l_citation, Field::STORE_YES, Field::INDEX_ANALYZED));
     fulltextdoc->add(newLucene<Field > (L"year", l_year, Field::STORE_YES, Field::INDEX_ANALYZED));
-    fulltextdoc->add(newLucene<Field > (L"abstract_compressed", CompressionTools::compressString(l_abstract),
-                                        Field::STORE_YES));
+
+    fulltextdoc->add(newLucene<Field > (L"abstract", l_abstract, Field::STORE_NO, Field::INDEX_ANALYZED));
+    fulltextdoc->add(newLucene<Field > (L"abstract_compressed",
+            CompressionTools::compressString(StringUtils::toString<wstring>(l_abstract)),
+            Field::STORE_YES));
+    fulltextdoc->add(newLucene<Field > (L"abstract_cat",
+            StringUtils::toString<wstring>(l_abstract_cat),
+            Field::STORE_NO, Field::INDEX_ANALYZED));
+    fulltextdoc->add(newLucene<Field > (L"abstract_cat_compressed",
+            CompressionTools::compressString(StringUtils::toString<wstring>(l_abstract_cat)),
+            Field::STORE_YES));
     fulltextdoc->add(newLucene<Field > (L"corpus", String(corpora.begin(), corpora.end()), Field::STORE_YES,
-                                        Field::INDEX_ANALYZED));
+            Field::INDEX_ANALYZED));
+    addSectionFields(tcas, cat_map, fulltextdoc);
     fulltextwriter->addDocument(fulltextdoc);
     fulltextwriter_casesens->addDocument(fulltextdoc);
     IndexSentences(tcas, cat_map, bib_info, corpora, base64_id, sentencewriter);

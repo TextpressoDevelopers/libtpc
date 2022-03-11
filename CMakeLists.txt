@@ -135,6 +135,21 @@ add_library(TxTokenizer SHARED uima-annotators/TxTokenizer/AnnotationCounter.h
         uima-annotators/TxTokenizer/pugixml.hpp uima-annotators/TxTokenizer/pugixml.cpp)
 target_link_libraries(TxTokenizer boost_regex ${PYTHON_LIBRARIES})
 
+add_library(TdTokenizer SHARED 
+        uima-annotators/TdTokenizer/AnnotationCounter.h
+        uima-annotators/TdTokenizer/AnnotationCounter.cpp
+        uima-annotators/TdTokenizer/TpNode.h
+        uima-annotators/TdTokenizer/TpNode.cpp
+        uima-annotators/TdTokenizer/TdTokenizer.h
+        uima-annotators/TdTokenizer/TdTokenizer.cpp
+        uima-annotators/TdTokenizer/TpTrie.h
+        uima-annotators/TdTokenizer/TpTrie.cpp
+        uima-annotators/TdTokenizer/textAndImageManager.h
+        uima-annotators/TdTokenizer/textAndImageManager.cpp)
+target_link_libraries(TdTokenizer boost_regex ${PYTHON_LIBRARIES})
+
+
+
 add_library(Tpcas2Bib SHARED uima-custom-analyzers/Tpcas2Bib/CASUtils.h
         uima-custom-analyzers/Tpcas2Bib/CASUtils.cpp uima-custom-analyzers/Tpcas2Bib/Tpcas2Bib.h
         uima-custom-analyzers/Tpcas2Bib/Tpcas2Bib.cpp uima-custom-analyzers/Tpcas2Bib/TpNode.h
@@ -185,12 +200,14 @@ install(FILES
         uima-annotators/TpTokenizer/resources/descriptors/TpTokenizer.xml
         uima-annotators/TxTokenizer/resources/descriptors/TxTokenizerTypeSystem.xml
         uima-annotators/TxTokenizer/resources/descriptors/TxTokenizer.xml
+        uima-annotators/TdTokenizer/resources/descriptors/TdTokenizerTypeSystem.xml
+        uima-annotators/TdTokenizer/resources/descriptors/TdTokenizer.xml
         uima-annotators/shared_resources/descriptors/Tpcas2Lindex.xml
         uima-annotators/shared_resources/descriptors/Tpcas2TpCentral.xml
         DESTINATION uima_descriptors)
 
 install(DIRECTORY tests/data DESTINATION share/textpresso)
 
-install(TARGETS Tpcas2TpCentral Tpcas2SingleIndex TpLexiconAnnotatorFromPg TpTokenizer TxTokenizer Tpcas2Bib
+install(TARGETS Tpcas2TpCentral Tpcas2SingleIndex TpLexiconAnnotatorFromPg TpTokenizer TxTokenizer TdTokenizer Tpcas2Bib
         Tpcas2Bib4Nxml
         LIBRARY DESTINATION lib)

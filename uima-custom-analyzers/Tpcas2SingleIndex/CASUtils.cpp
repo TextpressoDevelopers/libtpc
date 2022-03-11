@@ -6,7 +6,6 @@
 #include "CASUtils.h"
 #include "Tpcas2SingleIndex.h"
 
-
 string getFilename(CAS& tcas) {
     ANIndex allannindex = tcas.getAnnotationIndex();
     ANIterator aait = allannindex.iterator();
@@ -85,21 +84,20 @@ wstring getCleanText(CAS& tcas) {
             aait.moveToNext();
         }
         w_fulltext = getFulltext(tcas); //get full clean text
-        for (int i = 0; i < pdftags.size(); i++) {  // skip PDF tags in full text to get clean text
+        for (int i = 0; i < pdftags.size(); i++) { // skip PDF tags in full text to get clean text
             int begin = pdftags[i].first;
             int end = pdftags[i].second;
             if (w_fulltext[begin] != '<') {
-                wcout << "nomatch " << begin << "is " << w_fulltext[begin] << endl;  //error when matching a PDF tag in full text
+                wcout << "nomatch " << begin << "is " << w_fulltext[begin] << endl; //error when matching a PDF tag in full text
             }
             int sub_length = end - begin + 1;
-            w_fulltext.replace(begin, sub_length, L"");  //replace a PDF tag with empty string
+            w_fulltext.replace(begin, sub_length, L""); //replace a PDF tag with empty string
             for (int j = i + 1; j < pdftags.size(); j++) { // shift all following PDF tags positions by the length of previously replaced PDF tag
                 pdftags[j].first -= sub_length;
                 pdftags[j].second -= sub_length;
             }
         }
-    }
-    else if (castype == "nxml") { // if it's from nxml
+    } else if (castype == "nxml") { // if it's from nxml
         ANIndex allannindex = tcas.getAnnotationIndex();
         ANIterator aait = allannindex.iterator();
         aait.moveToFirst();
@@ -110,7 +108,7 @@ wstring getCleanText(CAS& tcas) {
             if (annType == "org.apache.uima.textpresso.xmltag") {
                 Feature fvalue = currentType.getFeatureByBaseName("value");
                 UnicodeStringRef uvalue = aait.get().getStringValue(fvalue);
-                if (uvalue.asUTF8() == "pcdata") {  //concatenate all pcdata strings to form clean text
+                if (uvalue.asUTF8() == "pcdata") { //concatenate all pcdata strings to form clean text
                     Feature fterm = currentType.getFeatureByBaseName("term");
                     UnicodeStringRef uterm = aait.get().getStringValue(fterm);
                     UnicodeString wd;
@@ -119,10 +117,11 @@ wstring getCleanText(CAS& tcas) {
                         w_fulltext += static_cast<wchar_t> (wd[i]);
                 }
             }
-            w_fulltext += L" ";  //adding a space between words
+            w_fulltext += L" "; //adding a space between words
             aait.moveToNext();
         }
-    }
+    } else if (castype == "tai") // text and images
+        w_fulltext = getFulltext(tcas); //get full clean text
     try {
         //boost::wregex tagregex(L"\<[! ].*\>");
         //w_fulltext = boost::regex_replace(w_fulltext, tagregex, "");
@@ -136,8 +135,7 @@ wstring getCleanText(CAS& tcas) {
     return w_fulltext;
 }
 
-string getXMLstring(CAS & tcas)
-{
+string getXMLstring(CAS & tcas) {
     UnicodeStringRef usdocref = tcas.getDocumentText();
     if (usdocref.length() > 0) {
         std::string xmlstring = usdocref.asUTF8();

@@ -264,7 +264,7 @@ void Utils::write_index_descriptor(const std::string& index_path, const std::str
     output << "         </configurationParameterSettings> " << endl;
     output << " <typeSystemDescription> " << endl;
     output << "         <imports> " << endl;
-    output << "         <import location = \"/usr/local/uima_descriptors/TpLexiconAnnotatorTypeSystem.xml\"/> " << endl;
+    output << "         <import location = \"/usr/local/uima_descriptors/TpLexiconAnnotatorFromPgTypeSystem.xml\"/> " << endl;
     output << "         </imports>" << endl;
     output << " </typeSystemDescription>" << endl;
     output << " <capabilities> " << endl;

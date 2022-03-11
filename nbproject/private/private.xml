@@ -9,21 +9,6 @@
     </data>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/data/textpresso/libtpc/uima-annotators/TpTokenizer/TpNode.cpp</file>
-            <file>file:/data/textpresso/libtpc/uima-annotators/TpTokenizer/TpNode.h</file>
-            <file>file:/data/textpresso/libtpc/cas-generators/xml2tpcas/ReadXml2Stream.cpp</file>
-            <file>file:/data/textpresso/libtpc/cas-generators/Stream2Tpcas.h</file>
-            <file>file:/data/textpresso/libtpc/cas-generators/xml2tpcas/ReadXml2Stream.h</file>
-            <file>file:/data/textpresso/libtpc/uima-annotators/TpTokenizer/TpTokenizer.cpp</file>
-            <file>file:/data/textpresso/libtpc/uima-annotators/uimaglobaldefinitions.h</file>
-            <file>file:/data/textpresso/libtpc/cas-generators/pdf2tpcas/PdfInfo.h</file>
-            <file>file:/data/textpresso/libtpc/uima-annotators/TpTokenizer/TpTokenizer.h</file>
-            <file>file:/data/textpresso/libtpc/uima-annotators/TpTokenizer/TpTrie.cpp</file>
-            <file>file:/data/textpresso/libtpc/cas-generators/Stream2Tpcas.cpp</file>
-            <file>file:/data/textpresso/libtpc/CASManager.cpp</file>
-            <file>file:/data/textpresso/libtpc/CASManager.h</file>
-            <file>file:/data/textpresso/libtpc/cas-generators/pdf2tpcas/PdfInfo.cpp</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

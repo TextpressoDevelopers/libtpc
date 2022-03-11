@@ -10,7 +10,7 @@
   <vendor>Textpresso</vendor>
   <typeSystemDescription>
     <imports>
-      <import location="TpLexiconAnnotatorTypeSystem.xml"/>
+      <import location="TpLexiconAnnotatorFromPgTypeSystem.xml"/>
     </imports>
   </typeSystemDescription>
   <capabilities>

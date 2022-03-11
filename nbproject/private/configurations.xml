@@ -32,6 +32,12 @@
               </df>
             </df>
           </df>
+          <df name="TdTokenizer.dir">
+            <df name="uima-annotators">
+              <df name="TdTokenizer">
+              </df>
+            </df>
+          </df>
           <df name="test_casmanager.dir">
             <df name="cas-generators">
               <df name="pdf2tpcas">
@@ -132,10 +138,128 @@
         <df name="CMakeFiles">
           <df name="3.10.2">
             <df name="CompilerIdC">
+              <df name="tmp">
+              </df>
               <in>CMakeCCompilerId.c</in>
             </df>
             <df name="CompilerIdCXX">
+              <df name="tmp">
+              </df>
               <in>CMakeCXXCompilerId.cpp</in>
+            </df>
+          </df>
+          <df name="CMakeTmp">
+          </df>
+          <df name="libtextpresso.dir">
+            <df name="cas-generators">
+              <df name="pdf2tpcas">
+              </df>
+              <df name="xml2tpcas">
+              </df>
+            </df>
+            <df name="lucene-custom">
+            </df>
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2SingleIndex">
+              </df>
+            </df>
+          </df>
+          <df name="TdTokenizer.dir">
+            <df name="uima-annotators">
+              <df name="TdTokenizer">
+              </df>
+            </df>
+          </df>
+          <df name="test_casmanager.dir">
+            <df name="cas-generators">
+              <df name="pdf2tpcas">
+              </df>
+              <df name="xml2tpcas">
+              </df>
+            </df>
+            <df name="lucene-custom">
+            </df>
+            <df name="tests">
+            </df>
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2SingleIndex">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2Bib.dir">
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2Bib">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2Bib4Nxml.dir">
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2Bib4Nxml">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2Lpp.dir">
+            <df name="lucene-custom">
+            </df>
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2Lpp">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2SingleIndex.dir">
+            <df name="cas-generators">
+              <df name="pdf2tpcas">
+              </df>
+              <df name="xml2tpcas">
+              </df>
+            </df>
+            <df name="lucene-custom">
+            </df>
+            <df name="uima-custom-analyzers">
+              <df name="Tpcas2SingleIndex">
+              </df>
+            </df>
+          </df>
+          <df name="Tpcas2TpCentral.dir">
+            <df name="uima-annotators">
+              <df name="Tpcas2TpCentral">
+              </df>
+            </df>
+          </df>
+          <df name="TpLexiconAnnotator.dir">
+            <df name="uima-annotators">
+              <df name="TpLexiconAnnotator">
+              </df>
+            </df>
+          </df>
+          <df name="TpLexiconAnnotatorFromPg.dir">
+            <df name="uima-annotators">
+              <df name="TpLexiconAnnotatorFromPg">
+              </df>
+            </df>
+          </df>
+          <df name="TpLsa.dir">
+            <df name="uima-annotators">
+              <df name="TpLsa">
+              </df>
+            </df>
+          </df>
+          <df name="TpTokenizer.dir">
+            <df name="uima-annotators">
+              <df name="TpTokenizer">
+              </df>
+            </df>
+          </df>
+          <df name="TxTokenizer.dir">
+            <df name="uima-annotators">
+              <df name="TxTokenizer">
+              </df>
+            </df>
+          </df>
+          <df name="WriteFeatureDefsFromPg.dir">
+            <df name="uima-annotators">
+              <df name="WriteFeatureDefsFromPg">
+              </df>
             </df>
           </df>
           <in>feature_tests.c</in>
@@ -369,6 +493,22 @@
         <df name="shared_resources">
           <df name="descriptors">
           </df>
+        </df>
+        <df name="TdTokenizer">
+          <df name="resources">
+            <df name="descriptors">
+            </df>
+          </df>
+          <in>AnnotationCounter.cpp</in>
+          <in>AnnotationCounter.h</in>
+          <in>TdTokenizer.cpp</in>
+          <in>TdTokenizer.h</in>
+          <in>TpNode.cpp</in>
+          <in>TpNode.h</in>
+          <in>TpTrie.cpp</in>
+          <in>TpTrie.h</in>
+          <in>textAndImageManager.cpp</in>
+          <in>textAndImageManager.h</in>
         </df>
         <df name="Tpcas2TpCentral">
           <in>Tpcas2TpCentral.cpp</in>

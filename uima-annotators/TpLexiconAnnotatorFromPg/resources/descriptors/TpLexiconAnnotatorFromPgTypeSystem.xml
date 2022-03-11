@@ -3,6 +3,7 @@
     <imports>
         <import location="TpTokenizerTypeSystem.xml"/>
         <import location="TxTokenizerTypeSystem.xml"/>
+        <import location="TdTokenizerTypeSystem.xml"/>
     </imports>
     <types>
         <typeDescription>

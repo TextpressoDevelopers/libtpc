@@ -26,7 +26,10 @@ namespace tpc {
          * @brief the type of query to perform on the index
          */
         enum class QueryType {
-            document = 1, sentence = 2
+            document = 1, sentence = 2, abstract = 3, acknowledgments = 4,
+            background = 5, begofart = 6, conclusion = 7, design = 8, discussion = 9,
+            introduction = 10, materials = 11, references = 12,
+            result = 13, title = 14
         };
 
         enum class DocumentType {

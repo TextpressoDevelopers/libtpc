@@ -71,16 +71,11 @@ void Stream2Tpcas::processInputStream() {
         /* process input / cas */
         try {
             // Need to transfer filename to UIMA annotator. We do that by
-            // putting is in front of the stream. Format:
-            // e integers # filename # rest of stream
+            // putting it in front of the stream. Format:
+            // three integers # filename # rest of stream
             // where integers is the number of characters up to the the second hash
             // sign
             std::string auxname = m_outfn;
-            //size_t extPos = auxname.rfind('/');
-            //if (extPos != std::string::npos) {
-            //    // Erase everything before the slash.
-            //    auxname.erase(0, extPos + 1);
-            //}
             int threeintegers = auxname.length() + 5;
             threeintegers = (threeintegers < 100) ? threeintegers - 1 : threeintegers;
             threeintegers = (threeintegers < 10) ? threeintegers -1 : threeintegers;
@@ -91,9 +86,7 @@ void Stream2Tpcas::processInputStream() {
             std::stringstream inp;
             inp << threeintegers << "#" << auxname << "#"
                 << m_streamin.rdbuf();
-//            std::string inp = m_streamin.str();
             UnicodeString ustrInputText;
-//            ustrInputText.append(UnicodeString::fromUTF8(StringPiece(inp)));
             ustrInputText.append(UnicodeString::fromUTF8(StringPiece(inp.str())));
             cas->setDocumentText(uima::UnicodeStringRef(ustrInputText));
             /* process the CAS */

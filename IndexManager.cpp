@@ -8,7 +8,7 @@
     
     @author valerio
     @version 1.0 7/25/17.
-*/
+ */
 
 #include "IndexManager.h"
 #include "Utils.h"
@@ -46,9 +46,75 @@ using namespace Lucene;
 using namespace xercesc;
 using namespace boost::filesystem;
 
+namespace {
+
+    void printQuery(const tpc::index::Query& query) {
+
+        std::string type;
+        switch (query.type) {
+            case QueryType::abstract:
+                type = "abstract";
+                break;
+            case QueryType::acknowledgments:
+                type = "acknowledgments";
+                break;
+            case QueryType::background:
+                type = "background";
+                break;
+            case QueryType::begofart:
+                type = "beginning of article";
+                break;
+            case QueryType::conclusion:
+                type = "conclusion";
+                break;
+            case QueryType::design:
+                type = "design";
+                break;
+            case QueryType::discussion:
+                type = "discussion";
+                break;
+            case QueryType::document:
+                type = "fulltext";
+                break;
+            case QueryType::introduction:
+                type = "introduction";
+                break;
+            case QueryType::materials:
+                type = "materials and methods";
+                break;
+            case QueryType::references:
+                type = "references";
+                break;
+            case QueryType::result:
+                type = "result";
+                break;
+            case QueryType::sentence:
+                type = "sentence";
+                break;
+            case QueryType::title:
+                type = "title";
+                break;
+        }
+        std::cerr << "type: " << type << std::endl;
+        std::cerr << "keyword: " << query.keyword << std::endl;
+        std::cerr << "exclude_keyword: " << query.exclude_keyword << std::endl;
+        std::cerr << "year: " << query.year << std::endl;
+        std::cerr << "author: " << query.author << std::endl;
+        std::cerr << "accession: " << query.accession << std::endl;
+        std::cerr << "journal: " << query.journal << std::endl;
+        std::cerr << "paper_type: " << query.paper_type << std::endl;
+        std::cerr << "case_sensitive: " << query.case_sensitive << std::endl;
+        std::cerr << "sort_by_year: " << query.sort_by_year << std::endl;
+        std::cerr << "exact_match_author: " << query.exact_match_author << std::endl;
+        std::cerr << "exact_match_journal: " << query.exact_match_journal << std::endl;
+        std::cerr << "categories_and_ed: " << query.categories_and_ed << std::endl;
+        for (auto x : query.literatures) std::cerr << "literature: " << x << std::endl;
+        for (auto x : query.categories) std::cerr << "category: " << x << std::endl;
+    }
+}
+
 SearchResults IndexManager::search_documents(const Query& query, bool matches_only, const set<string>& doc_ids,
-                                             const SearchResults& partialResults)
-{
+        const SearchResults& partialResults) {
     Collection<ScoreDocPtr> matchesCollection;
     Collection<ScoreDocPtr> externalMatchesCollection;
     Collection<IndexReaderPtr> subReaders = get_subreaders(query.type, query.case_sensitive);
@@ -56,6 +122,51 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
     SearcherPtr searcher = newLucene<IndexSearcher>(multireader);
     if ((!partialResults.partialIndexMatches || partialResults.partialIndexMatches.empty()) && (!partialResults.partialExternalMatches ||
             partialResults.partialExternalMatches.empty())) {
+        String searchfield(L"fulltext"); // this is the default
+        switch (query.type) {
+            case QueryType::abstract:
+                searchfield = L"abstract";
+                break;
+            case QueryType::acknowledgments:
+                searchfield = L"acknowledgments";
+                break;
+            case QueryType::background:
+                searchfield = L"background";
+                break;
+            case QueryType::begofart:
+                searchfield = L"beginning of article";
+                break;
+            case QueryType::conclusion:
+                searchfield = L"conclusion";
+                break;
+            case QueryType::design:
+                searchfield = L"design";
+                break;
+            case QueryType::discussion:
+                searchfield = L"discussion";
+                break;
+            case QueryType::document:
+                searchfield = L"fulltext";
+                break;
+            case QueryType::introduction:
+                searchfield = L"introduction";
+                break;
+            case QueryType::materials:
+                searchfield = L"materials and methods";
+                break;
+            case QueryType::references:
+                searchfield = L"references";
+                break;
+            case QueryType::result:
+                searchfield = L"result";
+                break;
+            case QueryType::sentence:
+                searchfield = L"sentence";
+                break;
+            case QueryType::title:
+                searchfield = L"title";
+                break;
+        }
         if (query.literatures.empty()) {
             throw tpc_exception("no literature information provided in the query object");
         }
@@ -66,22 +177,21 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
             analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_30);
         }
         QueryParserPtr parser = newLucene<QueryParser>(
-                LuceneVersion::LUCENE_30, query.type == QueryType::document ? L"fulltext" : L"sentence", analyzer);
+                LuceneVersion::LUCENE_30, searchfield, analyzer);
         string query_text = query.get_query_text();
         if (query_text.empty()) {
             throw tpc_exception("empty query");
         }
         String query_str = String(query_text.begin(), query_text.end());
         string joined_lit = boost::algorithm::join(query.literatures, "ED\" OR corpus:\"BG");
-        query_str = L"(corpus:\"BG" +  String(joined_lit.begin(), joined_lit.end()) + L"ED\") AND (" + query_str + L")";
+        query_str = L"(corpus:\"BG" + String(joined_lit.begin(), joined_lit.end()) + L"ED\") AND (" + query_str + L")";
         QueryPtr luceneQuery = parser->parse(query_str);
         String key_query_str;
         TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
         if (!doc_ids.empty()) {
             AnalyzerPtr keyword_analyzer = newLucene<KeywordAnalyzer>();
             QueryParserPtr keyword_parser = newLucene<QueryParser>(
-                    LuceneVersion::LUCENE_30, query.type == QueryType::document ? L"fulltext" : L"sentence",
-                    keyword_analyzer);
+                    LuceneVersion::LUCENE_30, searchfield, keyword_analyzer);
             string joined_ids = boost::algorithm::join(doc_ids, " OR doc_id:");
             key_query_str += L" doc_id:" + String(joined_ids.begin(), joined_ids.end());
             BooleanQueryPtr booleanQuery = newLucene<BooleanQuery>();
@@ -102,21 +212,21 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
     SearchResults result = SearchResults();
     SearchResults externalResults = SearchResults();
     if (!matches_only) {
-        if (query.type == QueryType::document) {
-            result = read_documents_summaries(matchesCollection, query.sort_by_year);
-            if (has_external_index() && externalMatchesCollection) {
-                externalResults = externalIndexManager->read_documents_summaries(externalMatchesCollection,
-                                                                                query.sort_by_year);
-                result.update(externalResults);
-            }
-        } else if (query.type == QueryType::sentence) {
+        if (query.type == QueryType::sentence) {
             result = read_sentences_summaries(matchesCollection, query.sort_by_year);
             result.query = query;
             result.total_num_sentences = matchesCollection.size();
             if (has_external_index() && externalMatchesCollection) {
                 externalResults = externalIndexManager->read_sentences_summaries(externalMatchesCollection,
-                                                                                 query.sort_by_year);
+                        query.sort_by_year);
                 externalResults.total_num_sentences = externalMatchesCollection.size();
+                result.update(externalResults);
+            }
+        } else {
+            result = read_documents_summaries(matchesCollection, query.sort_by_year);
+            if (has_external_index() && externalMatchesCollection) {
+                externalResults = externalIndexManager->read_documents_summaries(externalMatchesCollection,
+                        query.sort_by_year);
                 result.update(externalResults);
             }
         }
@@ -139,8 +249,7 @@ SearchResults IndexManager::search_documents(const Query& query, bool matches_on
 }
 
 set<String> IndexManager::compose_field_set(const set<string> &include_fields, const set<string> &exclude_fields,
-                                            const set<string> &required_fields)
-{
+        const set<string> &required_fields) {
     set<String> fields;
     for (const auto& f : include_fields) {
         fields.insert(String(f.begin(), f.end()));
@@ -154,28 +263,27 @@ set<String> IndexManager::compose_field_set(const set<string> &include_fields, c
     return fields;
 }
 
-Collection<IndexReaderPtr> IndexManager::get_subreaders(QueryType type, bool case_sensitive)
-{
+Collection<IndexReaderPtr> IndexManager::get_subreaders(QueryType type, bool case_sensitive) {
 
     string index_type;
-    if (type == QueryType::document) {
-        index_type = case_sensitive ? DOCUMENT_INDEXNAME_CS : DOCUMENT_INDEXNAME;
-    } else if (type == QueryType::sentence) {
+    if (type == QueryType::sentence)
         index_type = case_sensitive ? SENTENCE_INDEXNAME_CS : SENTENCE_INDEXNAME;
-    }
+    else
+        index_type = case_sensitive ? DOCUMENT_INDEXNAME_CS : DOCUMENT_INDEXNAME;
+
     Collection<IndexReaderPtr> subReaders = Collection<IndexReaderPtr>::newInstance(0);
     directory_iterator enditr;
     // add subindices for main index
-    for(directory_iterator itr(index_dir); itr != enditr; itr++) {
+    for (directory_iterator itr(index_dir); itr != enditr; itr++) {
         if (is_directory(itr->status()) && regex_match(itr->path().string(), regex(".*\\/" + SUBINDEX_NAME +
-                                                                                           "\\_[0-9]+"))) {
+                "\\_[0-9]+"))) {
             string index_id(itr->path().string());
             index_id.append("/");
             index_id.append(index_type);
             if (readers_map.find(itr->path().string() + "/" + index_type) == readers_map.end()) {
                 if (exists(path(index_id + "/segments.gen"))) {
                     readers_map[index_id] = IndexReader::open(FSDirectory::open(String(index_id.begin(),
-                                                                                       index_id.end())), readonly);
+                            index_id.end())), readonly);
                 }
             }
             subReaders.add(readers_map[index_id]);
@@ -185,8 +293,7 @@ Collection<IndexReaderPtr> IndexManager::get_subreaders(QueryType type, bool cas
 }
 
 SearchResults IndexManager::read_documents_summaries(const Collection<ScoreDocPtr> &matches_collection,
-                                                     bool sort_by_year)
-{
+        bool sort_by_year) {
     SearchResults result = SearchResults();
     DbEnv env(DB_CXX_NO_EXCEPTIONS);
     Db* pdb = NULL;
@@ -236,8 +343,7 @@ SearchResults IndexManager::read_documents_summaries(const Collection<ScoreDocPt
 }
 
 SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPtr> &matches_collection,
-                                                     bool sort_by_year)
-{
+        bool sort_by_year) {
     SearchResults result = SearchResults();
     unordered_map<string, DocumentSummary> doc_map;
     DbEnv env(DB_CXX_NO_EXCEPTIONS);
@@ -284,7 +390,7 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
         exit(EXIT_FAILURE);
     }
     std::transform(doc_map.begin(), doc_map.end(), std::back_inserter(result.hit_documents),
-                   boost::bind(&map<string, DocumentSummary>::value_type::second, _1));
+            boost::bind(&map<string, DocumentSummary>::value_type::second, _1));
     // check and update max and min scores for result
     for (const DocumentSummary& doc : result.hit_documents) {
         if (doc.score > result.max_score) {
@@ -297,17 +403,16 @@ SearchResults IndexManager::read_sentences_summaries(const Collection<ScoreDocPt
 }
 
 vector<DocumentDetails> IndexManager::get_documents_details(const vector<DocumentSummary> &doc_summaries,
-                                                            bool sort_by_year,
-                                                            bool include_sentences,
-                                                            set<string> include_doc_fields,
-                                                            set<string> include_match_sentences_fields,
-                                                            const set<string> &exclude_doc_fields,
-                                                            const set<string> &exclude_match_sentences_fields,
-                                                            bool include_all_sentences,
-                                                            set<std::string> include_all_sentences_fields,
-                                                            const set<std::string> &exclude_all_sentences_fields,
-                                                            bool remove_tags, bool remove_newlines)
-{
+        bool sort_by_year,
+        bool include_sentences,
+        set<string> include_doc_fields,
+        set<string> include_match_sentences_fields,
+        const set<string> &exclude_doc_fields,
+        const set<string> &exclude_match_sentences_fields,
+        bool include_all_sentences,
+        set<std::string> include_all_sentences_fields,
+        const set<std::string> &exclude_all_sentences_fields,
+        bool remove_tags, bool remove_newlines) {
     vector<DocumentSummary> summaries;
     bool use_lucene_internal_ids = all_of(doc_summaries.begin(), doc_summaries.end(), [](DocumentSummary d) {
         return d.lucene_internal_id != -1;
@@ -316,14 +421,14 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
         return (external && doc.documentType == DocumentType::main);
     });
     vector<DocumentDetails> results;
-    set<String> doc_f = compose_field_set(include_doc_fields, exclude_doc_fields, {"year", "doc_id"});
+    set<String> doc_f = compose_field_set(include_doc_fields, exclude_doc_fields,{"year", "doc_id"});
     FieldSelectorPtr doc_fsel = newLucene<LazySelector>(doc_f);
     AnalyzerPtr analyzer = newLucene<KeywordAnalyzer>();
     Collection<IndexReaderPtr> docSubReaders = get_subreaders(QueryType::document);
     MultiReaderPtr docMultireader = newLucene<MultiReader>(docSubReaders, false);
     QueryParserPtr docParser = newLucene<QueryParser>(LuceneVersion::LUCENE_30,
-                                                      String(DOCUMENT_INDEXNAME.begin(), DOCUMENT_INDEXNAME.end()),
-                                                      analyzer);
+            String(DOCUMENT_INDEXNAME.begin(), DOCUMENT_INDEXNAME.end()),
+            analyzer);
     SearcherPtr searcher = newLucene<IndexSearcher>(docMultireader);
     set<String> sent_f;
     FieldSelectorPtr sent_fsel;
@@ -339,12 +444,12 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
         sentSubReaders = get_subreaders(QueryType::sentence);
         sentMultireader = newLucene<MultiReader>(sentSubReaders, false);
         sentParser = newLucene<QueryParser>(LuceneVersion::LUCENE_30,
-                                            String(SENTENCE_INDEXNAME.begin(), SENTENCE_INDEXNAME.end()),
-                                            analyzer);
+                String(SENTENCE_INDEXNAME.begin(), SENTENCE_INDEXNAME.end()),
+                analyzer);
         sent_searcher = newLucene<IndexSearcher>(sentMultireader);
     }
     results = read_documents_details(doc_summaries, docParser, searcher, doc_fsel, doc_f, use_lucene_internal_ids,
-                                     docMultireader);
+            docMultireader);
     map<string, DocumentSummary> doc_summaries_map;
     for (const auto &doc_summary : doc_summaries) {
         if (use_lucene_internal_ids) {
@@ -357,14 +462,14 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
         for (DocumentDetails &docDetails : results) {
             if (use_lucene_internal_ids) {
                 update_match_sentences_details_for_document(doc_summaries_map[to_string(docDetails.lucene_internal_id)],
-                                                            docDetails, sentParser,
-                                                            sent_searcher, sent_fsel, sent_f, true,
-                                                            sentMultireader);
+                        docDetails, sentParser,
+                        sent_searcher, sent_fsel, sent_f, true,
+                        sentMultireader);
             } else {
                 update_match_sentences_details_for_document(doc_summaries_map[docDetails.identifier],
-                                                            docDetails, sentParser,
-                                                            sent_searcher, sent_fsel, sent_f, true,
-                                                            sentMultireader);
+                        docDetails, sentParser,
+                        sent_searcher, sent_fsel, sent_f, true,
+                        sentMultireader);
             }
         }
     }
@@ -381,10 +486,10 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
     }
     if (!external && has_external_index()) {
         auto externalResults = externalIndexManager->get_documents_details(doc_summaries, sort_by_year,
-                                                                           include_sentences, include_doc_fields,
-                                                                           include_match_sentences_fields,
-                                                                           exclude_doc_fields,
-                                                                           exclude_match_sentences_fields);
+                include_sentences, include_doc_fields,
+                include_match_sentences_fields,
+                exclude_doc_fields,
+                exclude_match_sentences_fields);
         move(externalResults.begin(), externalResults.end(), back_inserter(results));
     }
     if (sort_by_year) {
@@ -402,20 +507,19 @@ vector<DocumentDetails> IndexManager::get_documents_details(const vector<Documen
 }
 
 DocumentDetails IndexManager::get_document_details(const DocumentSummary& doc_summary,
-                                                   bool include_sentences,
-                                                   set<string> include_doc_fields,
-                                                   set<string> include_match_sentences_fields,
-                                                   const set<string>& exclude_doc_fields,
-                                                   const set<string>& exclude_match_sentences_fields,
-                                                   bool include_all_sentences,
-                                                   set<std::string> include_all_sentences_fields,
-                                                   const set<std::string> &exclude_all_sentences_fields,
-                                                   bool remove_tags, bool remove_newlines)
-{
+        bool include_sentences,
+        set<string> include_doc_fields,
+        set<string> include_match_sentences_fields,
+        const set<string>& exclude_doc_fields,
+        const set<string>& exclude_match_sentences_fields,
+        bool include_all_sentences,
+        set<std::string> include_all_sentences_fields,
+        const set<std::string> &exclude_all_sentences_fields,
+        bool remove_tags, bool remove_newlines) {
     return get_documents_details({doc_summary}, false, include_sentences,
-                                 include_doc_fields, include_match_sentences_fields, exclude_doc_fields,
-                                 exclude_match_sentences_fields, include_all_sentences, include_all_sentences_fields,
-                                 exclude_all_sentences_fields, remove_tags, remove_newlines)[0];
+            include_doc_fields, include_match_sentences_fields, exclude_doc_fields,
+            exclude_match_sentences_fields, include_all_sentences, include_all_sentences_fields,
+            exclude_all_sentences_fields, remove_tags, remove_newlines)[0];
 }
 
 void IndexManager::update_document_details(DocumentDetails &doc_details, String field, DocumentPtr doc_ptr) {
@@ -469,12 +573,11 @@ void IndexManager::update_document_details(DocumentDetails &doc_details, String 
 }
 
 vector<DocumentDetails> IndexManager::read_documents_details(const vector<DocumentSummary> &doc_summaries,
-                                                             QueryParserPtr doc_parser,
-                                                             SearcherPtr searcher,
-                                                             FieldSelectorPtr fsel,
-                                                             const set<String> &fields, bool use_lucene_internal_ids,
-                                                             MultiReaderPtr doc_reader)
-{
+        QueryParserPtr doc_parser,
+        SearcherPtr searcher,
+        FieldSelectorPtr fsel,
+        const set<String> &fields, bool use_lucene_internal_ids,
+        MultiReaderPtr doc_reader) {
     vector<DocumentDetails> results;
     if (use_lucene_internal_ids) {
         for (const auto &docSummary : doc_summaries) {
@@ -505,10 +608,10 @@ vector<DocumentDetails> IndexManager::read_documents_details(const vector<Docume
         auto identifiersItEnd = identifiers.begin();
         while (identifiersItEnd != identifiers.end()) {
             identifiersItEnd = distance(identifiersItBegin, identifiers.end()) <= MAX_NUM_DOCIDS_IN_QUERY ?
-                               identifiers.end() : identifiersItBegin + MAX_NUM_DOCIDS_IN_QUERY;
+                    identifiers.end() : identifiersItBegin + MAX_NUM_DOCIDS_IN_QUERY;
             string doc_query_str = "doc_id:\"" + boost::algorithm::join(vector<string>(identifiersItBegin,
-                                                                                       identifiersItEnd),
-                                                                        "\" OR doc_id:\"");
+                    identifiersItEnd),
+                    "\" OR doc_id:\"");
             doc_query_str.append("\"");
             QueryPtr luceneQuery = doc_parser->parse(String(doc_query_str.begin(), doc_query_str.end()));
             TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(MAX_HITS, true);
@@ -533,14 +636,12 @@ vector<DocumentDetails> IndexManager::read_documents_details(const vector<Docume
     return results;
 }
 
-
 void IndexManager::update_match_sentences_details_for_document(const DocumentSummary &doc_summary,
-                                                               DocumentDetails &doc_details,
-                                                               QueryParserPtr sent_parser,
-                                                               SearcherPtr searcher,
-                                                               FieldSelectorPtr fsel, const set<String> &fields,
-                                                               bool use_lucene_internal_ids, MultiReaderPtr sent_reader)
-{
+        DocumentDetails &doc_details,
+        QueryParserPtr sent_parser,
+        SearcherPtr searcher,
+        FieldSelectorPtr fsel, const set<String> &fields,
+        bool use_lucene_internal_ids, MultiReaderPtr sent_reader) {
     vector<string> sentencesIds;
     map<int, double> sentScoreMap;
     if (use_lucene_internal_ids) {
@@ -559,12 +660,12 @@ void IndexManager::update_match_sentences_details_for_document(const DocumentSum
                 } else if (f == L"sentence_compressed") {
                     String sentence = CompressionTools::decompressString(
                             sent_reader->document(sent.lucene_internal_id, fsel)->getBinaryValue(
-                                    L"sentence_compressed"));
+                            L"sentence_compressed"));
                     sentenceDetails.sentence_text = string(sentence.begin(), sentence.end());
                 } else if (f == L"sentence_cat_compressed") {
                     String sentence_cat = CompressionTools::decompressString(
                             sent_reader->document(sent.lucene_internal_id, fsel)->getBinaryValue(
-                                    L"sentence_cat_compressed"));
+                            L"sentence_cat_compressed"));
                     sentenceDetails.categories_string = string(sentence_cat.begin(), sentence_cat.end());
                 }
             }
@@ -581,11 +682,11 @@ void IndexManager::update_match_sentences_details_for_document(const DocumentSum
         auto sentencesIdsItBegin = sentencesIds.begin();
         auto sentencesIdsItEnd = sentencesIds.begin();
         while (sentencesIdsItEnd != sentencesIds.end()) {
-            sentencesIdsItEnd = distance(sentencesIdsItBegin, sentencesIds.end())  <= MAX_NUM_SENTENCES_IN_QUERY ?
-                                sentencesIds.end() : sentencesIdsItBegin + MAX_NUM_SENTENCES_IN_QUERY;
+            sentencesIdsItEnd = distance(sentencesIdsItBegin, sentencesIds.end()) <= MAX_NUM_SENTENCES_IN_QUERY ?
+                    sentencesIds.end() : sentencesIdsItBegin + MAX_NUM_SENTENCES_IN_QUERY;
             string sent_query_str = "sentence_id:\"" +
-                                    boost::algorithm::join(vector<string>(sentencesIdsItBegin, sentencesIdsItEnd),
-                                                           "\" OR sentence_id:\"") + "\"";
+                    boost::algorithm::join(vector<string>(sentencesIdsItBegin, sentencesIdsItEnd),
+                    "\" OR sentence_id:\"") + "\"";
             string docid_query_str = "doc_id:\"" + doc_details.identifier + "\"";
             BooleanQueryPtr booleanQuery = newLucene<BooleanQuery>();
             QueryPtr key_luceneQuery = sent_parser->parse(String(docid_query_str.begin(), docid_query_str.end()));
@@ -628,15 +729,14 @@ void IndexManager::update_match_sentences_details_for_document(const DocumentSum
 }
 
 void IndexManager::update_all_sentences_details_for_document(DocumentDetails &doc_details,
-                                                             FieldSelectorPtr fsel,
-                                                             const set<String> &fields)
-{
+        FieldSelectorPtr fsel,
+        const set<String> &fields) {
     Collection<IndexReaderPtr> subreaders = get_subreaders(QueryType::sentence, false);
     MultiReaderPtr multireader = newLucene<MultiReader>(subreaders, false);
     AnalyzerPtr analyzer = newLucene<KeywordAnalyzer>();
     QueryParserPtr parser = newLucene<QueryParser>(LuceneVersion::LUCENE_30,
-                                                   String(SENTENCE_INDEXNAME.begin(), SENTENCE_INDEXNAME.end()),
-                                                   analyzer);
+            String(SENTENCE_INDEXNAME.begin(), SENTENCE_INDEXNAME.end()),
+            analyzer);
     string docid_query_str = "doc_id:\"" + doc_details.identifier + "\"";
     QueryPtr luceneQuery = parser->parse(String(docid_query_str.begin(), docid_query_str.end()));
     SearcherPtr searcher = newLucene<IndexSearcher>(multireader);
@@ -672,8 +772,7 @@ void IndexManager::update_all_sentences_details_for_document(DocumentDetails &do
 }
 
 void IndexManager::create_index_from_existing_cas_dir(const string &input_cas_dir, const set<string>& file_list,
-                                                      int max_num_papers_per_subindex)
-{
+        int max_num_papers_per_subindex) {
     path input_cas_dir_path(input_cas_dir);
     if (!boost::filesystem::exists(index_dir + "/db")) { // need index_dir to exist
         boost::filesystem::create_directory(index_dir + "/db");
@@ -681,7 +780,7 @@ void IndexManager::create_index_from_existing_cas_dir(const string &input_cas_di
     string out_dir = index_dir + "/" + SUBINDEX_NAME;
     string subindex_dir;
     int counter_cas_files(0);
-    bool first_paper;
+    bool first_paper(false);
     TmpConf tmp_conf = TmpConf();
     recursive_directory_iterator it_end;
     for (recursive_directory_iterator dir_it(input_cas_dir_path); dir_it != it_end; ++dir_it) {
@@ -698,7 +797,7 @@ void IndexManager::create_index_from_existing_cas_dir(const string &input_cas_di
             create_subindex_dir_structure(subindex_dir);
         }
         string file_id = dir_it->path().parent_path().parent_path().filename().string()
-                         + "/" + dir_it->path().parent_path().filename().string();
+                + "/" + dir_it->path().parent_path().filename().string();
         if (is_regular_file(dir_it->status()) && boost::algorithm::ends_with(
                 dir_it->path().filename().string(), ".tpcas.gz") && (file_list.empty() ||
                 file_list.find(file_id) != file_list.end())) {
@@ -708,14 +807,14 @@ void IndexManager::create_index_from_existing_cas_dir(const string &input_cas_di
             }
             ++counter_cas_files;
             cout << "total number of cas files added: "
-                 << to_string(counter_cas_files) << endl;
+                    << to_string(counter_cas_files) << endl;
         }
     }
     update_corpus_counter();
     save_corpus_counter();
 }
 
-void IndexManager::create_subindex_dir_structure(const string &index_path) {
+void IndexManager::create_subindex_dir_structure(const string & index_path) {
     if (!exists(index_path)) {
         create_directories(index_path);
         create_directories(index_path + "/fulltext");
@@ -725,7 +824,7 @@ void IndexManager::create_subindex_dir_structure(const string &index_path) {
     }
 }
 
-TmpConf IndexManager::write_tmp_conf_files(const string &index_path) {
+TmpConf IndexManager::write_tmp_conf_files(const string & index_path) {
     // temp conf files
     std::string temp_dir;
     bool dir_created = false;
@@ -742,7 +841,7 @@ TmpConf IndexManager::write_tmp_conf_files(const string &index_path) {
 }
 
 int IndexManager::add_cas_file_to_index(const char* file_path, string index_descriptor, string temp_dir_path,
-                                        bool update_db) {
+        bool update_db) {
     std::string gzfile(file_path);
     string source_file = gzfile;
     boost::replace_all(source_file, ".tpcas.gz", ".bib");
@@ -750,17 +849,17 @@ int IndexManager::add_cas_file_to_index(const char* file_path, string index_desc
     path source = source_file;
     string filename = source.filename().string();
     boost::replace_all(filename, ".tpcas.gz", ".bib");
-    if(gzfile.find(".tpcas") == std::string::npos) {
+    if (gzfile.find(".tpcas") == std::string::npos) {
         std::cerr << "No .tpcas file found for file " << source.filename().string() << endl;
         return 0;
     }
-    if(!exists(bib_file)) {
+    if (!exists(bib_file)) {
         std::cerr << "No .bib file found for file " << source.filename().string() << endl;
         return 0;
     }
     string bib_file_temp = temp_dir_path + "/" + filename;
-    path dst  = temp_dir_path + "/" + filename;
-    boost::filesystem::copy_file(source,dst,copy_option::overwrite_if_exists);
+    path dst = temp_dir_path + "/" + filename;
+    boost::filesystem::copy_file(source, dst, copy_option::overwrite_if_exists);
     const char * descriptor = index_descriptor.c_str();
     string tpcasfile = Utils::decompress_gzip(gzfile, temp_dir_path);
 
@@ -772,11 +871,11 @@ int IndexManager::add_cas_file_to_index(const char* file_path, string index_desc
                 = uima::Framework::createAnalysisEngine(descriptor, errorInfo);
         if (errorInfo.getErrorId() != UIMA_ERR_NONE) {
             std::cerr << std::endl
-                      << "  Error string  : "
-                      << uima::AnalysisEngine::getErrorIdAsCString(errorInfo.getErrorId())
-                      << std::endl
-                      << "  UIMACPP Error info:" << std::endl
-                      << errorInfo << std::endl;
+                    << "  Error string  : "
+                    << uima::AnalysisEngine::getErrorIdAsCString(errorInfo.getErrorId())
+                    << std::endl
+                    << "  UIMACPP Error info:" << std::endl
+                    << errorInfo << std::endl;
             exit((int) errorInfo.getErrorId());
         }
         uima::TyErrorId utErrorId; // Variable to store UIMACPP return codes
@@ -819,8 +918,8 @@ int IndexManager::add_cas_file_to_index(const char* file_path, string index_desc
         readers_map.clear();
         if (update_db) {
             string file_id = boost::filesystem::path(file_path).parent_path().parent_path().filename().string() + "/" +
-                             boost::filesystem::path(file_path).parent_path().filename().string() + "/" +
-                             boost::filesystem::path(file_path).filename().string();
+                    boost::filesystem::path(file_path).parent_path().filename().string() + "/" +
+                    boost::filesystem::path(file_path).filename().string();
             add_doc_and_sentences_to_bdb(file_id);
         }
 
@@ -832,7 +931,7 @@ int IndexManager::add_cas_file_to_index(const char* file_path, string index_desc
 }
 
 bool IndexManager::process_single_file(const string& filepath, bool& first_paper, const TmpConf& tmp_conf,
-                                       bool update_db) {
+        bool update_db) {
     if (filepath.find(".tpcas.gz") == std::string::npos)
         return false;
     cout << "processing cas file: " << filepath << endl;
@@ -851,8 +950,7 @@ bool IndexManager::process_single_file(const string& filepath, bool& first_paper
     return true;
 }
 
-void IndexManager::add_file_to_index(const std::string &file_path, int max_num_papers_per_subindex)
-{
+void IndexManager::add_file_to_index(const std::string &file_path, int max_num_papers_per_subindex) {
     string out_dir = index_dir + "/" + SUBINDEX_NAME;
     string subindex_dir(SUBINDEX_NAME + "_0");
     int counter_cas_files(0);
@@ -861,8 +959,8 @@ void IndexManager::add_file_to_index(const std::string &file_path, int max_num_p
         string actual_subidx_name = dir_it->path().filename().string().substr(0, dir_it->path().filename()
                 .string().find_last_of("_"));
         string actual_subidx_num = dir_it->path().filename().string().substr(dir_it->path().filename().string()
-                                                                                     .find_last_of("_") + 1,
-                                                                             dir_it->path().filename().string().size());
+                .find_last_of("_") + 1,
+                dir_it->path().filename().string().size());
         if (actual_subidx_name == SUBINDEX_NAME && stoi(actual_subidx_num) > largest_subindex_num) {
             largest_subindex_num = stoi(actual_subidx_num);
         }
@@ -870,7 +968,7 @@ void IndexManager::add_file_to_index(const std::string &file_path, int max_num_p
     Collection<IndexReaderPtr> subReaders = get_subreaders(QueryType::document, false);
     MultiReaderPtr multireader = newLucene<MultiReader>(subReaders, false);
     counter_cas_files = multireader->numDocs();
-    bool first_paper;
+    bool first_paper(false);
     TmpConf tmp_conf = write_tmp_conf_files(out_dir + "_" + to_string(largest_subindex_num));
     if (counter_cas_files % max_num_papers_per_subindex == 0) {
         // create new subindex
@@ -889,7 +987,7 @@ void IndexManager::add_file_to_index(const std::string &file_path, int max_num_p
     cout << "total number of cas files added: " << to_string(counter_cas_files) << endl;
 }
 
-void IndexManager::remove_file_from_index(const std::string &identifier) {
+void IndexManager::remove_file_from_index(const std::string & identifier) {
     // document - case insensitive index
     string doc_id = remove_document_from_index(identifier, false);
     if (doc_id != "not_found") {
@@ -948,8 +1046,7 @@ string IndexManager::remove_document_from_index(std::string identifier, bool cas
     return string(doc_id.begin(), doc_id.end());
 }
 
-void IndexManager::add_doc_and_sentences_to_bdb(string identifier)
-{
+void IndexManager::add_doc_and_sentences_to_bdb(string identifier) {
     // remove doc
     Collection<IndexReaderPtr> subreaders = get_subreaders(QueryType::document, false);
     MultiReaderPtr multireader = newLucene<MultiReader>(subreaders, false);
@@ -1060,13 +1157,13 @@ void IndexManager::remove_sentences_for_document(const std::string &doc_id, bool
     multireader->close();
 }
 
-std::vector<std::string> IndexManager::get_available_corpora(const std::string& cas_path) {
+std::vector<std::string> IndexManager::get_available_corpora(const std::string & cas_path) {
     vector<string> corpora_vec;
     directory_iterator enditr;
     string corpus_name;
     size_t found;
     int n_subfolder;
-    for(directory_iterator itr(cas_path); itr != enditr; itr++) {
+    for (directory_iterator itr(cas_path); itr != enditr; itr++) {
         n_subfolder = 0;
         for (directory_iterator dir_it(itr->path()); dir_it != enditr; ++dir_it) {
             n_subfolder++;
@@ -1074,7 +1171,7 @@ std::vector<std::string> IndexManager::get_available_corpora(const std::string& 
         if (n_subfolder > 0) {
             corpus_name = itr->path().string();
             found = corpus_name.find_last_of("/");
-            corpus_name = corpus_name.substr(found+1);
+            corpus_name = corpus_name.substr(found + 1);
             boost::replace_all(corpus_name, "_", " ");
             if (corpus_name.compare("PMCOA") == 0) {
                 for (const auto &cat_regex : tpc::cas::PMCOA_CAT_REGEX) {
@@ -1139,7 +1236,7 @@ void IndexManager::update_corpus_counter() {
         string corpus_name;
         size_t found;
         int n_subfolder;
-        for(directory_iterator itr(cas_dir); itr != enditr; itr++) {
+        for (directory_iterator itr(cas_dir); itr != enditr; itr++) {
             n_subfolder = 0;
             for (directory_iterator dir_it(itr->path()); dir_it != enditr; ++dir_it) {
                 n_subfolder++;
@@ -1148,7 +1245,7 @@ void IndexManager::update_corpus_counter() {
             if (n_subfolder > 0) {
                 corpus_name = itr->path().string();
                 found = corpus_name.find_last_of("/");
-                corpus_name = corpus_name.substr(found+1);
+                corpus_name = corpus_name.substr(found + 1);
                 boost::replace_all(corpus_name, "_", " ");
                 if (corpus_name.compare("PMCOA") == 0) { // add all sub-corpora of PMCOA
                     for (const auto &corpus_regex : tpc::cas::PMCOA_CAT_REGEX) {
@@ -1162,7 +1259,7 @@ void IndexManager::update_corpus_counter() {
             }
         }
     } else {
-        map<string, set<string>> external_paper_lit_map;
+        map<string, set < string>> external_paper_lit_map;
         std::ifstream ifs(index_dir + "/../uploadedfiles/lit.cfg", std::ios::binary);
         if (ifs) {
             boost::archive::text_iarchive ia(ifs);
@@ -1174,7 +1271,7 @@ void IndexManager::update_corpus_counter() {
     }
 }
 
-int IndexManager::get_num_docs_in_corpus_from_index(const string& corpus) {
+int IndexManager::get_num_docs_in_corpus_from_index(const string & corpus) {
     Collection<ScoreDocPtr> matchesCollection;
     Collection<IndexReaderPtr> subReaders = get_subreaders(QueryType::document, false);
     MultiReaderPtr multireader = newLucene<MultiReader>(subReaders, false);
@@ -1266,7 +1363,7 @@ bool IndexManager::has_external_index() {
 }
 
 set<string> IndexManager::get_words_belonging_to_category_from_document_fulltext(const string& fulltext,
-        const string& fulltext_cat, const string& category) {
+        const string& fulltext_cat, const string & category) {
     set<string> result;
     vector<string> text_words;
     vector<string> cat_words;

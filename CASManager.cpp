@@ -4,7 +4,7 @@
     
     @author valerio
     @version 1.0 7/28/17.
-*/
+ */
 
 #include "cas-generators/pdf2tpcas/PdfInfo.h"
 #include "cas-generators/Stream2Tpcas.h"
@@ -25,12 +25,10 @@ using namespace tpc::cas;
 using namespace std;
 
 void CASManager::convert_raw_file_to_cas1(const string& file_path, FileType type, const string& out_dir,
-                                          bool use_parent_dir_as_outname)
-{
+        bool use_parent_dir_as_outname) {
     // get rid of overwhelming messages from podofo library
     PoDoFo::PdfError::EnableDebug(false);
     PoDoFo::PdfError::EnableLogging(false);
-
     string file_name_no_ext = boost::filesystem::path(file_path).filename().string();
     string file_name_tpcas;
     size_t extPos = file_name_no_ext.rfind('.');
@@ -61,36 +59,46 @@ void CASManager::convert_raw_file_to_cas1(const string& file_path, FileType type
                 stp.processInputStream();
             } catch (PoDoFo::PdfError &e) {
                 cerr << "Error: An error occurred during processing the pdf file." << endl << e.GetError() << endl
-                     << file_path << endl;
+                        << file_path << endl;
                 e.PrintErrorMsg();
             }
             break;
         case FileType::xml:
-            {
-                ReadXml2Stream rs(file_path.c_str());
-                std::stringstream sout;
-                rs.GetStream(sout);
-                const char *descriptor = XML2TPCAS_DESCRIPTOR.c_str();
-                Stream2Tpcas stp(sout, foutname, descriptor);
-                stp.processInputStream();
-            }
+        {
+            ReadXml2Stream rs(file_path.c_str());
+            std::stringstream sout;
+            rs.GetStream(sout);
+            const char *descriptor = XML2TPCAS_DESCRIPTOR.c_str();
+            Stream2Tpcas stp(sout, foutname, descriptor);
+            stp.processInputStream();
+        }
             break;
         case FileType::txt:
-            {
-                ifstream textFile(file_path.c_str());
-                std::stringstream sout;
-                sout << textFile.rdbuf();
-                textFile.close();
-                const char *descriptor = PDF2TPCAS_DESCRIPTOR.c_str();
-                Stream2Tpcas stp(sout, foutname, descriptor);
-                stp.processInputStream();
-            }
+        {
+            ifstream textFile(file_path.c_str());
+            std::stringstream sout;
+            sout << textFile.rdbuf();
+            textFile.close();
+            const char *descriptor = PDF2TPCAS_DESCRIPTOR.c_str();
+            Stream2Tpcas stp(sout, foutname, descriptor);
+            stp.processInputStream();
+        }
+            break;
+        case FileType::tai:
+        {
+            std::stringstream sout;
+            // stream sout contains filepath as many file in the directory
+            // need to processed.
+            sout << boost::filesystem::path(file_path).string();
+            const char *descriptor = TAI2TPCAS_DESCRIPTOR.c_str();
+            Stream2Tpcas stp(sout, foutname, descriptor);
+            stp.processInputStream();
+        }
             break;
     }
 }
 
-int CASManager::convert_cas1_to_cas2(const string &file_path, const std::string &out_dir)
-{
+int CASManager::convert_cas1_to_cas2(const string &file_path, const std::string &out_dir) {
     string foutname = out_dir + "/" + boost::filesystem::path(file_path).parent_path().filename().string();
     string temp_dir_path = boost::filesystem::temp_directory_path().string();
     string tpcasfile = Utils::decompress_gzip(file_path, temp_dir_path);
@@ -103,11 +111,11 @@ int CASManager::convert_cas1_to_cas2(const string &file_path, const std::string 
                 = uima::Framework::createAnalysisEngine(descriptor, errorInfo);
         if (errorInfo.getErrorId() != UIMA_ERR_NONE) {
             std::cerr << std::endl
-                      << "  Error string  : "
-                      << uima::AnalysisEngine::getErrorIdAsCString(errorInfo.getErrorId())
-                      << std::endl
-                      << "  UIMACPP Error info:" << std::endl
-                      << errorInfo << std::endl;
+                    << "  Error string  : "
+                    << uima::AnalysisEngine::getErrorIdAsCString(errorInfo.getErrorId())
+                    << std::endl
+                    << "  UIMACPP Error info:" << std::endl
+                    << errorInfo << std::endl;
             exit((int) errorInfo.getErrorId());
         }
         uima::TyErrorId utErrorId; // Variable to store UIMACPP return codes

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<taeDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.cpp</frameworkImplementation>
+  <primitive>true</primitive>
+<annotatorImplementationName>TdTokenizer</annotatorImplementationName>
+<analysisEngineMetaData>
+  <name>TdTokenizer</name>
+  <description>Prepares a directory of files to produce a CAS files.</description>
+  <version>1.0</version>
+  <vendor>Textpresso</vendor>
+  <typeSystemDescription>
+    <imports>
+      <import location="TdTokenizerTypeSystem.xml"/>
+    </imports>
+  </typeSystemDescription>
+  <capabilities>
+    <capability>
+      <inputs/>
+      <outputs>
+        <type allAnnotatorFeatures="true">org.apache.uima.textpresso.rawsource</type>
+        <type allAnnotatorFeatures="true">org.apache.uima.textpresso.filename</type>
+        <type allAnnotatorFeatures="true">org.apache.uima.textpresso.token</type>
+        <type allAnnotatorFeatures="true">org.apache.uima.textpresso.sentence</type>
+        <type allAnnotatorFeatures="true">org.apache.uima.textpresso.page</type>
+        <type allAnnotatorFeatures="true">org.apache.uima.textpresso.rawsection</type>
+        <type allAnnotatorFeatures="true">org.apache.uima.textpresso.section</type>
+        <type allAnnotatorFeatures="true">org.apache.uima.textpresso.image</type>
+        <type allAnnotatorFeatures="true">org.apache.uima.textpresso.tpfnvhash</type>
+      </outputs> 
+      <languagesSupported>
+        <language>x-unspecified</language>
+      </languagesSupported>
+    </capability>
+  </capabilities>
+</analysisEngineMetaData>
+</taeDescription>
