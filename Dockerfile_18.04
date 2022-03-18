@@ -9,7 +9,7 @@ libapr1-dev libaprutil1-dev wget libicu-dev liblucene++-dev liblucene++ bc poppl
 icu-devtools bzip2 linux-headers-generic build-essential unzip software-properties-common curlftpfs \
 software-properties-common autoconf libboost-all-dev libpodofo-dev libpodofo-utils doxygen libpqxx-dev \
 libfcgi++ libmagick++-dev libcurl4-openssl-dev postfix libdb5.3-dev libdb5.3++-dev libdb5.3++-stl-dev \
-libeigen3-dev postgresql-client postgresql postgresql-contrib cimg-dev git lighttpd python3 python3-pip
+libeigen3-dev postgresql-client postgresql postgresql-contrib cimg-dev git lighttpd python3 python3-pip libnsspem
 
 RUN wget http://mirrors.gigenet.com/apache//uima//uimacpp-2.4.0/uimacpp-2.4.0-src.zip -O uimacpp.zip \
 && unzip uimacpp.zip && rm uimacpp.zip
