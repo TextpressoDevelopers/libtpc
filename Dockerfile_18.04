@@ -34,7 +34,7 @@ RUN wget https://github.com/emweb/wt/archive/3.3.7.tar.gz -O wt-3.3.7.tar.gz \
 && mkdir build && cd build && cmake .. && make -j8 && make install && rm -rf /wt-3.3.7
 
 # google test
-RUN git clone https://github.com/google/googletest.git; cd googletest; mkdir cmake-build-release; cd cmake-build-release; cmake ..; \
+RUN git clone https://github.com/google/googletest.git; cd googletest; git checkout release-1.11.0; mkdir cmake-build-release; cd cmake-build-release; cmake ..; \
 make -j8 ; make install
 
 # python packages
