@@ -463,8 +463,6 @@ std::map<wstring, vector<wstring> > collectCategoryMapping(CAS& tcas) {
             } else {
                 cat_map[ws_term].push_back(ws_category);
             }
-            wstring ws_lexicalannotaitonid(filenamehash.begin(), filenamehash.end());
-            ws_lexicalannotaitonid = ws_lexicalannotaitonid + L"|" + ws_category + L"|" + ws_term;
         }
         aait.moveToNext();
     }
@@ -472,7 +470,49 @@ std::map<wstring, vector<wstring> > collectCategoryMapping(CAS& tcas) {
 }
 
 wstring getCatString(map<wstring, vector < wstring>> cat_map, wstring w_cleanText) {
-    wstring w_cat_string_temp = w_cleanText;
+    wstring ret(L"");
+    map <size_t, wstring> i2w;
+    vector<wstring> words;
+    boost::split(words, w_cleanText, boost::is_any_of(" \n\t'\\/()[]{}:.;,!?"));
+    size_t pos(0);
+    for (size_t j = 0; j < words.size(); j++) {
+        i2w[pos] = words[j];
+        pos += words[j].size() + 1;
+    }
+    map<size_t, wstring> i2c = {};
+    for (auto x : cat_map) {
+        size_t i = 0;
+        while (i != wstring::npos) {
+            i = w_cleanText.find(x.first, (i < 0) ? i : i + 1);
+            if (i != wstring::npos)
+                if (i2w.find(i) != i2w.end()) {
+                    i2c[i] += boost::algorithm::join(x.second, "|") + L"|";
+                    vector <wstring> cwords;
+                    boost::split(cwords, x.first, boost::is_any_of(" \n\t'\\/()[]{}:.;,!?"));
+                    size_t offset(0);
+                    for (size_t j = 1; j < cwords.size(); j++) {
+                        offset += cwords[j - 1].size() + 1;
+                        i2c[i + offset] = i2c[i];
+                    }
+                }
+        }
+    }
+    for (auto x : i2w)
+        if (i2c.find(x.first) != i2c.end())
+            ret += i2c[x.first].substr(0, i2c[x.first].length() - 1) + L"\t";
+        else
+            ret += L"NA\t";
+    ret = ret.substr(0, ret.length() - 1);
+    vector<wstring> cats;
+    boost::split(cats, ret, boost::is_any_of("\t"));
+    cout << "N(cats) = " << cats.size() << endl;
+    cout << "N(words) = " << words.size() << endl;
+    for (size_t i = 0; i < words.size(); i++)
+        wcout << words[i] << L" " << cats[i] << endl;
+    return ret;
+}
+
+wstring getCatStringOld(map<wstring, vector < wstring>> cat_map, wstring w_cleanText) {
     vector<wstring> words;
     boost::split(words, w_cleanText, boost::is_any_of(" \n\t'\\/()[]{}:.;,!?"));
     wstring w_cat_string;
@@ -526,38 +566,39 @@ void IndexSentences(CAS& tcas, map<wstring, vector<wstring> > cat_map, vector<St
             int begin = aait.get().getIntValue(begincontent);
             Feature endcontent = currentType.getFeatureByBaseName("end");
             int end = aait.get().getIntValue(endcontent);
-            wstring w_sentence_cat;
-            wstring w_sentence_pos;
-            w_sentence = Tpcas2SingleIndex::RemoveTags(w_sentence);
-            vector<wstring> words;
-            boost::split(words, w_sentence, boost::is_any_of(" \n\t'\\/()[]{}:.;,!?"));
-            int position = 0;
-            for (int j = 0; j < words.size(); j++) {
-                int b = position;
-                int e = position + words[j].length();
-                position = e + 1;
-                map<wstring, vector<wstring> >::iterator it = cat_map.find(words[j]);
-                if (it != cat_map.end()) // found category term CAT_TERM
-                {
-                    w_sentence_cat += boost::algorithm::join(it->second, "|");
-                    w_sentence_cat += L"\t";
-                    w_sentence_pos += boost::lexical_cast<wstring>(b);
-                    w_sentence_pos += L",";
-                    w_sentence_pos += boost::lexical_cast<wstring>(e);
-                    w_sentence_pos += L"\t";
-
-                } else //NOT_CAT term
-                {
-                    w_sentence_cat += L"NA\t"; // to save space
-                    w_sentence_pos += L"0,0\t"; //to save space
-                }
-            }
+            wstring w_sentence_cat = getCatString(cat_map, w_sentence);
+//            wstring w_sentence_cat;
+////            wstring w_sentence_pos;
+//            w_sentence = Tpcas2SingleIndex::RemoveTags(w_sentence);
+//            vector<wstring> words;
+//            boost::split(words, w_sentence, boost::is_any_of(" \n\t'\\/()[]{}:.;,!?"));
+//            int position = 0;
+//            for (int j = 0; j < words.size(); j++) {
+//                int b = position;
+//                int e = position + words[j].length();
+//                position = e + 1;
+//                map<wstring, vector<wstring> >::iterator it = cat_map.find(words[j]);
+//                if (it != cat_map.end()) // found category term CAT_TERM
+//                {
+//                    w_sentence_cat += boost::algorithm::join(it->second, "|");
+//                    w_sentence_cat += L"\t";
+////                    w_sentence_pos += boost::lexical_cast<wstring>(b);
+////                    w_sentence_pos += L",";
+////                    w_sentence_pos += boost::lexical_cast<wstring>(e);
+////                    w_sentence_pos += L"\t";
+//
+//                } else //NOT_CAT term
+//                {
+//                    w_sentence_cat += L"NA\t"; // to save space
+////                    w_sentence_pos += L"0,0\t"; //to save space
+//                }
+//            }
             // milliseconds ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
             string sentence_id_str = to_string(count);
 
             w_sentence_cat = w_sentence_cat.substr(0, w_sentence_cat.length() -
                     1); ///remove last \t to avoid empty string after split
-            w_sentence_pos = w_sentence_pos.substr(0, w_sentence_pos.length() - 1);
+//            w_sentence_pos = w_sentence_pos.substr(0, w_sentence_pos.length() - 1);
             //testing w_cat_string and w_positions matches and retrieve words from w_cleanText
             DocumentPtr sentencedoc = newLucene<Document>();
             sentencedoc->add(newLucene<Field>(L"sentence_id", StringUtils::toString(sentence_id_str.c_str()),
